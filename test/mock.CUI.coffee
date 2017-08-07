@@ -1,5 +1,11 @@
-class Session
+###
+ * easydb-custom-data-type-gnd - easydb 5 plugin
+ * Copyright (c) 2016 Programmfabrik GmbH, Verbundzentrale des GBV (VZG)
+ * MIT Licence
+ * https://github.com/programmfabrik/easydb-custom-data-type-gnd
+###
 
+# minimal mockup of CUI
 class Menu
 
 class Pane
@@ -24,15 +30,3 @@ class CUI
 
   @debug: () ->
 
-class CustomDataType
-  @register: (datatype) -> 
-
-  getCustomSchemaSettings: () ->
-    {}
-
-$$ = () ->
-
-console = {
-  log: () ->
-  debug: () ->
-}
