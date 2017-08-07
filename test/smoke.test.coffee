@@ -5,10 +5,10 @@
  * https://github.com/programmfabrik/easydb-custom-data-type-gnd
 ###
 
-describe 'CustomDataTypeGND', () ->
+describe 'CustomDataTypeGNDUBHD', () ->
 
   # create a new instance
-  gndtype = new CustomDataTypeGND
+  gndtype = new CustomDataTypeGNDUBHD
 
   it 'should have a custom data type name', () ->
     expect(gndtype.getCustomDataTypeName()).toBe 'custom:base.custom-data-type-gnd.gnd'

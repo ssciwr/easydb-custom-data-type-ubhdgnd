@@ -1,14 +1,14 @@
 plugin:
-  name: custom-data-type-gnd
+  name: custom-data-type-gnd-ubhd
   version: 1.0
   server:
     api-version:
       require: 1
   webfrontend:
-    url: custom-data-type-gnd.js
+    url: custom-data-type-gnd-ubhd.js
     l10n: l10n/
 custom_types:
-  gnd:
+  gndubhd:
     elasticsearch:
       mapping:
         type: object
@@ -103,9 +103,43 @@ custom_types:
           parameters:
             value:
               type: select
-              options: ["ALLE","SubjectHeadingSensoStricto","HistoricSingleEventOrEra","GroupOfPersons","CharactersOrMorphemes","MeansOfTransportWithIndividual_name","FictiveTerm","NomenclatureInBiologyOrChemistry","ProductNameOrBrandName","SoftwareProduct","Language","EthnographicName","MeansOfTransportWithIndividualName","ReligiousTerritory","NaturalGeographicUnit","TerritorialCorporateBodyOrAdministrativeUnit","FictivePlace","BuildingOrMemorial","Country","AdministrativeUnit","ExtraterrestrialTerritory","MemberState","WayBorderOrLine","NameOfSmallGeographicUnitLyingWithinAnotherGeographicUnit","FictiveCorporateBody","OrganOfCorporateBody","ProjectOrProgram","Pseudonym","LiteraryOrLegendaryCharacter","Spirits","RoyalOrMemberOfARoyalHouse","CollectivePseudonym","Gods"]
+              options:
+                - "ALLE"
+                - "SubjectHeadingSensoStricto"
+                - "HistoricSingleEventOrEra"
+                - "GroupOfPersons"
+                - "CharactersOrMorphemes"
+                - "MeansOfTransportWithIndividual_name"
+                - "FictiveTerm"
+                - "NomenclatureInBiologyOrChemistry"
+                - "ProductNameOrBrandName"
+                - "SoftwareProduct"
+                - "Language"
+                - "EthnographicName"
+                - "MeansOfTransportWithIndividualName"
+                - "ReligiousTerritory"
+                - "NaturalGeographicUnit"
+                - "TerritorialCorporateBodyOrAdministrativeUnit"
+                - "FictivePlace"
+                - "BuildingOrMemorial"
+                - "Country"
+                - "AdministrativeUnit"
+                - "ExtraterrestrialTerritory"
+                - "MemberState"
+                - "WayBorderOrLine"
+                - "NameOfSmallGeographicUnitLyingWithinAnotherGeographicUnit"
+                - "FictiveCorporateBody"
+                - "OrganOfCorporateBody"
+                - "ProjectOrProgram"
+                - "Pseudonym"
+                - "LiteraryOrLegendaryCharacter"
+                - "Spirits"
+                - "RoyalOrMemberOfARoyalHouse"
+                - "CollectivePseudonym"
+                - "Gods"
       mask:
         - name: show_infopopup
           parameters:
             value:
               type: bool
+

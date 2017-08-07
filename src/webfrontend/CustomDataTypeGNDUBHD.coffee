@@ -1,9 +1,9 @@
-class CustomDataTypeGND extends CustomDataTypeWithCommons
+class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
 
   #######################################################################
   # return name of plugin
   getCustomDataTypeName: ->
-    "custom:base.custom-data-type-gnd.gnd"
+    "custom:base.custom-data-type-gnd-ubhd.gndubhd"
 
 
   #######################################################################
@@ -110,10 +110,12 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
           htmlContent += "<tr><td>Synonyme:</td><td>" + variantNames + "</td></tr>"
 
       htmlContent += "</table>"
-      tooltip.DOM.html(htmlContent);
+      tooltip.DOM.html(htmlContent)
       tooltip.autoSize()
+      console.log("GNDUBHD / SUCCESS")
     )
     .fail (data, status, statusText) ->
+        console.log("GNDUBHD / FAIL")
         CUI.debug 'FAIL', extendedInfo_xhr.getXHR(), extendedInfo_xhr.getResponseHeaders()
 
     return
@@ -430,4 +432,4 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
     tags
 
 
-CustomDataType.register(CustomDataTypeGND)
+CustomDataType.register(CustomDataTypeGNDUBHD)
