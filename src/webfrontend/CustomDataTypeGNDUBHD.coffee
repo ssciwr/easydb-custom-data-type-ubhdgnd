@@ -1,3 +1,10 @@
+UbhdAuthoritiesClient = require('@ubhd/authorities-client')
+{
+  CustomDataTypeWithCommons,
+  CustomDataTypeCommonFacet
+} = require('../../easydb-library/src/commons.js')
+
+
 class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
 
   #######################################################################
@@ -15,10 +22,12 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
   #######################################################################
   # if type is DifferentiatedPerson or CorporateBody, get short info about entry from entityfacts
   __getAdditionalTooltipInfo: (uri, tooltip, extendedInfo_xhr) ->
+
     # extract gndID from uri
     gndID = uri
     gndID = gndID.split "/"
     gndID = gndID.pop()
+
     # download infos
     if extendedInfo_xhr.xhr != undefined
       # abort eventually running request
@@ -28,19 +37,23 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
     extendedInfo_xhr = new (CUI.XHR)(url: xurl)
     extendedInfo_xhr.start()
     .done((data, status, statusText) ->
+
       htmlContent = ''
       htmlContent += '<table style="border-spacing: 10px; border-collapse: separate;">'
       htmlContent += '<tr><td colspan="2"><h4>Informationen über den Eintrag</h4></td></tr>'
+
       ##########################
       # DifferentiatedPerson and CorporateBody
 
       # Vollständiger Name (DifferentiatedPerson + CorporateBody)
       htmlContent += "<tr><td>Name:</td><td>" + data.preferredName + "</td></tr>"
+
       # Abbildung (DifferentiatedPerson + CorporateBody)
       depiction = data.depiction
       if depiction
         if depiction.thumbnail
           htmlContent += '<tr><td>Abbildung:</td><td><img src="' + depiction.thumbnail['@id'] + '" style="border: 0; max.width:120px; max-height:150px;" /></td></tr>'
+
       # Lebensdaten (DifferentiatedPerson)
       dateOfBirth = data.dateOfBirth
       dateOfDeath = data.dateOfDeath
@@ -53,6 +66,7 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
         else if !dateOfBirth and dateOfDeath
           htmlContent += "unbekannt bis " + dateOfDeath
         htmlContent += "</td></tr>"
+
       # Date of Establishment (CorporateBody)
       dateOfEstablishment = data.dateOfEstablishment
       if dateOfEstablishment
@@ -65,6 +79,7 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
           for place in placeOfBusiness
             places.push(place.preferredName)
           htmlContent += "<tr><td>Niederlassung(en):</td><td>" + places.join("<br />") + "</td></tr>"
+
       # Übergeordnete Körperschaft (CorporateBody)
       hierarchicallySuperiorOrganisation = data.hierarchicallySuperiorOrganisation
       organisations = []
@@ -73,14 +88,17 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
           for organisation in hierarchicallySuperiorOrganisation
             organisations.push(organisation.preferredName)
           htmlContent += "<tr><td>Übergeordnete Körperschaft(en):</td><td>" + organisations.join("<br />") + "</td></tr>"
+
       # Geburtsort (DifferentiatedPerson)
       placeOfBirth = data.placeOfBirth
       if placeOfBirth
         htmlContent += "<tr><td>Geburtsort:</td><td>" + placeOfBirth[0].preferredName + "</td></tr>"
+
       # Sterbeort (DifferentiatedPerson)
       placeOfDeath = data.placeOfDeath
       if placeOfDeath
         htmlContent += "<tr><td>Sterbeort:</td><td>" + placeOfDeath[0].preferredName + "</td></tr>"
+
       # Berufe (DifferentiatedPerson)
       professionOrOccupation = data.professionOrOccupation
       professions = []
@@ -89,10 +107,12 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
           for profession in professionOrOccupation
             professions.push(profession.preferredName)
           htmlContent += "<tr><td>Beruf(e):</td><td>" + professions.join("<br />") + "</td></tr>"
+
       # Biographie (DifferentiatedPerson)
       biographicalOrHistoricalInformation = data.biographicalOrHistoricalInformation
       if biographicalOrHistoricalInformation
         htmlContent += "<tr><td>Biographie:</td><td>" + biographicalOrHistoricalInformation + "</td></tr>"
+
       # Thema (CorporateBody)
       topic = data.topic
       topics = []
@@ -129,9 +149,12 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
     delayMillisseconds = 200
 
     setTimeout ( ->
-      gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
 
+      gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
       gnd_searchtype = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
+
+      console.log({gnd_searchtype, gnd_searchterm})
+
       # if "search-all-types", search all allowed types
       if gnd_searchtype == 'all_supported_types'
         gnd_searchtype = []
@@ -164,7 +187,9 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
           searchsuggest_xhr.xhr.abort()
 
       # start new request
-      searchsuggest_xhr.xhr = new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + subclassQuery + '&count=' + gnd_countSuggestions)
+      searchsuggest_xhr.xhr =
+        
+        new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + subclassQuery + '&count=' + gnd_countSuggestions)
       searchsuggest_xhr.xhr.start().done((data, status, statusText) ->
 
           CUI.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
@@ -340,7 +365,7 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
           label: $$("custom.data.type.gnd.modal.form.text.searchbar")
       placeholder: $$("custom.data.type.gnd.modal.form.text.searchbar.placeholder")
       name: "searchbarInput"
-      class: 'commonPlugin_Input'
+      # class: 'commonPlugin_Input'
     }
     {
       form:
@@ -433,3 +458,6 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
 
 
 CustomDataType.register(CustomDataTypeGNDUBHD)
+module.exports = CustomDataTypeGNDUBHD
+
+# vim: sw=2 et
