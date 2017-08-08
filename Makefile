@@ -17,17 +17,62 @@ INSTALL_FILES = \
 
 COFFEE_FILES = easydb-library/src/commons.coffee \
 	src/webfrontend/$(PLUGIN_NAME_CAMELCASE).coffee
+JS_FILES = $(subst .coffee,.js,$(COFFEE_FILES))
 
-all: build
+TEST_COFFEE_FILES = test/mock.browser.coffee \
+	 test/mock.CUI.coffee \
+	 test/mock.easyDB.coffee \
+	 test/smoke.test.coffee
+TEST_JS_FILES = $(subst .coffee,.js,$(TEST_COFFEE_FILES))
 
-include easydb-library/tools/base-plugins.make
+JS = build/webfrontend/$(PLUGIN_NAME).js
 
-build: code
+BROWSERIFY = ./node_modules/.bin/browserify
+COFFEE     = ./node_modules/.bin/coffee -cpb
+NODEMON    = ./node_modules/.bin/nodemon
 
-code: $(JS)
+.PHONY: clean wipe build all
 
-clean: clean-base
+all: $(JS) $(TEST_JS_FILES)
 
-wipe: wipe-base
+# {{{ Build
 
-.PHONY: clean wipe
+build: entry.js $(JS)
+
+$(JS_FILES): %.js : %.coffee
+	$(COFFEE) $< > $@
+
+$(JS): entry.js $(JS_FILES)
+	$(BROWSERIFY) -o "$@" entry.js
+
+# }}}
+
+# {{{ clean
+
+clean: clean/build clean/test
+
+clean/build: 
+	@rm -fv $(JS_FILES) $(JS)
+
+clean/test:
+	rm -rfv $(TEST_JS_FILES)
+
+# }}}
+
+# {{{ Testing
+
+test: build $(TEST_JS_FILES)
+
+$(TEST_JS_FILES): %.js: %.coffee
+	$(COFFEE) $< > $@
+
+test/serve: test
+	$(MAKE) build
+	python -mSimpleHTTPServer
+	@echo " -> http://localhost:8000/test/TestRunnner.html"
+
+test/watch:
+	$(NODEMON) -e coffee -w entry.js -w src/ -w easydb-library/src/ -w test/ -x make test/serve
+
+# }}}
+
