@@ -7,14 +7,14 @@
 
 # minimal mockup of easyDB environment
 
-class Session
-    
 I10N = []
 
-$$ = (id) ->
-    I10N[id]
+$$ = (id) -> I10N[id]
 
 CONFIG = []
+
+
+class Session
 
 class CustomDataType
   @register: (datatype) -> 

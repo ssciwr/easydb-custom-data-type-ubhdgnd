@@ -4,4 +4,9 @@ build
 *.coffee.js
 *.spec.coffee
 
+src/**/*.js
+test/mock*.js
+
 node_modules/
+test/smoke.test.js
+package-lock.json
