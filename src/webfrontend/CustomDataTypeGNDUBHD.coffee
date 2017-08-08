@@ -181,20 +181,23 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
       if gnd_searchterm.length == 0
           return
 
-      # run autocomplete-search via xhr
-      if searchsuggest_xhr.xhr != undefined
-          # abort eventually running request
-          searchsuggest_xhr.xhr.abort()
+      # # run autocomplete-search via xhr
+      # if searchsuggest_xhr.xhr != undefined
+      #     # abort eventually running request
+      #     searchsuggest_xhr.xhr.abort()
 
       # start new request
-      searchsuggest_xhr.xhr =
+      searchsuggest_xhr.xhr = UbhdAuthoritiesClient('http://serv42.ub.uni-heidelberg.de/normdaten/gnd')
+        .search(gnd_searchterm, gnd_searchtype, {format: 'opensearch'})
+        .then((data) ->
+          console.log('authority data returned', {data})
         
-        new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + subclassQuery + '&count=' + gnd_countSuggestions)
-      searchsuggest_xhr.xhr.start().done((data, status, statusText) ->
+      #   new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + subclassQuery + '&count=' + gnd_countSuggestions)
+      # searchsuggest_xhr.xhr.start().done((data, status, statusText) ->
 
-          CUI.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
+          # CUI.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
           # init xhr for tooltipcontent
-          extendedInfo_xhr = { "xhr" : undefined }
+          # extendedInfo_xhr = { "xhr" : undefined }
           # create new menu with suggestions
           menu_items = []
           for suggestion, key in data[1]

@@ -38,6 +38,7 @@
   },
   "homepage": "https://github.com/programmfabrik/easydb-custom-data-type-gnd#readme",
   "dependencies": {
-    "browserify": "^14.4.0"
+    "browserify": "^14.4.0",
+    "nodemon": "^1.11.0"
   }
 }
