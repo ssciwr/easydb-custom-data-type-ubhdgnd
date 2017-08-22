@@ -151,22 +151,21 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
     setTimeout ( ->
 
       gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
-      gnd_searchtype = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
+      gnd_searchtypes = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
 
-      console.log({gnd_searchtype, gnd_searchterm})
+      console.log({gnd_searchtypes, gnd_searchterm})
 
       # if "search-all-types", search all allowed types
-      if gnd_searchtype == 'all_supported_types'
-        gnd_searchtype = []
+      if gnd_searchtypes == 'all_supported_types'
+        gnd_searchtypes = []
         if that.getCustomSchemaSettings().add_differentiatedpersons?.value
-          gnd_searchtype.push 'DifferentiatedPerson'
+          gnd_searchtypes.push 'DifferentiatedPerson'
         if that.getCustomSchemaSettings().add_coorporates?.value
-          gnd_searchtype.push 'CorporateBody'
+          gnd_searchtypes.push 'CorporateBody'
         if that.getCustomSchemaSettings().add_geographicplaces?.value
-          gnd_searchtype.push 'PlaceOrGeographicName'
+          gnd_searchtypes.push 'PlaceOrGeographicName'
         if that.getCustomSchemaSettings().add_subjects?.value
-          gnd_searchtype.push 'SubjectHeading'
-        gnd_searchtype = gnd_searchtype.join(',')
+          gnd_searchtypes.push 'SubjectHeading'
 
       # if only a "subclass" is active
       subclass = that.getCustomSchemaSettings().exact_types?.value
@@ -188,11 +187,11 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
 
       # start new request
       searchsuggest_xhr.xhr = UbhdAuthoritiesClient('http://serv42.ub.uni-heidelberg.de/normdaten/gnd')
-        .search(gnd_searchterm, gnd_searchtype, {format: 'opensearch'})
+        .search(gnd_searchterm, gnd_searchtypes.join(' '), {format: 'opensearch'})
         .then((data) ->
           console.log('authority data returned', {data})
         
-      #   new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + subclassQuery + '&count=' + gnd_countSuggestions)
+      #   new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtypes + subclassQuery + '&count=' + gnd_countSuggestions)
       # searchsuggest_xhr.xhr.start().done((data, status, statusText) ->
 
           # CUI.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
