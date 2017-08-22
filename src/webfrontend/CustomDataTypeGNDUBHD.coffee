@@ -7,6 +7,9 @@ UbhdAuthoritiesClient = require('@ubhd/authorities-client')
 
 class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
 
+  constructor: (args) ->
+    @authoritiesClient = UbhdAuthoritiesClient()
+
   #######################################################################
   # return name of plugin
   getCustomDataTypeName: ->
@@ -20,126 +23,21 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
 
 
   #######################################################################
-  # if type is DifferentiatedPerson or CorporateBody, get short info about entry from entityfacts
+  # run UbhdAuthoritiesClient.prototype.infoBox()
   __getAdditionalTooltipInfo: (uri, tooltip, extendedInfo_xhr) ->
 
     # extract gndID from uri
-    gndID = uri
-    gndID = gndID.split "/"
-    gndID = gndID.pop()
+    gndID = uri.split('/').pop()
 
     # download infos
-    if extendedInfo_xhr.xhr != undefined
-      # abort eventually running request
-      extendedInfo_xhr.abort()
-    # start new request
-    xurl = location.protocol + '//jsontojsonp.gbv.de/?url=http://hub.culturegraph.org/entityfacts/' + gndID
-    extendedInfo_xhr = new (CUI.XHR)(url: xurl)
-    extendedInfo_xhr.start()
-    .done((data, status, statusText) ->
-
-      htmlContent = ''
-      htmlContent += '<table style="border-spacing: 10px; border-collapse: separate;">'
-      htmlContent += '<tr><td colspan="2"><h4>Informationen über den Eintrag</h4></td></tr>'
-
-      ##########################
-      # DifferentiatedPerson and CorporateBody
-
-      # Vollständiger Name (DifferentiatedPerson + CorporateBody)
-      htmlContent += "<tr><td>Name:</td><td>" + data.preferredName + "</td></tr>"
-
-      # Abbildung (DifferentiatedPerson + CorporateBody)
-      depiction = data.depiction
-      if depiction
-        if depiction.thumbnail
-          htmlContent += '<tr><td>Abbildung:</td><td><img src="' + depiction.thumbnail['@id'] + '" style="border: 0; max.width:120px; max-height:150px;" /></td></tr>'
-
-      # Lebensdaten (DifferentiatedPerson)
-      dateOfBirth = data.dateOfBirth
-      dateOfDeath = data.dateOfDeath
-      if dateOfBirth or dateOfDeath
-        htmlContent += "<tr><td>Lebensdaten:</td><td>"
-        if dateOfBirth and dateOfDeath
-          htmlContent += dateOfBirth + " bis " + dateOfDeath
-        else if dateOfBirth and !dateOfDeath
-          htmlContent += dateOfBirth + " bis unbekannt"
-        else if !dateOfBirth and dateOfDeath
-          htmlContent += "unbekannt bis " + dateOfDeath
-        htmlContent += "</td></tr>"
-
-      # Date of Establishment (CorporateBody)
-      dateOfEstablishment = data.dateOfEstablishment
-      if dateOfEstablishment
-        htmlContent += "<tr><td>Gründung:</td><td>" + dateOfEstablishment[0] + "</td></tr>"
-      # Place of Business (CorporateBody)
-      placeOfBusiness = data.placeOfBusiness
-      places = []
-      if placeOfBusiness
-        if placeOfBusiness.length > 0
-          for place in placeOfBusiness
-            places.push(place.preferredName)
-          htmlContent += "<tr><td>Niederlassung(en):</td><td>" + places.join("<br />") + "</td></tr>"
-
-      # Übergeordnete Körperschaft (CorporateBody)
-      hierarchicallySuperiorOrganisation = data.hierarchicallySuperiorOrganisation
-      organisations = []
-      if hierarchicallySuperiorOrganisation
-        if hierarchicallySuperiorOrganisation.length > 0
-          for organisation in hierarchicallySuperiorOrganisation
-            organisations.push(organisation.preferredName)
-          htmlContent += "<tr><td>Übergeordnete Körperschaft(en):</td><td>" + organisations.join("<br />") + "</td></tr>"
-
-      # Geburtsort (DifferentiatedPerson)
-      placeOfBirth = data.placeOfBirth
-      if placeOfBirth
-        htmlContent += "<tr><td>Geburtsort:</td><td>" + placeOfBirth[0].preferredName + "</td></tr>"
-
-      # Sterbeort (DifferentiatedPerson)
-      placeOfDeath = data.placeOfDeath
-      if placeOfDeath
-        htmlContent += "<tr><td>Sterbeort:</td><td>" + placeOfDeath[0].preferredName + "</td></tr>"
-
-      # Berufe (DifferentiatedPerson)
-      professionOrOccupation = data.professionOrOccupation
-      professions = []
-      if professionOrOccupation
-        if professionOrOccupation.length > 0
-          for profession in professionOrOccupation
-            professions.push(profession.preferredName)
-          htmlContent += "<tr><td>Beruf(e):</td><td>" + professions.join("<br />") + "</td></tr>"
-
-      # Biographie (DifferentiatedPerson)
-      biographicalOrHistoricalInformation = data.biographicalOrHistoricalInformation
-      if biographicalOrHistoricalInformation
-        htmlContent += "<tr><td>Biographie:</td><td>" + biographicalOrHistoricalInformation + "</td></tr>"
-
-      # Thema (CorporateBody)
-      topic = data.topic
-      topics = []
-      if topic
-        if topic.length > 0
-          for t in topic
-            topics.push(t.preferredName)
-          htmlContent += "<tr><td>Themen:</td><td>" + topics.join("<br />") + "</td></tr>"
-
-      # Synonyme (DifferentiatedPerson + CorporateBody)
-      variantName = data.variantName
-      if variantName
-        if variantName.length > 0
-          variantNames = variantName.join("<br />")
-          htmlContent += "<tr><td>Synonyme:</td><td>" + variantNames + "</td></tr>"
-
-      htmlContent += "</table>"
-      tooltip.DOM.html(htmlContent)
-      tooltip.autoSize()
-      console.log("GNDUBHD / SUCCESS")
-    )
-    .fail (data, status, statusText) ->
-        console.log("GNDUBHD / FAIL")
-        CUI.debug 'FAIL', extendedInfo_xhr.getXHR(), extendedInfo_xhr.getResponseHeaders()
+    # TODO debounce
+    @authoritiesClient.infoBox(gndID)
+      .then (html) ->
+        tooltip.DOM.html(html)
+      .catch (err) ->
+        console.log("GNDUBHD / FAIL", err)
 
     return
-
 
   #######################################################################
   # handle suggestions-menu
@@ -155,30 +53,31 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
 
       console.log({gnd_searchtypes, gnd_searchterm})
 
+      # XXX TODO reenable configurable
       # if "search-all-types", search all allowed types
-      if gnd_searchtypes == 'all_supported_types'
-        gnd_searchtypes = []
-        if that.getCustomSchemaSettings().add_differentiatedpersons?.value
-          gnd_searchtypes.push 'DifferentiatedPerson'
-        if that.getCustomSchemaSettings().add_coorporates?.value
-          gnd_searchtypes.push 'CorporateBody'
-        if that.getCustomSchemaSettings().add_geographicplaces?.value
-          gnd_searchtypes.push 'PlaceOrGeographicName'
-        if that.getCustomSchemaSettings().add_subjects?.value
-          gnd_searchtypes.push 'SubjectHeading'
+      # if gnd_searchtypes == 'all_supported_types'
+      #   gnd_searchtypes = []
+      #   if that.getCustomSchemaSettings().add_differentiatedpersons?.value
+      #     gnd_searchtypes.push 'DifferentiatedPerson'
+      #   if that.getCustomSchemaSettings().add_coorporates?.value
+      #     gnd_searchtypes.push 'CorporateBody'
+      #   if that.getCustomSchemaSettings().add_geographicplaces?.value
+      #     gnd_searchtypes.push 'PlaceOrGeographicName'
+      #   if that.getCustomSchemaSettings().add_subjects?.value
+      #     gnd_searchtypes.push 'SubjectHeading'
 
-      # if only a "subclass" is active
-      subclass = that.getCustomSchemaSettings().exact_types?.value
-      subclassQuery = ''
+      # # if only a "subclass" is active
+      # subclass = that.getCustomSchemaSettings().exact_types?.value
+      # subclassQuery = ''
 
-      if subclass != undefined
-        if subclass != 'ALLE'
-          subclassQuery = '&exact_type=' + subclass
+      # if subclass != undefined
+      #   if subclass != 'ALLE'
+      #     subclassQuery = '&exact_type=' + subclass
 
-      gnd_countSuggestions = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
+      # gnd_countSuggestions = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
 
-      if gnd_searchterm.length == 0
-          return
+      # if gnd_searchterm.length == 0
+      #     return
 
       # # run autocomplete-search via xhr
       # if searchsuggest_xhr.xhr != undefined
@@ -186,50 +85,40 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
       #     searchsuggest_xhr.xhr.abort()
 
       # start new request
-      searchsuggest_xhr.xhr = UbhdAuthoritiesClient('http://serv42.ub.uni-heidelberg.de/normdaten/gnd')
-        .search(gnd_searchterm, gnd_searchtypes.join(' '), {format: 'opensearch'})
+      searchsuggest_xhr.xhr = that.authoritiesClient
+        .search(gnd_searchterm, {type: gnd_searchtypes, format: 'opensearch', withSubTypes: true})
         .then((data) ->
           console.log('authority data returned', {data})
-        
-      #   new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtypes + subclassQuery + '&count=' + gnd_countSuggestions)
-      # searchsuggest_xhr.xhr.start().done((data, status, statusText) ->
 
           # CUI.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
           # init xhr for tooltipcontent
           # extendedInfo_xhr = { "xhr" : undefined }
           # create new menu with suggestions
           menu_items = []
-          for suggestion, key in data[1]
-            do(key) ->
+          for i of data[1]
+            # console.log(suggestion, i)
+            do(i) ->
               # the actual Featureclass...
-              aktType = data[2][key]
-              lastType = ''
-              if key > 0
-                lastType = data[2][key-1]
+              suggestion = data[1][i]
+              aktType    = data[2][i]
+              gndUri     = data[3][i]
+              lastType = if i == 0 then  '' else data[2][i-1]
               if aktType != lastType
-                item =
-                  divider: true
-                menu_items.push item
-                item =
-                  label: aktType
-                menu_items.push item
-                item =
-                  divider: true
-                menu_items.push item
-              item =
+                menu_items.push divider: true
+                menu_items.push label: aktType
+                menu_items.push divider: true
+              menu_items.push 
                 text: suggestion
-                value: data[3][key]
+                value: gndUri
                 tooltip:
                   markdown: true
                   placement: "e"
                   content: (tooltip) ->
-                    # if enabled in mask-config
-                    if that.getCustomMaskSettings().show_infopopup?.value
-                      # if type is ready for infopopup
-                      if aktType == "DifferentiatedPerson" or aktType == "CorporateBody"
-                        that.__getAdditionalTooltipInfo(data[3][key], tooltip, extendedInfo_xhr)
-                        new Label(icon: "spinner", text: "lade Informationen")
-              menu_items.push item
+                    # # if enabled in mask-config
+                    # TODO reenable configurable
+                    # if that.getCustomMaskSettings().show_infopopup?.value
+                    that.__getAdditionalTooltipInfo(gndUri, tooltip)
+                    new Label(icon: "spinner", text: "lade Informationen")
 
           # set new items to menu
           itemList =
@@ -301,7 +190,7 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
     # add "Alle"-Option? If count of options > 1!
     if dropDownSearchOptions.length > 1
         option = (
-            value: 'all_supported_types'
+            value: ''
             text: 'Alle'
           )
         dropDownSearchOptions.unshift option
