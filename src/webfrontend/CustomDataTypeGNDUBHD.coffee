@@ -2,7 +2,7 @@ UbhdAuthoritiesClient = require('@ubhd/authorities-client')
 {
   CustomDataTypeWithCommons,
   CustomDataTypeCommonFacet
-} = require('../../easydb-library/src/commons.js')
+} = require('../../easydb-library/src/commons.coffee')
 
 
 class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
