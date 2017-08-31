@@ -1,9 +1,4 @@
 AuthoritiesClient = require('@ubhd/authorities-client')
-{
-  CustomDataTypeWithCommons,
-  CustomDataTypeCommonFacet
-} = require('../../easydb-library/src/commons.coffee')
-
 
 class CustomDataTypeGND extends CustomDataTypeWithCommons
 
@@ -13,7 +8,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
   #######################################################################
   # return name of plugin
   getCustomDataTypeName: ->
-    "custom:base.custom-data-type-gnd.gnd"
+    "custom:extension.custom-data-type-gnd.gnd"
 
 
   #######################################################################
