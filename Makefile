@@ -30,7 +30,6 @@ code: $(JS)
 
 webpack: code
 	webpack
-	rm $(JS)
 
 clean: clean-base
 
