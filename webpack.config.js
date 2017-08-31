@@ -7,6 +7,7 @@ module.exports = {
         path: __dirname + "/build/webfrontend",
         filename: "custom-data-type-gnd.js",
         library: 'CustomDataTypeGND',
+        libraryTarget: "umd",
     },
     module: {
         rules: [
