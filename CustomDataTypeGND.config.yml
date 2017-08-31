@@ -1,14 +1,14 @@
 plugin:
-  name: custom-data-type-gnd-ubhd
+  name: custom-data-type-gnd
   version: 1.0
   server:
     api-version:
       require: 1
   webfrontend:
-    url: custom-data-type-gnd-ubhd.js
+    url: custom-data-type-gnd.js
     l10n: l10n/
 custom_types:
-  gndubhd:
+  gnd:
     elasticsearch:
       mapping:
         type: object

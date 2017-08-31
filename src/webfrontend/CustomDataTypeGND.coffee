@@ -1,19 +1,19 @@
-UbhdAuthoritiesClient = require('@ubhd/authorities-client')
+AuthoritiesClient = require('@ubhd/authorities-client')
 {
   CustomDataTypeWithCommons,
   CustomDataTypeCommonFacet
 } = require('../../easydb-library/src/commons.coffee')
 
 
-class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
+class CustomDataTypeGND extends CustomDataTypeWithCommons
 
   constructor: (args) ->
-    @authoritiesClient = UbhdAuthoritiesClient()
+    @authoritiesClient = AuthoritiesClient()
 
   #######################################################################
   # return name of plugin
   getCustomDataTypeName: ->
-    "custom:base.custom-data-type-gnd-ubhd.gndubhd"
+    "custom:base.custom-data-type-gnd.gnd"
 
 
   #######################################################################
@@ -23,7 +23,7 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
 
 
   #######################################################################
-  # run UbhdAuthoritiesClient.prototype.infoBox()
+  # run AuthoritiesClient.prototype.infoBox()
   __getAdditionalTooltipInfo: (uri, tooltip, extendedInfo_xhr) ->
 
     # extract gndID from uri
@@ -35,7 +35,7 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
       .then (html) ->
         tooltip.DOM.html(html)
       .catch (err) ->
-        console.log("GNDUBHD / FAIL", err)
+        console.log("GND / FAIL", err)
 
     return
 
@@ -348,7 +348,7 @@ class CustomDataTypeGNDUBHD extends CustomDataTypeWithCommons
     tags
 
 
-CustomDataType.register(CustomDataTypeGNDUBHD)
-module.exports = CustomDataTypeGNDUBHD
+CustomDataType.register(CustomDataTypeGND)
+module.exports = CustomDataTypeGND
 
 # vim: sw=2 et

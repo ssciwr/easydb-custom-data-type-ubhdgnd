@@ -1,1 +1,1 @@
-module.exports = require('./src/webfrontend/CustomDataTypeGNDUBHD.coffee')
+module.exports = require('./src/webfrontend/CustomDataTypeGND.coffee')
