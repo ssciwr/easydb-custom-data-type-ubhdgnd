@@ -4,12 +4,13 @@ module.exports = \
 class CustomDataTypeGND extends CustomDataTypeWithCommons
 
   constructor: (args) ->
+    super
     @authoritiesClient = AuthoritiesClient()
 
   #######################################################################
   # return name of plugin
   getCustomDataTypeName: ->
-    "custom:extension.custom-data-type-gnd.gnd"
+    "custom:base.custom-data-type-gnd.gnd"
 
 
   #######################################################################
@@ -37,7 +38,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
 
   #######################################################################
   # handle suggestions-menu
-  __updateSuggestionsMenu: (cdata, cdata_form, suggest_Menu, searchsuggest_xhr) ->
+  __updateSuggestionsMenu: (cdata, cdata_form, suggest_Menu) ->
     that = @
 
     delayMillisseconds = 200
@@ -86,9 +87,6 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
         .then((data) ->
           console.log('authority data returned', {data})
 
-          # CUI.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
-          # init xhr for tooltipcontent
-          # extendedInfo_xhr = { "xhr" : undefined }
           # create new menu with suggestions
           menu_items = []
           for i of data[1]
