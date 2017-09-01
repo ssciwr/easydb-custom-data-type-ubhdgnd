@@ -1,5 +1,6 @@
 AuthoritiesClient = require('@ubhd/authorities-client')
 
+module.exports = \
 class CustomDataTypeGND extends CustomDataTypeWithCommons
 
   constructor: (args) ->
@@ -344,6 +345,5 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
 
 
 CustomDataType.register(CustomDataTypeGND)
-module.exports = CustomDataTypeGND
 
 # vim: sw=2 et
