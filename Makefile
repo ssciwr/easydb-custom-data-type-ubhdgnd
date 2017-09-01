@@ -32,13 +32,15 @@ wipe: wipe-base
 .PHONY: clean wipe
 
 $(WEB)/$(PLUGIN_NAME).raw.coffee: $(COFFEE_FILES)
-	cat -cb $^ > $@
+	cat $^ > $@
 
 $(WEB)/$(PLUGIN_NAME).raw.js: $(WEB)/$(PLUGIN_NAME).raw.coffee
 	coffee -cb $<
 
-webpack:
+$(WEB)/$(PLUGIN_NAME).js: $(WEB)/$(PLUGIN_NAME).raw.js
 	webpack
+
+webpack: $(WEB)/$(PLUGIN_NAME).js
 
 inject: webpack
 	@docker cp $(WEB)/$(PLUGIN_NAME).js easydb-server-unib-heidelberg:/easydb-5/base/plugins/custom-data-type-gnd/build/webfrontend && echo "Injected"
