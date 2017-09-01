@@ -15,7 +15,6 @@ INSTALL_FILES = \
 	CustomDataTypeGND.config.yml
 
 COFFEE_FILES = easydb-library/src/commons.coffee \
-	src/commons.exports.coffee \
 	src/webfrontend/CustomDataTypeGND.coffee
 
 JS = $(WEB)/${PLUGIN_NAME}.raw.js

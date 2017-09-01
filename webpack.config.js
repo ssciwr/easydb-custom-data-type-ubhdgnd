@@ -1,7 +1,7 @@
 var webpack = require('webpack')
 
 module.exports = {
-    entry: "./entry.js",
+    entry: "./build/webfrontend/custom-data-type-gnd.raw.js",
     // devtool: 'source-map',
     output: {
         path: __dirname + "/build/webfrontend",
