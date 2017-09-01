@@ -10,3 +10,4 @@ test/mock*.js
 node_modules/
 test/smoke.test.js
 package-lock.json
+*.BAK

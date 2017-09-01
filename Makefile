@@ -23,15 +23,22 @@ all: build
 
 include easydb-library/tools/base-plugins.make
 
-build: webpack $(L10N)
-
-code: $(JS)
-
-webpack: code
-	webpack
+build: code $(L10N)
 
 clean: clean-base
 
 wipe: wipe-base
 
 .PHONY: clean wipe
+
+$(WEB)/$(PLUGIN_NAME).raw.coffee: $(COFFEE_FILES)
+	cat -cb $^ > $@
+
+$(WEB)/$(PLUGIN_NAME).raw.js: $(WEB)/$(PLUGIN_NAME).raw.coffee
+	coffee -cb $<
+
+webpack:
+	webpack
+
+inject: webpack
+	@docker cp $(WEB)/$(PLUGIN_NAME).js easydb-server-unib-heidelberg:/easydb-5/base/plugins/custom-data-type-gnd/build/webfrontend && echo "Injected"
