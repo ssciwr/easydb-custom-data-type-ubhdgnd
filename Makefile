@@ -41,6 +41,10 @@ $(WEB)/$(PLUGIN_NAME).js: $(WEB)/$(PLUGIN_NAME).raw.js
 	webpack
 
 webpack: $(WEB)/$(PLUGIN_NAME).js
+	rm src/webfrontend/CustomDataTypeGND.coffee.js
 
 inject: webpack
 	@docker cp $(WEB)/$(PLUGIN_NAME).js easydb-server-unib-heidelberg:/easydb-5/base/plugins/custom-data-type-gnd/build/webfrontend && echo "Injected"
+
+watch:
+	./node_modules/.bin/nodemon -e coffee -x make inject
