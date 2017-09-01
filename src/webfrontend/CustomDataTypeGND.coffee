@@ -3,7 +3,7 @@ AuthoritiesClient = require('@ubhd/authorities-client')
 module.exports = \
 class CustomDataTypeGND extends CustomDataTypeWithCommons
 
-  constructor: (args) ->
+  constructor: () ->
     super
     @authoritiesClient = AuthoritiesClient()
 
@@ -20,132 +20,116 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
 
 
   #######################################################################
-  # run AuthoritiesClient.prototype.infoBox()
-  __getAdditionalTooltipInfo: (uri, tooltip, extendedInfo_xhr) ->
-
-    # extract gndID from uri
-    gndID = uri.split('/').pop()
-
-    # download infos
-    # TODO debounce
-    @authoritiesClient.infoBox(gndID)
-      .then (html) ->
-        tooltip.DOM.html(html)
-      .catch (err) ->
-        console.log("GND / FAIL", err)
-
-    return
-
-  #######################################################################
   # handle suggestions-menu
   __updateSuggestionsMenu: (cdata, cdata_form, suggest_Menu) ->
-    that = @
 
-    delayMillisseconds = 200
+    # TODO debounce
+    gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
+    gnd_searchtypes = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
 
-    setTimeout ( ->
+    console.log({gnd_searchtypes, gnd_searchterm})
 
-      gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
-      gnd_searchtypes = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
+    # XXX TODO reenable configurable
+    # if "search-all-types", search all allowed types
+    # if gnd_searchtypes == 'all_supported_types'
+    #   gnd_searchtypes = []
+    #   if @getCustomSchemaSettings().add_differentiatedpersons?.value
+    #     gnd_searchtypes.push 'DifferentiatedPerson'
+    #   if @getCustomSchemaSettings().add_coorporates?.value
+    #     gnd_searchtypes.push 'CorporateBody'
+    #   if @getCustomSchemaSettings().add_geographicplaces?.value
+    #     gnd_searchtypes.push 'PlaceOrGeographicName'
+    #   if @getCustomSchemaSettings().add_subjects?.value
+    #     gnd_searchtypes.push 'SubjectHeading'
 
-      console.log({gnd_searchtypes, gnd_searchterm})
+    # # if only a "subclass" is active
+    # subclass = @getCustomSchemaSettings().exact_types?.value
+    # subclassQuery = ''
 
-      # XXX TODO reenable configurable
-      # if "search-all-types", search all allowed types
-      # if gnd_searchtypes == 'all_supported_types'
-      #   gnd_searchtypes = []
-      #   if that.getCustomSchemaSettings().add_differentiatedpersons?.value
-      #     gnd_searchtypes.push 'DifferentiatedPerson'
-      #   if that.getCustomSchemaSettings().add_coorporates?.value
-      #     gnd_searchtypes.push 'CorporateBody'
-      #   if that.getCustomSchemaSettings().add_geographicplaces?.value
-      #     gnd_searchtypes.push 'PlaceOrGeographicName'
-      #   if that.getCustomSchemaSettings().add_subjects?.value
-      #     gnd_searchtypes.push 'SubjectHeading'
+    # if subclass != undefined
+    #   if subclass != 'ALLE'
+    #     subclassQuery = '&exact_type=' + subclass
 
-      # # if only a "subclass" is active
-      # subclass = that.getCustomSchemaSettings().exact_types?.value
-      # subclassQuery = ''
+    # gnd_countSuggestions = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
 
-      # if subclass != undefined
-      #   if subclass != 'ALLE'
-      #     subclassQuery = '&exact_type=' + subclass
+    # if gnd_searchterm.length == 0
+    #     return
 
-      # gnd_countSuggestions = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
+    # # run autocomplete-search via xhr
+    # if searchsuggest_xhr.xhr != undefined
+    #     # abort eventually running request
+    #     searchsuggest_xhr.xhr.abort()
 
-      # if gnd_searchterm.length == 0
-      #     return
+    # start new request
+    @authoritiesClient
+      .suggest(gnd_searchterm, {type: gnd_searchtypes, format: 'opensearch', withSubTypes: true})
+      .then((data) =>
+        # create new menu with suggestions
+        menu_items = []
+        for i of data[1]
+          # console.log(suggestion, i)
+          do(i) =>
+            # the actual Featureclass...
+            suggestion = data[1][i]
+            aktType    = data[2][i]
+            gndId      = data[3][i]
+            lastType   = data[2][i-1]
+            if i == 0
+              menu_items.push label: aktType
+              menu_items.push divider: true
+            else if aktType != lastType
+              menu_items.push divider: true
+              menu_items.push label: aktType
+              menu_items.push divider: true
+            menu_items.push
+              text: suggestion
+              value: "http://d-nb.info/gnd/#{gndId}"
+              tooltip:
+                markdown: false
+                placement: "n"
+                content: (tooltip) =>
+                  # # if enabled in mask-config
+                  # XXX TODO reenable configurable
+                  # return unless @getCustomMaskSettings().show_infopopup?.value
+                  # download infos
+                  @authoritiesClient.infoBox(gndId)
+                    .then (html) ->
+                      tooltip.DOM.html(html)
+                      tooltip.DOM.style.maxWidth = '100%'
+                    .catch (err) -> console.log("GND / FAIL", err)
+                  return new Label(icon: "spinner", text: "lade Informationen")
 
-      # # run autocomplete-search via xhr
-      # if searchsuggest_xhr.xhr != undefined
-      #     # abort eventually running request
-      #     searchsuggest_xhr.xhr.abort()
+        # set new items to menu
+        itemList =
+          onClick: (ev2, btn) ->
+            # lock in save data
+            cdata.conceptURI = btn.getOpt("value")
+            cdata.conceptName = btn.getText()
+            # lock in form
+            cdata_form.getFieldsByName("conceptName")[0].storeValue(cdata.conceptName).displayValue()
+            # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
+            cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText(cdata.conceptURI)
+            cdata_form.getFieldsByName("conceptURI")[0].show()
 
-      # start new request
-      searchsuggest_xhr.xhr = that.authoritiesClient
-        .search(gnd_searchterm, {type: gnd_searchtypes, format: 'opensearch', withSubTypes: true})
-        .then((data) ->
-          console.log('authority data returned', {data})
+            # clear searchbar
+            cdata_form.getFieldsByName("searchbarInput")[0].setValue('')
+            # hide suggest-menu
+            suggest_Menu.hide()
+            return @
+          items: menu_items
 
-          # create new menu with suggestions
-          menu_items = []
-          for i of data[1]
-            # console.log(suggestion, i)
-            do(i) ->
-              # the actual Featureclass...
-              suggestion = data[1][i]
-              aktType    = data[2][i]
-              gndUri     = data[3][i]
-              lastType = if i == 0 then  '' else data[2][i-1]
-              if aktType != lastType
-                menu_items.push divider: true
-                menu_items.push label: aktType
-                menu_items.push divider: true
-              menu_items.push 
-                text: suggestion
-                value: gndUri
-                tooltip:
-                  markdown: true
-                  placement: "e"
-                  content: (tooltip) ->
-                    # # if enabled in mask-config
-                    # TODO reenable configurable
-                    # if that.getCustomMaskSettings().show_infopopup?.value
-                    that.__getAdditionalTooltipInfo(gndUri, tooltip)
-                    new Label(icon: "spinner", text: "lade Informationen")
-
-          # set new items to menu
+        # if no hits set "empty" message to menu
+        if itemList.items.length == 0
           itemList =
-            onClick: (ev2, btn) ->
-              # lock in save data
-              cdata.conceptURI = btn.getOpt("value")
-              cdata.conceptName = btn.getText()
-              # lock in form
-              cdata_form.getFieldsByName("conceptName")[0].storeValue(cdata.conceptName).displayValue()
-              # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
-              cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText(cdata.conceptURI)
-              cdata_form.getFieldsByName("conceptURI")[0].show()
+            items: [
+              text: "kein Treffer"
+              value: undefined
+            ]
 
-              # clear searchbar
-              cdata_form.getFieldsByName("searchbarInput")[0].setValue('')
-              # hide suggest-menu
-              suggest_Menu.hide()
-              @
-            items: menu_items
+        suggest_Menu.setItemList(itemList)
 
-          # if no hits set "empty" message to menu
-          if itemList.items.length == 0
-            itemList =
-              items: [
-                text: "kein Treffer"
-                value: undefined
-              ]
-
-          suggest_Menu.setItemList(itemList)
-
-          suggest_Menu.show()
-      )
-    ), delayMillisseconds
+        suggest_Menu.show()
+    )
 
 
   #######################################################################
