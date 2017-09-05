@@ -1,22 +1,19 @@
 AuthoritiesClient = require('@ubhd/authorities-client')
 
 module.exports = \
-class CustomDataTypeGND extends CustomDataTypeWithCommons
+class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
 
-  constructor: () ->
-    super
-    @authoritiesClient = AuthoritiesClient()
 
   #######################################################################
   # return name of plugin
   getCustomDataTypeName: ->
-    "custom:base.custom-data-type-gnd.gnd"
+    "custom:base.custom-data-type-ubhdgnd.ubhdgnd"
 
 
   #######################################################################
   # return name (l10n) of plugin
   getCustomDataTypeNameLocalized: ->
-    $$("custom.data.type.gnd.name")
+    $$("custom.data.type.ubhdgnd.name")
 
 
   #######################################################################
@@ -61,7 +58,8 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
     #     searchsuggest_xhr.xhr.abort()
 
     # start new request
-    @authoritiesClient
+    authoritiesClient = AuthoritiesClient()
+    authoritiesClient
       .suggest(gnd_searchterm, {type: gnd_searchtypes, format: 'opensearch', withSubTypes: true})
       .then((data) =>
         # create new menu with suggestions
@@ -92,7 +90,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
                   # XXX TODO reenable configurable
                   # return unless @getCustomMaskSettings().show_infopopup?.value
                   # download infos
-                  @authoritiesClient.infoBox(gndId)
+                  authoritiesClient.infoBox(gndId)
                     .then (html) ->
                       tooltip.DOM.html(html)
                       tooltip.DOM.style.maxWidth = '100%'
@@ -148,7 +146,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
     if @getCustomSchemaSettings().add_coorporates?.value
         option = (
             value: 'CorporateBody'
-            text: 'Körperschaften'
+            text: 'Schmörperschaften'
           )
         dropDownSearchOptions.push option
     # offer PlaceOrGeographicName?
@@ -196,7 +194,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       type: Select
       undo_and_changed_support: false
       form:
-          label: $$('custom.data.type.gnd.modal.form.text.type')
+          label: $$('custom.data.type.ubhdgnd.modal.form.text.type')
       options: dropDownSearchOptions
       name: 'gndSelectType'
       class: 'commonPlugin_Select'
@@ -206,7 +204,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       undo_and_changed_support: false
       class: 'commonPlugin_Select'
       form:
-          label: $$('custom.data.type.gnd.modal.form.text.count')
+          label: $$('custom.data.type.ubhdgnd.modal.form.text.count')
       options: [
         (
             value: 10
@@ -231,8 +229,8 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       type: Input
       undo_and_changed_support: false
       form:
-          label: $$("custom.data.type.gnd.modal.form.text.searchbar")
-      placeholder: $$("custom.data.type.gnd.modal.form.text.searchbar.placeholder")
+          label: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar")
+      placeholder: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar.placeholder")
       name: "searchbarInput"
       # class: 'commonPlugin_Input'
     }
@@ -267,16 +265,16 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
 
     switch @getDataStatus(cdata)
       when "empty"
-        return new EmptyLabel(text: $$("custom.data.type.gnd.edit.no_gnd")).DOM
+        return new EmptyLabel(text: $$("custom.data.type.ubhdgnd.edit.no_gnd")).DOM
       when "invalid"
-        return new EmptyLabel(text: $$("custom.data.type.gnd.edit.no_valid_gnd")).DOM
+        return new EmptyLabel(text: $$("custom.data.type.ubhdgnd.edit.no_valid_gnd")).DOM
 
     # if status is ok
     conceptURI = CUI.parseLocation(cdata.conceptURI).url
 
     # if conceptURI .... ... patch abwarten
 
-    tt_text = $$("custom.data.type.gnd.url.tooltip", name: cdata.conceptName)
+    tt_text = $$("custom.data.type.ubhdgnd.url.tooltip", name: cdata.conceptName)
 
     # output Button with Name of picked Entry and Url to the Source
     new ButtonHref
@@ -295,37 +293,14 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
   # zeige die gewählten Optionen im Datenmodell unter dem Button an
   getCustomDataOptionsInDatamodelInfo: (custom_settings) ->
     tags = []
-
-    console.log custom_settings
-
-    if custom_settings.add_differentiatedpersons?.value
-      tags.push "✓ Personen"
-    else
-      tags.push "✘ Personen"
-
-    if custom_settings.add_coorporates?.value
-      tags.push "✓ Körperschaften"
-    else
-      tags.push "✘ Körperschaften"
-
-    if custom_settings.add_geographicplaces?.value
-      tags.push "✓ Orte"
-    else
-      tags.push "✘ Orte"
-
-    if custom_settings.add_subjects?.value
-      tags.push "✓ Schlagwörter"
-    else
-      tags.push "✘ Schlagwörter"
-
-    if custom_settings.exact_types?.value
-      tags.push "✓ Exakter Typ: " + custom_settings.exact_types?.value
-    else
-      tags.push "✘ Exakter Typ"
-
-    tags
+    tags.push if custom_settings.add_differentiatedpersons?.value then "✓ Personen"                                           else "✘ Personen"
+    tags.push if custom_settings.add_coorporates?.value           then "✓ Körperschaften"                                     else "✘ Körperschaften"
+    tags.push if custom_settings.add_geographicplaces?.value      then "✓ Orte"                                               else "✘ Orte"
+    tags.push if custom_settings.add_subjects?.value              then "✓ Schlagwörter"                                       else "✘ Schlagwörter"
+    tags.push if custom_settings.exact_types?.value               then "✓ Exakter Typ: " + custom_settings.exact_types?.value else "✘ Exakter Typ"
+    return tags
 
 
-CustomDataType.register(CustomDataTypeGND)
+CustomDataType.register(CustomDataTypeUBHDGND)
 
 # vim: sw=2 et
