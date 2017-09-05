@@ -135,125 +135,101 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
   __getEditorFields: (cdata) ->
     # read searchtypes from datamodell-options
     dropDownSearchOptions = []
+
     # offer DifferentiatedPerson
     if @getCustomSchemaSettings().add_differentiatedpersons?.value
-        option = (
-            value: 'DifferentiatedPerson'
-            text: 'Individualisierte Personen'
-          )
-        dropDownSearchOptions.push option
+      dropDownSearchOptions.push
+        value: 'DifferentiatedPerson'
+        text: 'Individualisierte Personen'
+
     # offer CorporateBody?
     if @getCustomSchemaSettings().add_coorporates?.value
-        option = (
-            value: 'CorporateBody'
-            text: 'Schmörperschaften'
-          )
-        dropDownSearchOptions.push option
+      dropDownSearchOptions.push
+        value: 'CorporateBody'
+        text: 'Schmörperschaften'
+
     # offer PlaceOrGeographicName?
     if @getCustomSchemaSettings().add_geographicplaces?.value
-        option = (
-            value: 'PlaceOrGeographicName'
-            text: 'Orte und Geographische Namen'
-          )
-        dropDownSearchOptions.push option
+      dropDownSearchOptions.push
+        value: 'PlaceOrGeographicName'
+        text: 'Orte und Geographische Namen'
+
     # offer add_subjects?
     if @getCustomSchemaSettings().add_subjects?.value
-        option = (
-            value: 'SubjectHeading'
-            text: 'Schlagwörter'
-          )
-        dropDownSearchOptions.push option
+      dropDownSearchOptions.push
+        value: 'SubjectHeading'
+        text: 'Schlagwörter'
+
     # add "Alle"-Option? If count of options > 1!
     if dropDownSearchOptions.length > 1
-        option = (
-            value: ''
-            text: 'Alle'
-          )
-        dropDownSearchOptions.unshift option
+      dropDownSearchOptions.unshift
+        value: ''
+        text: 'Alle'
+
     # if empty options -> offer all
     if dropDownSearchOptions.length == 0
         dropDownSearchOptions = [
-          (
             value: 'DifferentiatedPerson'
             text: 'Individualisierte Personen'
-          )
-          (
+          ,
             value: 'CorporateBody'
             text: 'Körperschaften'
-          )
-          (
+          ,
             value: 'PlaceOrGeographicName'
             text: 'Orte und Geographische Namen'
-          )
-          (
+          ,
             value: 'SubjectHeading'
             text: 'Schlagwörter'
-          )
         ]
-    [{
-      type: Select
-      undo_and_changed_support: false
-      form:
-          label: $$('custom.data.type.ubhdgnd.modal.form.text.type')
-      options: dropDownSearchOptions
-      name: 'gndSelectType'
-      class: 'commonPlugin_Select'
-    }
-    {
-      type: Select
-      undo_and_changed_support: false
-      class: 'commonPlugin_Select'
-      form:
-          label: $$('custom.data.type.ubhdgnd.modal.form.text.count')
-      options: [
-        (
-            value: 10
-            text: '10 Vorschläge'
-        )
-        (
-            value: 20
-            text: '20 Vorschläge'
-        )
-        (
-            value: 50
-            text: '50 Vorschläge'
-        )
-        (
-            value: 100
-            text: '100 Vorschläge'
-        )
-      ]
-      name: 'countOfSuggestions'
-    }
-    {
-      type: Input
-      undo_and_changed_support: false
-      form:
-          label: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar")
-      placeholder: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar.placeholder")
-      name: "searchbarInput"
-      # class: 'commonPlugin_Input'
-    }
-    {
-      form:
-        label: "Gewählter Eintrag"
-      type: Output
-      name: "conceptName"
-      data: {conceptName: cdata.conceptName}
-    }
-    {
-      form:
-        label: "Verknüpfte URI"
-      type: FormButton
-      name: "conceptURI"
-      icon: new Icon(class: "fa-lightbulb-o")
-      text: cdata.conceptURI
-      onClick: (evt,button) =>
-        window.open cdata.conceptURI, "_blank"
-      onRender : (_this) =>
-        if cdata.conceptURI == ''
-          _this.hide()
-    }
+
+    return [
+      {
+        type: Select
+        undo_and_changed_support: false
+        form:
+            label: $$('custom.data.type.ubhdgnd.modal.form.text.type')
+        options: dropDownSearchOptions
+        name: 'gndSelectType'
+        class: 'commonPlugin_Select'
+      }
+      {
+        type: Select
+        undo_and_changed_support: false
+        class: 'commonPlugin_Select'
+        form:
+            label: $$('custom.data.type.ubhdgnd.modal.form.text.count')
+        options: [10, 20, 50, 100].map n -> {value: n, text: "#{n} Vorschläge"}
+        name: 'countOfSuggestions'
+      }
+      {
+        type: Input
+        undo_and_changed_support: false
+        form:
+            label: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar")
+        placeholder: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar.placeholder")
+        name: "searchbarInput"
+        # class: 'commonPlugin_Input'
+      }
+      {
+        form:
+          label: "Gewählter Eintrag"
+        type: Output
+        name: "conceptName"
+        data: {conceptName: cdata.conceptName}
+      }
+      {
+        form:
+          label: "Verknüpfte URI"
+        type: FormButton
+        name: "conceptURI"
+        icon: new Icon(class: "fa-lightbulb-o")
+        text: cdata.conceptURI
+        onClick: (evt,button) =>
+          window.open cdata.conceptURI, "_blank"
+        onRender : (_this) =>
+          if cdata.conceptURI == ''
+            _this.hide()
+      }
     ]
 
 
