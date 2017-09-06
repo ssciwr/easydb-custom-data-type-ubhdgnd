@@ -15,6 +15,10 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
   getCustomDataTypeNameLocalized: ->
     $$("custom.data.type.ubhdgnd.name")
 
+  `/**
+    * @return {string} the value of a field config setting or null if not defined
+    */`
+  getCustomSchemaSetting: (name) -> @getCustomSchemaSettings()[name]?.value
 
   #######################################################################
   # handle suggestions-menu
@@ -57,45 +61,45 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     #     # abort eventually running request
     #     searchsuggest_xhr.xhr.abort()
 
-    # start new request
-    authoritiesClient = AuthoritiesClient()
-    authoritiesClient
-      .suggest(gnd_searchterm, {type: gnd_searchtypes, format: 'opensearch', withSubTypes: true})
+    # Instantiate authoritiesClient with the configured authorities_backend
+    pluginName = @getCustomSchemaSetting('authorities_backend')
+    client = AuthoritiesClient.plugin(pluginName)
+
+    client.suggest(gnd_searchterm, {type: gnd_searchtypes, format: 'opensearch', withSubTypes: true})
       .then((data) =>
         # create new menu with suggestions
         menu_items = []
         for i of data[1]
-          # console.log(suggestion, i)
-          do(i) =>
-            # the actual Featureclass...
-            suggestion = data[1][i]
-            aktType    = data[2][i]
-            gndId      = data[3][i]
-            lastType   = data[2][i-1]
+          # the actual Featureclass...
+          suggestion = data[1][i]
+          aktType    = data[2][i]
+          gndId      = data[3][i]
+          lastType   = data[2][i-1]
+
+          # style menu
+          if aktType != lastType
             if i == 0
-              menu_items.push label: aktType
               menu_items.push divider: true
-            else if aktType != lastType
-              menu_items.push divider: true
-              menu_items.push label: aktType
-              menu_items.push divider: true
-            menu_items.push
-              text: suggestion
-              value: "http://d-nb.info/gnd/#{gndId}"
-              tooltip:
-                markdown: false
-                placement: "n"
-                content: (tooltip) =>
-                  # # if enabled in mask-config
-                  # XXX TODO reenable configurable
-                  # return unless @getCustomMaskSettings().show_infopopup?.value
-                  # download infos
-                  authoritiesClient.infoBox(gndId)
-                    .then (html) ->
-                      tooltip.DOM.html(html)
-                      tooltip.DOM.style.maxWidth = '100%'
-                    .catch (err) -> console.log("GND / FAIL", err)
-                  return new Label(icon: "spinner", text: "lade Informationen")
+            menu_items.push label: aktType
+            menu_items.push divider: true
+
+          menu_items.push
+            text: suggestion
+            value: "http://d-nb.info/gnd/#{gndId}"
+            tooltip:
+              markdown: false
+              placement: "n"
+              content: (tooltip) =>
+                # # if enabled in mask-config
+                # XXX TODO reenable configurable
+                # return unless @getCustomMaskSettings().show_infopopup?.value
+                # download infos
+                client.infoBox(gndId)
+                  .then (html) ->
+                    tooltip.DOM.html(html)
+                    tooltip.DOM.style.maxWidth = '100%'
+                  .catch (err) -> console.warn("", err)
+                return new Label(icon: "spinner", text: "lade Informationen")
 
         # set new items to menu
         itemList =
@@ -137,25 +141,25 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     dropDownSearchOptions = []
 
     # offer DifferentiatedPerson
-    if @getCustomSchemaSettings().add_differentiatedpersons?.value
+    if @getCustomSchemaSetting('add_differentiatedpersons')
       dropDownSearchOptions.push
         value: 'DifferentiatedPerson'
         text: 'Individualisierte Personen'
 
     # offer CorporateBody?
-    if @getCustomSchemaSettings().add_coorporates?.value
+    if @getCustomSchemaSetting('add_coorporates')
       dropDownSearchOptions.push
         value: 'CorporateBody'
         text: 'Schmörperschaften'
 
     # offer PlaceOrGeographicName?
-    if @getCustomSchemaSettings().add_geographicplaces?.value
+    if @getCustomSchemaSetting('add_geographicplaces')
       dropDownSearchOptions.push
         value: 'PlaceOrGeographicName'
         text: 'Orte und Geographische Namen'
 
     # offer add_subjects?
-    if @getCustomSchemaSettings().add_subjects?.value
+    if @getCustomSchemaSetting('add_subjects')
       dropDownSearchOptions.push
         value: 'SubjectHeading'
         text: 'Schlagwörter'
@@ -169,7 +173,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     # if empty options -> offer all
     if dropDownSearchOptions.length == 0
         dropDownSearchOptions = [
-            value: 'DifferentiatedPerson'
+            value: 'DifferentiatedPerson',
             text: 'Individualisierte Personen'
           ,
             value: 'CorporateBody'
@@ -198,7 +202,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
         class: 'commonPlugin_Select'
         form:
             label: $$('custom.data.type.ubhdgnd.modal.form.text.count')
-        options: [10, 20, 50, 100].map n -> {value: n, text: "#{n} Vorschläge"}
+        options: [10, 20, 50, 100].map (n) -> value: n, text: "#{n} Vorschläge"
         name: 'countOfSuggestions'
       }
       {
@@ -253,7 +257,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     tt_text = $$("custom.data.type.ubhdgnd.url.tooltip", name: cdata.conceptName)
 
     # output Button with Name of picked Entry and Url to the Source
-    new ButtonHref
+    return new ButtonHref
       appearance: "link"
       href: cdata.conceptURI
       target: "_blank"

@@ -8,11 +8,14 @@ plugin:
     url: custom-data-type-ubhdgnd.js
     l10n: l10n/
 custom_types:
+
   ubhdgnd:
+
     elasticsearch:
       mapping:
         type: object
         properties:
+
           conceptName:
             type: string
             index: no
@@ -81,8 +84,16 @@ custom_types:
                 type: string
                 term_vector: with_positions_offsets
                 analyzer: ez_text_token_analyzer
+
     config:
       schema:
+        - name: 'authorities_backend'
+          parameters:
+            value:
+              type: 'select'
+              options:
+                - 'ubhd/gnd'
+                - 'gbv/gnd'
         - name: add_differentiatedpersons
           parameters:
             value:
