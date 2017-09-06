@@ -63,3 +63,7 @@ custom.data.type.ubhdgnd.config.parameter.schema.add_differentiatedpersons.value
 custom.data.type.ubhdgnd.config.parameter.schema.add_geographicplaces.value.checkbox,Geografika,Places or geographic names,,
 custom.data.type.ubhdgnd.config.parameter.schema.add_subjects.value.checkbox,Sachbegriffe,Subjects,,
 custom.data.type.ubhdgnd.url.tooltip,zu **%(name)s** bei der Deutschen Nationalbibliothek springen,jump to **%(name)s** at German National Library (DNB),,
+custom.data.type.ubhdgnd.config.parameter.schema.authorities_backend.value.label,Normdaten-Backend,Authorities server,,
+custom.data.type.ubhdgnd.config.option.schema.authorities_backend.value.ubhd/gnd,UB Heidelberg,,,
+custom.data.type.ubhdgnd.config.option.schema.authorities_backend.value.gbv/gnd,GBV,,,
+
