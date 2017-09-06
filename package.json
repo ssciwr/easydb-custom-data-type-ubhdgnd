@@ -22,9 +22,8 @@
     }
   ],
   "devDependencies": {
-    "@ubhd/authorities-client": "^0.2.3",
-    "coffee-loader": "^0.7.3",
     "coffee-script": "^1.9.0",
+    "nodemon": "^1.11.0",
     "webpack": "^3.5.5"
   },
   "scripts": {
@@ -39,7 +38,6 @@
   },
   "homepage": "https://github.com/programmfabrik/easydb-custom-data-type-gnd#readme",
   "dependencies": {
-    "browserify": "^14.4.0",
-    "nodemon": "^1.11.0"
+    "@ubhd/authorities-client": "^0.3.2"
   }
 }
