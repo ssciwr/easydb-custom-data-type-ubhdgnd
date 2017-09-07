@@ -50,6 +50,42 @@ custom_types:
                 type: string
                 term_vector: with_positions_offsets
                 analyzer: ez_text_token_analyzer
+
+          conceptSeeAlso: # Verweisungsformen
+            type: string
+            index: no
+            fields:
+              exact:
+                type: string
+                term_vector: with_positions_offsets
+                analyzer: ez_exact_analyzer
+              folded:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_folded_analyzer
+              fulltext:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_fulltext_index_analyzer
+                search_analyzer: ez_text_fulltext_search_analyzer
+              phrase:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_phrase_index_analyzer
+                search_analyzer: ez_text_fulltext_search_analyzer
+              sort:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: sort_de-DE
+              suggest:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_suggest_analyzer
+              token:
+                type: string
+                term_vector: with_positions_offsets
+                analyzer: ez_text_token_analyzer
+
           conceptURI:
             type: string
             index: no
@@ -87,6 +123,7 @@ custom_types:
 
     config:
       schema:
+
         - name: 'authorities_backend'
           parameters:
             value:
@@ -94,60 +131,122 @@ custom_types:
               options:
                 - 'ubhd/gnd'
                 - 'gbv/gnd'
-        - name: add_differentiatedpersons
+
+        - name: 'gnd_types_enabled_default'
+          parameters:
+            value:
+              type: 'string-list' # XXX BaseConfig.getFieldDefFromParm
+              choices:
+                - 'PlaceOrGeographicName'
+                -     'AdministrativeUnit'
+                -     'BuildingOrMemorial'
+                -     'Country'
+                -     'ExtraterrestrialTerritory'
+                -     'FictivePlace'
+                -     'MemberState'
+                -     'NameOfSmallGeographicUnitLyingWithinAnotherGeographicUnit'
+                -     'NaturalGeographicUnit'
+                -     'ReligiousTerritory'
+                -     'TerritorialCorporateBodyOrAdministrativeUnit'
+                -     'WayBorderOrLine'
+                - 'Person'
+                -     'DifferentiatedPerson'
+                -         'CollectivePseudonym'
+                -         'Gods'
+                -         'LiteraryOrLegendaryCharacter'
+                -         'Pseudonym'
+                -         'RoyalOrMemberOfARoyalHouse'
+                -         'Spirits'
+                -     'UndifferentiatedPerson'
+                - 'ConferenceOrEvent'
+                -     'SeriesOfConferenceOrEvent'
+                - 'CorporateBody'
+                -     'FictiveCorporateBody'
+                -     'OrganOfCorporateBody'
+                -     'ProjectOrProgram'
+                - 'Subject'
+                -     'CharactersOrMorphemes'
+                -     'EthnographicName'
+                -     'FictiveTerm'
+                -     'GroupOfPersons'
+                -     'HistoricSingleEventOrEra'
+                -     'Language'
+                -     'MeansOfTransportWithIndividualName'
+                -     'NomenclatureInBiologyOrChemistry'
+                -     'ProductNameOrBrandName'
+                -     'SoftwareProduct'
+                -     'SubjectHeadingSensoStricto'
+                - 'Work'
+                -     'Collection'
+                -     'CollectiveManuscript'
+                -     'Manuscript'
+                -     'MusicalWork'
+                -     'ProvenanceCharacteristic'
+                -     'VersionOfAMusicalWork'
+
+
+        - name: 'gnd_types_overridable'
+          parameters:
+            value:
+              type: 'string-list' # XXX BaseConfig.getFieldDefFromParm
+              choices:
+                - 'PlaceOrGeographicName'
+                -     'AdministrativeUnit'
+                -     'BuildingOrMemorial'
+                -     'Country'
+                -     'ExtraterrestrialTerritory'
+                -     'FictivePlace'
+                -     'MemberState'
+                -     'NameOfSmallGeographicUnitLyingWithinAnotherGeographicUnit'
+                -     'NaturalGeographicUnit'
+                -     'ReligiousTerritory'
+                -     'TerritorialCorporateBodyOrAdministrativeUnit'
+                -     'WayBorderOrLine'
+                - 'Person'
+                -     'DifferentiatedPerson'
+                -         'CollectivePseudonym'
+                -         'Gods'
+                -         'LiteraryOrLegendaryCharacter'
+                -         'Pseudonym'
+                -         'RoyalOrMemberOfARoyalHouse'
+                -         'Spirits'
+                -     'UndifferentiatedPerson'
+                - 'ConferenceOrEvent'
+                -     'SeriesOfConferenceOrEvent'
+                - 'CorporateBody'
+                -     'FictiveCorporateBody'
+                -     'OrganOfCorporateBody'
+                -     'ProjectOrProgram'
+                - 'Subject'
+                -     'CharactersOrMorphemes'
+                -     'EthnographicName'
+                -     'FictiveTerm'
+                -     'GroupOfPersons'
+                -     'HistoricSingleEventOrEra'
+                -     'Language'
+                -     'MeansOfTransportWithIndividualName'
+                -     'NomenclatureInBiologyOrChemistry'
+                -     'ProductNameOrBrandName'
+                -     'SoftwareProduct'
+                -     'SubjectHeadingSensoStricto'
+                - 'Work'
+                -     'Collection'
+                -     'CollectiveManuscript'
+                -     'Manuscript'
+                -     'MusicalWork'
+                -     'ProvenanceCharacteristic'
+                -     'VersionOfAMusicalWork'
+
+        - name: override_subtype_search
           parameters:
             value:
               type: bool
-        - name: add_coorporates
+
+        - name: enable_subtype_search_default
           parameters:
             value:
               type: bool
-        - name: add_geographicplaces
-          parameters:
-            value:
-              type: bool
-        - name: add_subjects
-          parameters:
-            value:
-              type: bool
-        - name: exact_types
-          parameters:
-            value:
-              type: select
-              options:
-                - "ALLE"
-                - "SubjectHeadingSensoStricto"
-                - "HistoricSingleEventOrEra"
-                - "GroupOfPersons"
-                - "CharactersOrMorphemes"
-                - "MeansOfTransportWithIndividual_name"
-                - "FictiveTerm"
-                - "NomenclatureInBiologyOrChemistry"
-                - "ProductNameOrBrandName"
-                - "SoftwareProduct"
-                - "Language"
-                - "EthnographicName"
-                - "MeansOfTransportWithIndividualName"
-                - "ReligiousTerritory"
-                - "NaturalGeographicUnit"
-                - "TerritorialCorporateBodyOrAdministrativeUnit"
-                - "FictivePlace"
-                - "BuildingOrMemorial"
-                - "Country"
-                - "AdministrativeUnit"
-                - "ExtraterrestrialTerritory"
-                - "MemberState"
-                - "WayBorderOrLine"
-                - "NameOfSmallGeographicUnitLyingWithinAnotherGeographicUnit"
-                - "FictiveCorporateBody"
-                - "OrganOfCorporateBody"
-                - "ProjectOrProgram"
-                - "Pseudonym"
-                - "LiteraryOrLegendaryCharacter"
-                - "Spirits"
-                - "RoyalOrMemberOfARoyalHouse"
-                - "CollectivePseudonym"
-                - "Gods"
+
       mask:
         - name: show_infopopup
           parameters:

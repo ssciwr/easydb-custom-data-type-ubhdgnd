@@ -9,64 +9,46 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
   getCustomDataTypeName: ->
     "custom:base.custom-data-type-ubhdgnd.ubhdgnd"
 
-
   #######################################################################
   # return name (l10n) of plugin
   getCustomDataTypeNameLocalized: ->
     $$("custom.data.type.ubhdgnd.name")
 
-  `/**
-    * @return {string} the value of a field config setting or null if not defined
-    */`
-  getCustomSchemaSetting: (name) -> @getCustomSchemaSettings()[name]?.value
+  #######################################################################
+  # @param {string} name setting name
+  # @param {*} fallback Fallback value if no value or value is falsey
+  # @return {string} the value of a field config setting or null if not defined
+  getCustomSchemaSetting: (name, fallback) -> @getCustomSchemaSettings()[name]?.value or fallback
+
+  #######################################################################
+  # make sure enabled overridable options are actually enabled
+  showEditPopover: (args...) ->
+    super(args...)
+    # XXX This will check all the checkboxes for types that can be overridden
+    # (i.e. show in the edit popover) and are also enabled by default
+    @popover.getPane()._content.getFieldsByName("enabledGndTypes")[0].setValue(
+      @getCustomSchemaSetting("gnd_types_enabled_default", []))
+
+    # console.log(@popover)
 
   #######################################################################
   # handle suggestions-menu
   __updateSuggestionsMenu: (cdata, cdata_form, suggest_Menu) ->
 
+    console.log({cdata_form, type, gnd_searchterm})
+
     # TODO debounce
-    gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
-    gnd_searchtypes = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
-
-    console.log({gnd_searchtypes, gnd_searchterm})
-
-    # XXX TODO reenable configurable
-    # if "search-all-types", search all allowed types
-    # if gnd_searchtypes == 'all_supported_types'
-    #   gnd_searchtypes = []
-    #   if @getCustomSchemaSettings().add_differentiatedpersons?.value
-    #     gnd_searchtypes.push 'DifferentiatedPerson'
-    #   if @getCustomSchemaSettings().add_coorporates?.value
-    #     gnd_searchtypes.push 'CorporateBody'
-    #   if @getCustomSchemaSettings().add_geographicplaces?.value
-    #     gnd_searchtypes.push 'PlaceOrGeographicName'
-    #   if @getCustomSchemaSettings().add_subjects?.value
-    #     gnd_searchtypes.push 'SubjectHeading'
-
-    # # if only a "subclass" is active
-    # subclass = @getCustomSchemaSettings().exact_types?.value
-    # subclassQuery = ''
-
-    # if subclass != undefined
-    #   if subclass != 'ALLE'
-    #     subclassQuery = '&exact_type=' + subclass
-
-    # gnd_countSuggestions = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
-
-    # if gnd_searchterm.length == 0
-    #     return
-
-    # # run autocomplete-search via xhr
-    # if searchsuggest_xhr.xhr != undefined
-    #     # abort eventually running request
-    #     searchsuggest_xhr.xhr.abort()
-
     # Instantiate authoritiesClient with the configured authorities_backend
     pluginName = @getCustomSchemaSetting('authorities_backend')
     client = AuthoritiesClient.plugin(pluginName)
+    format = 'opensearch'
 
-    client.suggest(gnd_searchterm, {type: gnd_searchtypes, format: 'opensearch', withSubTypes: true})
-      .then((data) =>
+    type = cdata_form.getFieldsByName("enabledGndTypes")[0].getValue()
+    gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
+    withSubTypes = false # TODO configurable
+
+    client.suggest(gnd_searchterm, {type, format, withSubTypes})
+      .then (data) =>
         # create new menu with suggestions
         menu_items = []
         for i of data[1]
@@ -91,14 +73,13 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
               placement: "n"
               content: (tooltip) =>
                 # # if enabled in mask-config
-                # XXX TODO reenable configurable
-                # return unless @getCustomMaskSettings().show_infopopup?.value
+                return unless @getCustomMaskSettings().show_infopopup?.value
                 # download infos
                 client.infoBox(gndId)
                   .then (html) ->
                     tooltip.DOM.html(html)
                     tooltip.DOM.style.maxWidth = '100%'
-                  .catch (err) -> console.warn("", err)
+                  .catch (err) -> console.warn(new Error(err))
                 return new Label(icon: "spinner", text: "lade Informationen")
 
         # set new items to menu
@@ -129,73 +110,38 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
             ]
 
         suggest_Menu.setItemList(itemList)
-
         suggest_Menu.show()
-    )
+      .catch (err) ->
+        console.warn(new Error(err))
 
 
   #######################################################################
   # create form
   __getEditorFields: (cdata) ->
-    # read searchtypes from datamodell-options
-    dropDownSearchOptions = []
-
-    # offer DifferentiatedPerson
-    if @getCustomSchemaSetting('add_differentiatedpersons')
-      dropDownSearchOptions.push
-        value: 'DifferentiatedPerson'
-        text: 'Individualisierte Personen'
-
-    # offer CorporateBody?
-    if @getCustomSchemaSetting('add_coorporates')
-      dropDownSearchOptions.push
-        value: 'CorporateBody'
-        text: 'Schmörperschaften'
-
-    # offer PlaceOrGeographicName?
-    if @getCustomSchemaSetting('add_geographicplaces')
-      dropDownSearchOptions.push
-        value: 'PlaceOrGeographicName'
-        text: 'Orte und Geographische Namen'
-
-    # offer add_subjects?
-    if @getCustomSchemaSetting('add_subjects')
-      dropDownSearchOptions.push
-        value: 'SubjectHeading'
-        text: 'Schlagwörter'
-
-    # add "Alle"-Option? If count of options > 1!
-    if dropDownSearchOptions.length > 1
-      dropDownSearchOptions.unshift
-        value: ''
-        text: 'Alle'
-
-    # if empty options -> offer all
-    if dropDownSearchOptions.length == 0
-        dropDownSearchOptions = [
-            value: 'DifferentiatedPerson',
-            text: 'Individualisierte Personen'
-          ,
-            value: 'CorporateBody'
-            text: 'Körperschaften'
-          ,
-            value: 'PlaceOrGeographicName'
-            text: 'Orte und Geographische Namen'
-          ,
-            value: 'SubjectHeading'
-            text: 'Schlagwörter'
-        ]
-
-    return [
+    fields = [
       {
-        type: Select
+        type: Options
         undo_and_changed_support: false
+        # class: 'commonPlugin_Select'
         form:
-            label: $$('custom.data.type.ubhdgnd.modal.form.text.type')
-        options: dropDownSearchOptions
-        name: 'gndSelectType'
-        class: 'commonPlugin_Select'
+          label: $$('custom.data.type.ubhdgnd.modal.form.text.type')
+        name: 'enabledGndTypes'
+        options: @getCustomSchemaSetting('gnd_types_overridable', []).map (gndClass) ->
+          value: gndClass
+          text: $$("custom.data.type.ubhdgnd.config.option.schema.gnd_types_overridable.value.#{gndClass}")
       }
+    ]
+    # if the subtype search has been marked as overrideable
+    if @getCustomSchemaSetting('override_subtype_search', false)
+      fields.push
+        type: Checkbox
+        undo_and_changed_support: false
+        class: 'commonPlugin_Select'
+        form:
+            label: $$('custom.data.type.ubhdgnd.modal.form.enable_subtype_search.label')
+        value: @getCustomSchemaSetting('enable_subtype_search_default', false)
+        name: 'includeSubTypes'
+    fields.push(
       {
         type: Select
         undo_and_changed_support: false
@@ -234,7 +180,8 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
           if cdata.conceptURI == ''
             _this.hide()
       }
-    ]
+    )
+    return fields
 
 
   #######################################################################
@@ -273,11 +220,12 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
   # zeige die gewählten Optionen im Datenmodell unter dem Button an
   getCustomDataOptionsInDatamodelInfo: (custom_settings) ->
     tags = []
-    tags.push if custom_settings.add_differentiatedpersons?.value then "✓ Personen"                                           else "✘ Personen"
-    tags.push if custom_settings.add_coorporates?.value           then "✓ Körperschaften"                                     else "✘ Körperschaften"
-    tags.push if custom_settings.add_geographicplaces?.value      then "✓ Orte"                                               else "✘ Orte"
-    tags.push if custom_settings.add_subjects?.value              then "✓ Schlagwörter"                                       else "✘ Schlagwörter"
-    tags.push if custom_settings.exact_types?.value               then "✓ Exakter Typ: " + custom_settings.exact_types?.value else "✘ Exakter Typ"
+    (custom_settings.gnd_types_enabled_default?.value or []).forEach (gndClass) =>
+      tags.push "✓ #{$$("custom.data.type.ubhdgnd.config.option.schema.gnd_types_enabled_default.value.#{gndClass}")}"
+    (custom_settings.gnd_types_overridable?.value or []).forEach (gndClass) =>
+      tags.push "✓ #{$$("custom.data.type.ubhdgnd.config.option.schema.gnd_types_overridable.value.#{gndClass}")}"
+    withSubTypes = !! custom_settings.enable_subtype_search_default?.value
+    tags.push "#{if withSubTypes then "✓ " else "✗ "} #{$$("custom.data.type.ubhdgnd.modal.form.enable_subtype_search.label")}"
     return tags
 
 
