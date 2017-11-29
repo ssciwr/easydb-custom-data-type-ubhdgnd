@@ -1,8 +1,7 @@
 AuthoritiesClient = require('@ubhd/authorities-client')
 
-module.exports = \
+module.exports =\
 class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
-
 
   #######################################################################
   # return name of plugin
@@ -41,6 +40,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     # Instantiate authoritiesClient with the configured authorities_backend
     pluginName = @getCustomSchemaSetting('authorities_backend')
     client = AuthoritiesClient.plugin(pluginName)
+    {preferredName, variantName} = AuthoritiesClient.utils.handlebars.helpers
     format = 'opensearch'
 
     type = cdata_form.getFieldsByName("enabledGndTypes")[0].getValue()
@@ -80,26 +80,32 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
                     tooltip.DOM.html(html)
                     tooltip.DOM.style.maxWidth = '100%'
                   .catch (err) -> console.warn(new Error(err))
-                return new Label(icon: "spinner", text: "lade Informationen")
+                return new CUI.Label(icon: "spinner", text: "lade Informationen")
 
         # set new items to menu
         itemList =
-          onClick: (ev2, btn) ->
-            # lock in save data
-            cdata.conceptURI = btn.getOpt("value")
-            cdata.conceptName = btn.getText()
-            # lock in form
-            cdata_form.getFieldsByName("conceptName")[0].storeValue(cdata.conceptName).displayValue()
-            # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
-            cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText(cdata.conceptURI)
-            cdata_form.getFieldsByName("conceptURI")[0].show()
-
-            # clear searchbar
-            cdata_form.getFieldsByName("searchbarInput")[0].setValue('')
-            # hide suggest-menu
-            suggest_Menu.hide()
-            return @
           items: menu_items
+          onClick: (ev2, btn) ->
+            client.get(btn.getOpt("value"))
+              .then (jsonld) ->
+                # lock in save data
+                cdata.conceptURI = "http://d-nb.info/gnd/#{jsonld['@id'].substr(4)}"
+                cdata.conceptName = preferredName(jsonld)
+                cdata.conceptSeeAlso = variantName(jsonld)
+                # lock in form
+                cdata_form.getFieldsByName("conceptName")[0].storeValue(cdata.conceptName).displayValue()
+                # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
+                cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText(cdata.conceptURI)
+                cdata_form.getFieldsByName("conceptURI")[0].show()
+                cdata_form.getFieldsByName("conceptSeeAlso")[0].__checkbox.setText(cdata.conceptSeeAlso)
+                cdata_form.getFieldsByName("conceptSeeAlso")[0].show()
+
+                # clear searchbar
+                cdata_form.getFieldsByName("searchbarInput")[0].setValue('')
+                # hide suggest-menu
+              .catch (err) -> console.error(err)
+              suggest_Menu.hide()
+            return @
 
         # if no hits set "empty" message to menu
         if itemList.items.length == 0
@@ -165,7 +171,20 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
           label: "Gewählter Eintrag"
         type: CUI.Output
         name: "conceptName"
-        data: {conceptName: cdata.conceptName}
+        data: {conceptName: cdata.conceptName, conceptSeeAlso: cdata.conceptSeeAlso}
+      }
+      {
+        form:
+          label: "Verweisformen"
+        type: CUI.FormButton
+        name: "conceptSeeAlso"
+        icon: new CUI.Icon(class: "fa-info")
+        text: cdata.conceptSeeAlso
+        onClick: (evt,button) =>
+          window.open cdata.conceptURI, "_blank"
+        onRender : (_this) =>
+          if cdata.conceptSeeAlso == ''
+            _this.hide()
       }
       {
         form:
