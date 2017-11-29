@@ -26,7 +26,7 @@ help:
 	@echo "l10n       Rebuild l10n JSON"
 	@echo "code       Compile coffeescript and concatenate"
 	@echo "webpack    Compile to deployable bundle"
-	@echo "webpack    Run 'make webpack' whenever source changes"
+	@echo "watch      Run 'make webpack' whenever source changes"
 	@echo "clean      Remove intermediary and built files"
 
 all: build

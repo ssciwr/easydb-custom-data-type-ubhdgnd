@@ -120,7 +120,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
   __getEditorFields: (cdata) ->
     fields = [
       {
-        type: Options
+        type: CUI.Options
         undo_and_changed_support: false
         # class: 'commonPlugin_Select'
         form:
@@ -134,7 +134,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     # if the subtype search has been marked as overrideable
     if @getCustomSchemaSetting('override_subtype_search', false)
       fields.push
-        type: Checkbox
+        type: CUI.Checkbox
         undo_and_changed_support: false
         class: 'commonPlugin_Select'
         form:
@@ -143,7 +143,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
         name: 'includeSubTypes'
     fields.push(
       {
-        type: Select
+        type: CUI.Select
         undo_and_changed_support: false
         class: 'commonPlugin_Select'
         form:
@@ -152,7 +152,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
         name: 'countOfSuggestions'
       }
       {
-        type: Input
+        type: CUI.Input
         undo_and_changed_support: false
         form:
             label: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar")
@@ -163,16 +163,16 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
       {
         form:
           label: "Gewählter Eintrag"
-        type: Output
+        type: CUI.Output
         name: "conceptName"
         data: {conceptName: cdata.conceptName}
       }
       {
         form:
           label: "Verknüpfte URI"
-        type: FormButton
+        type: CUI.FormButton
         name: "conceptURI"
-        icon: new Icon(class: "fa-lightbulb-o")
+        icon: new CUI.Icon(class: "fa-lightbulb-o")
         text: cdata.conceptURI
         onClick: (evt,button) =>
           window.open cdata.conceptURI, "_blank"
@@ -192,9 +192,9 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
 
     switch @getDataStatus(cdata)
       when "empty"
-        return new EmptyLabel(text: $$("custom.data.type.ubhdgnd.edit.no_gnd")).DOM
+        return new CUI.EmptyLabel(text: $$("custom.data.type.ubhdgnd.edit.no_gnd")).DOM
       when "invalid"
-        return new EmptyLabel(text: $$("custom.data.type.ubhdgnd.edit.no_valid_gnd")).DOM
+        return new CUI.EmptyLabel(text: $$("custom.data.type.ubhdgnd.edit.no_valid_gnd")).DOM
 
     # if status is ok
     conceptURI = CUI.parseLocation(cdata.conceptURI).url
@@ -204,7 +204,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     tt_text = $$("custom.data.type.ubhdgnd.url.tooltip", name: cdata.conceptName)
 
     # output Button with Name of picked Entry and Url to the Source
-    return new ButtonHref
+    return new CUI.ButtonHref
       appearance: "link"
       href: cdata.conceptURI
       target: "_blank"
