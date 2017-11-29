@@ -1,4 +1,5 @@
-var webpack = require('webpack')
+const webpack = require('webpack')
+const {UglifyJsPlugin} = webpack.optimize
 
 module.exports = {
     output: {
@@ -13,5 +14,10 @@ module.exports = {
                 use: 'coffee-loader',
             }
         ]
-    }
+    },
+    plugins: [
+      new UglifyJsPlugin({
+        mangle: false,
+      })
+    ]
 };
