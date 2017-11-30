@@ -18,7 +18,6 @@ custom_types:
 
           conceptName:
             type: text
-            fielddata: true
             index: no
             fields:
               exact:
@@ -35,13 +34,13 @@ custom_types:
                 type: text
                 fielddata: true
                 term_vector: with_positions_offsets
-                analyzer: ez_text_fulltext_analyzer
+                analyzer: ez_text_fulltext_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               phrase:
                 type: text
                 fielddata: true
                 term_vector: with_positions_offsets
-                analyzer: ez_text_phrase_analyzer
+                analyzer: ez_text_phrase_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               sort:
                 type: text
@@ -61,7 +60,6 @@ custom_types:
 
           conceptSeeAlso: # Verweisungsformen
             type: text
-            fielddata: true
             index: no
             fields:
               exact:
@@ -78,13 +76,13 @@ custom_types:
                 type: text
                 fielddata: true
                 term_vector: with_positions_offsets
-                analyzer: ez_text_fulltext_analyzer
+                analyzer: ez_text_fulltext_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               phrase:
                 type: text
                 fielddata: true
                 term_vector: with_positions_offsets
-                analyzer: ez_text_phrase_analyzer
+                analyzer: ez_text_phrase_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               sort:
                 type: text
@@ -104,7 +102,6 @@ custom_types:
 
           conceptURI:
             type: text
-            fielddata: true
             index: no
             fields:
               exact:
@@ -121,13 +118,13 @@ custom_types:
                 type: text
                 fielddata: true
                 term_vector: with_positions_offsets
-                analyzer: ez_text_fulltext_analyzer
+                analyzer: ez_text_fulltext_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               phrase:
                 type: text
                 fielddata: true
                 term_vector: with_positions_offsets
-                analyzer: ez_text_phrase_analyzer
+                analyzer: ez_text_phrase_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               sort:
                 type: text
