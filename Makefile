@@ -1,3 +1,5 @@
+PATH := ./node_modules/.bin:$(PATH)
+
 PLUGIN_NAME = custom-data-type-ubhdgnd
 PLUGIN_NAME_CAMELCASE = CustomDataTypeUBHDGND
 
