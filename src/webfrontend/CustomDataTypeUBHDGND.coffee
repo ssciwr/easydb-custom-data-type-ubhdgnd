@@ -25,10 +25,19 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     super(args...)
     # XXX This will check all the checkboxes for types that can be overridden
     # (i.e. show in the edit popover) and are also enabled by default
-    @popover.getPane()._content.getFieldsByName("enabledGndTypes")[0].setValue(
-      @getCustomSchemaSetting("gnd_types_enabled_default", []))
+    valuesToEnable = @getCustomSchemaSetting("gnd_types_enabled_default", [])
+    if valuesToEnable.length
+      @popover.getPane()._content.getFieldsByName("enabledGndTypes")[0].setValue(valuesToEnable)
 
-    # console.log(@popover)
+
+  #######################################################################
+  # Instantiate authoritiesClient with the configured authorities_backend
+  __getAuthoritiesClient: () ->
+    if @__authoritiesClient
+      return @__authoritiesClient
+    else
+      pluginName = @getCustomSchemaSetting('authorities_backend')
+      @__authoritiesClient = AuthoritiesClient.plugin(pluginName)
 
   #######################################################################
   # handle suggestions-menu
@@ -37,17 +46,14 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     console.log({cdata_form, type, gnd_searchterm})
 
     # TODO debounce
-    # Instantiate authoritiesClient with the configured authorities_backend
-    pluginName = @getCustomSchemaSetting('authorities_backend')
-    client = AuthoritiesClient.plugin(pluginName)
-    {preferredName, variantName} = AuthoritiesClient.utils.handlebars.helpers
+    {preferredName, variantName, arrayify} = AuthoritiesClient.utils.handlebars.helpers
     format = 'opensearch'
 
     type = cdata_form.getFieldsByName("enabledGndTypes")[0].getValue()
     gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
     withSubTypes = false # TODO configurable
 
-    client.suggest(gnd_searchterm, {type, format, withSubTypes})
+    @__getAuthoritiesClient().suggest(gnd_searchterm, {type, format, withSubTypes})
       .then (data) =>
         # create new menu with suggestions
         menu_items = []
@@ -75,9 +81,9 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
                 # # if enabled in mask-config
                 return unless @getCustomMaskSettings().show_infopopup?.value
                 # download infos
-                client.infoBox(gndId)
+                @__getAuthoritiesClient().infoBox(gndId)
                   .then (html) ->
-                    tooltip.DOM.html(html)
+                    tooltip.DOM.innerHTML = html
                     tooltip.DOM.style.maxWidth = '100%'
                   .catch (err) -> console.warn(new Error(err))
                 return new CUI.Label(icon: "spinner", text: "lade Informationen")
@@ -85,13 +91,13 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
         # set new items to menu
         itemList =
           items: menu_items
-          onClick: (ev2, btn) ->
-            client.get(btn.getOpt("value"))
+          onClick: (ev2, btn) =>
+            @__getAuthoritiesClient().get(btn.getOpt("value"))
               .then (jsonld) ->
                 # lock in save data
                 cdata.conceptURI = "http://d-nb.info/gnd/#{jsonld['@id'].substr(4)}"
                 cdata.conceptName = preferredName(jsonld)
-                cdata.conceptSeeAlso = variantName(jsonld)
+                cdata.conceptSeeAlso = arrayify(variantName(jsonld)).join(', ')
                 # lock in form
                 cdata_form.getFieldsByName("conceptName")[0].storeValue(cdata.conceptName).displayValue()
                 # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
@@ -180,8 +186,8 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
         name: "conceptSeeAlso"
         icon: new CUI.Icon(class: "fa-info")
         text: cdata.conceptSeeAlso
-        onClick: (evt,button) =>
-          window.open cdata.conceptURI, "_blank"
+        # onClick: (evt,button) =>
+        #   window.open cdata.conceptURI, "_blank"
         onRender : (_this) =>
           if cdata.conceptSeeAlso == ''
             _this.hide()
@@ -229,7 +235,19 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
       target: "_blank"
       tooltip:
         markdown: true
-        text: tt_text
+        # placement: "n"
+        content: (tooltip) =>
+          if @getCustomMaskSettings().show_infopopup?.value
+            return $$("custom.data.type.ubhdgnd.url.tooltip", name: cdata.conceptName)
+          # download infos
+          console.log(tooltip)
+          @__getAuthoritiesClient().infoBox(cdata.conceptURI)
+            .then (html) ->
+              tooltip.DOM.innerHTML = html
+              tooltip.DOM.style.maxWidth = '40%'
+              tooltip.DOM.style.height = '500px'
+            .catch (err) -> console.warn(new Error(err))
+          return new CUI.Label(icon: "spinner", text: "lade Informationen")
       text: cdata.conceptName
     .DOM
 
