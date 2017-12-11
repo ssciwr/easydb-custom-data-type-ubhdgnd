@@ -44,6 +44,7 @@ wipe: wipe-base
 .PHONY: clean wipe
 
 $(WEB)/$(PLUGIN_NAME).raw.coffee: $(COFFEE_FILES)
+	mkdir -p $(dir $@)
 	cat $^ > $@
 
 $(WEB)/$(PLUGIN_NAME).raw.js: $(WEB)/$(PLUGIN_NAME).raw.coffee
