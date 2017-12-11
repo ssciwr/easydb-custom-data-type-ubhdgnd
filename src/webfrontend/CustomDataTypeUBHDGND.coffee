@@ -1,7 +1,7 @@
 AuthoritiesClient = require('@ubhd/authorities-client')
 
 module.exports =\
-class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
+class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsSeeAlso
 
   #######################################################################
   # return name of plugin
@@ -43,7 +43,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
   # handle suggestions-menu
   __updateSuggestionsMenu: (cdata, cdata_form, suggest_Menu) ->
 
-    console.log({cdata_form, type, gnd_searchterm})
+    # console.log({cdata_form, type, gnd_searchterm})
 
     # TODO debounce
     {preferredName, variantName, arrayify} = AuthoritiesClient.utils.handlebars.helpers
@@ -71,22 +71,24 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
             menu_items.push label: aktType
             menu_items.push divider: true
 
-          menu_items.push
-            text: suggestion
-            value: "http://d-nb.info/gnd/#{gndId}"
-            tooltip:
-              markdown: false
-              placement: "n"
-              content: (tooltip) =>
-                # # if enabled in mask-config
-                return unless @getCustomMaskSettings().show_infopopup?.value
-                # download infos
-                @__getAuthoritiesClient().infoBox(gndId)
-                  .then (html) ->
-                    tooltip.DOM.innerHTML = html
-                    tooltip.DOM.style.maxWidth = '100%'
-                  .catch (err) -> console.warn(new Error(err))
-                return new CUI.Label(icon: "spinner", text: "lade Informationen")
+          do (gndId) =>
+            menu_items.push
+              text: suggestion
+              value: "http://d-nb.info/gnd/#{gndId}"
+              tooltip:
+                markdown: false
+                placement: "n"
+                content: (tooltip) =>
+                  # if enabled in mask-config
+                  return unless @getCustomMaskSettings().show_infopopup?.value
+                  # download infos
+                  @__getAuthoritiesClient().infoBox(gndId)
+                    .then (html) ->
+                      tooltip.DOM.innerHTML = html
+                      tooltip.DOM.style.maxWidth = '100%'
+                    .catch (err) -> console.warn(new Error(err))
+                  return new CUI.Label(icon: "spinner", text: "lade Informationen")
+          # console.log(menu_items)
 
         # set new items to menu
         itemList =
@@ -226,8 +228,6 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
 
     # if conceptURI .... ... patch abwarten
 
-    tt_text = $$("custom.data.type.ubhdgnd.url.tooltip", name: cdata.conceptName)
-
     # output Button with Name of picked Entry and Url to the Source
     return new CUI.ButtonHref
       appearance: "link"
@@ -237,10 +237,9 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
         markdown: true
         # placement: "n"
         content: (tooltip) =>
-          if @getCustomMaskSettings().show_infopopup?.value
+          unless @getCustomMaskSettings().show_infopopup?.value
             return $$("custom.data.type.ubhdgnd.url.tooltip", name: cdata.conceptName)
           # download infos
-          console.log(tooltip)
           @__getAuthoritiesClient().infoBox(cdata.conceptURI)
             .then (html) ->
               tooltip.DOM.innerHTML = html

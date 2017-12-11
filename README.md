@@ -13,13 +13,16 @@ Deutsche Nationalbibliothek for additional informations about GND entities.
 ## Setup
 
 ```
+git submodule update --init
 npm install
-make
+make l10n
+make webpack
 ```
+
 
 ## configuration
 
-As defined in `CustomDataTypeGND.config.yml` this datatype can be configured:
+As defined in `CustomDataTypeUBHDGND.config.yml` this datatype can be configured:
 
 ### Schema options
 
@@ -32,5 +35,9 @@ As defined in `CustomDataTypeGND.config.yml` this datatype can be configured:
 
 ## sources
 
-The source code of this plugin is managed in a git repository at <https://github.com/programmfabrik/easydb-custom-data-type-gnd>. Please use [the issue tracker](https://github.com/programmfabrik/easydb-custom-data-type-gnd/issues) for bug reports and feature requests!
+The source code of this plugin is managed in a git repository at
+<https://github.com/programmfabrik/easydb-custom-data-type-gnd>. Please use
+[the issue
+tracker](https://github.com/programmfabrik/easydb-custom-data-type-gnd/issues)
+for bug reports and feature requests!
 
