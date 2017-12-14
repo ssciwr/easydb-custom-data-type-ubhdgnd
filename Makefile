@@ -24,20 +24,15 @@ COFFEE_FILES = easydb-library/src/commons.coffee \
 
 JS = $(WEB)/${PLUGIN_NAME}.raw.js
 
-help:
-	@echo "l10n       Rebuild l10n JSON"
-	@echo "code       Compile coffeescript and concatenate"
-	@echo "webpack    Compile to deployable bundle"
-	@echo "watch      Run 'make webpack' whenever source changes"
-	@echo "clean      Remove intermediary and built files"
+export
 
-all: build
+all: webpack
 
 include easydb-library/tools/base-plugins.make
 
-l10n: build-stamp-l10n
-
 build: code $(L10N)
+
+code: $(JS)
 
 clean: clean-base
 
@@ -60,3 +55,11 @@ webpack: $(WEB)/$(PLUGIN_NAME).js
 
 watch:
 	./node_modules/.bin/nodemon -e coffee -x make webpack
+
+help:
+	@echo "l10n       Rebuild l10n JSON"
+	@echo "code       Compile coffeescript and concatenate"
+	@echo "webpack    Compile to deployable bundle"
+	@echo "watch      Run 'make webpack' whenever source changes"
+	@echo "clean      Remove intermediary and built files"
+
