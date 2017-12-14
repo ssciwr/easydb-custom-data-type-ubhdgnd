@@ -39,8 +39,8 @@ custom.data.type.ubhdgnd.config.parameter.schema.enable_subtype_search_default.v
 custom.data.type.ubhdgnd.config.parameter.schema.enable_subtype_search_default.value.checkbox,Standardmäßig an,Enabled by default
 
 custom.data.type.ubhdgnd.config.parameter.schema.authorities_backend.value.label,Normdaten-Backend,Authorities server,,
-custom.data.type.ubhdgnd.config.option.schema.authorities_backend.value.ubhd/gnd,UB Heidelberg,,,
-custom.data.type.ubhdgnd.config.option.schema.authorities_backend.value.gbv/gnd,GBV,,,
+custom.data.type.ubhdgnd.config.option.schema.authorities_backend.value.ubhd/gnd,UB Heidelberg,UB Heidelberg,,
+custom.data.type.ubhdgnd.config.option.schema.authorities_backend.value.gbv/gnd,GBV,GBV,,
 
 custom.data.type.ubhdgnd.config.parameter.schema.gnd_types_overridable.value.label,Überschreibbare Entitätentypen,Overridable entity types,,
 custom.data.type.ubhdgnd.config.option.schema.gnd_types_overridable.value.PlaceOrGeographicName,"PlaceOrGeographicName","Place Or Geographic Name",,

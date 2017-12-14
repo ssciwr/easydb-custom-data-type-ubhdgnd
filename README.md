@@ -1,26 +1,56 @@
-# easydb-custom-data-type-gnd
+# easydb-custom-data-type-ubhdgnd
 
 This is a plugin for [easyDB 5](http://5.easydb.de/) with Custom Data Type
-`CustomDataTypeGND` for references to entities (only Differentiated Persons,
-Cooperates, Subject Headings, Place or geographic name) of the [Integrated
+`CustomDataTypeUBHDGND` for references to entities of the [Integrated
 Authority File (GND)](https://en.wikipedia.org/wiki/Integrated_Authority_File).
 
-The Plugins uses <http://ws.gbv.de/suggest/gnd/> for the
-autocomplete-suggestions and [EntityFacts
-API](<http://www.dnb.de/DE/Wir/Projekte/Abgeschlossen/entityFacts.html>) from
-Deutsche Nationalbibliothek for additional informations about GND entities.
+The plugin uses
+[authorities-client](https://gitlab.ub.uni-heidelberg.de/Webservices/authorities-client)
+supporting different authority data services, such as
+
+  - http://ws.gbv.de/suggest/gnd/ 
+  - EntityFacts API Deutsche Nationalbibliothek
+    (http://www.dnb.de/DE/Wir/Projekte/Abgeschlossen/entityFacts.html) for
+    additional informations about GND entities.
+  - https://digi.ub.uni-heidelberg.de/normdaten/
 
 ## Setup
 
+In the following replace `unib-heidelberg` with the name of your easydb instance.
+
 ```
-git submodule update --init
+git clone --recursive https://gitlab.ub.uni-heidelberg.de/kba/easydb-custom-data-type-ubhdgnd \
+	/srv/easydb/unib-heidelberg/config/plugin/easydb-custom-data-type-ubhdgnd
+cd /srv/easydb/unib-heidelberg/config/plugin/easydb-custom-data-type-ubhdgnd
 npm install
-make l10n
-make webpack
+make
 ```
 
+Edit `/srv/easydb/unib-heidelberg/config/easydb5-master.yml`.
 
-## configuration
+Add to or create an array `easydb-server.extension.plugins`:
+
+```yaml
+- name: custom-data-type-ubhdgnd
+  file: plugin/custom-data-type-ubhdgnd/CustomDataTypeUBHDGND.config.yml
+```
+
+Add to or create an array `easydb-server.plugins.enabled+` (**Note** the `+` in the final key):
+
+    - extension.custom-data-type-ubhdgnd
+
+Restart the server docker instance to propagate propagate the new fields to the database system:
+
+    docker restart easydb-server-unib-heidelberg && docker logs --tail=1000 -f easydb-server-unib-heidelberg 
+
+There should be no errors (obviously) but if there are, they will show up in this log.
+
+## Development
+
+This plugin uses [webpack](https://github.com/webpack/webpack) to bundle the
+source code and libraries as a single deployable script.
+
+## Configuration
 
 As defined in `CustomDataTypeUBHDGND.config.yml` this datatype can be configured:
 
@@ -33,11 +63,15 @@ As defined in `CustomDataTypeUBHDGND.config.yml` this datatype can be configured
 
 * whether additional informationen is loaded if the mouse hovers a suggestion in the search result
 
-## sources
+## Sources
 
 The source code of this plugin is managed in a git repository at
-<https://github.com/programmfabrik/easydb-custom-data-type-gnd>. Please use
-[the issue
-tracker](https://github.com/programmfabrik/easydb-custom-data-type-gnd/issues)
+<https://gitlab.ub.uni-heidelberg.de/kba/easydb-custom-data-type-gnd>. Please
+use [the issue
+tracker](https://gitlab.ub.uni-heidelberg.de/kba/easydb-custom-data-type-gnd/issues)
 for bug reports and feature requests!
+
+It is built upon the
+[easydb-library](https://github.com/programmfabrik/easydb-library) base class
+for custom easydb data types.
 
