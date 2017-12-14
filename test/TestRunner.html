@@ -7,517 +7,87 @@
 
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-
   <head>
     <meta charset="utf-8">
   </head>
   <body class="cui-body">
-
-<!--{{{--> 
-<!-- copied from easydb5 landing page -->
-<div style="display: none;">
-<div style="display:none; position: absolute; top: 100px; left: 100px;  border: 2px solid black; background-color: white; z-index: 100000; width: 200px; height: 150px;" id="login_form_container">
-	<iframe name="login_form_target" src="about:blank"></iframe>
-	<form method="post" target="login_form_target" id="login_form" action="/api/v1/session/authenticate">
-		<table class="ez5-login-form-static-html">
-			<tbody><tr>
-				<td>
-					<input class="cui-input" type="text" placeholder="" spellcheck="false" name="login" autocapitalize="none">
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input class="cui-input" type="password" placeholder="" spellcheck="false" name="password">
-				</td>
-			</tr>
-		</tbody></table>
-	</form>
-</div><div class="cui-tmpl cui-tmpl-error">
-	<div class="ez-error-text"></div>
-	<div class="ez-error-description"></div>
-	<div class="ez-error-uuid"></div>
-</div><div data-template="asset-browser-hires">
-	<div data-slot="assets" class="ez-asset-browser-assets"></div>
-	<div class="ez-asset-browser-tools">
-		<div data-slot="array_label" class="ez-asset-browser-array-label"></div>
-		<div data-slot="navi" class="ez-asset-browser-navi"></div>
-	</div>
-</div>
-<div data-template="asset-browser">
-	<div data-slot="assets" class="ez-asset-browser-assets"></div>
-</div>
-<div class="cui-tmpl cui-tmpl-asset-browser-version">
-	<div class="ez-asset-browser-version-thumbnail"></div>
-	<div class="ez-asset-browser-version-info"></div>
-</div>
-<div class="cui-tmpl cui-tmpl-asset ez-asset ez5-lassoable">
-	<div class="ez-asset-element"></div>
-	<div class="ez-asset-tools"></div>
-	<div class="ez-asset-status-container">
-		<div class="ez-asset-preview-version"></div>
-		<div class="ez-asset-status"></div>
-	</div>
-	<div class="ez-asset-info-container">
-		<div class="ez-asset-extension"></div>
-		<div class="ez-asset-info"></div>
-		<div class="ez-asset-filesize"></div>
-	</div>
-	<div class="ez-asset-class-icon"></div>
-	<div data-slot="tool" class="ez-asset-tool"></div>
-</div>
-<div class="cui-tmpl cui-tmpl-ng-asset-hires ez-asset">
-	<div data-slot="element" class="ez-asset-element"></div>
-	<div data-slot="tools" class="ez-asset-tools"></div>
-	<div class="ez-asset-status-container">
-		<div data-slot="preview_version" class="ez-asset-preview-version"></div>
-		<div data-slot="status" class="ez-asset-status"></div>
-	</div>
-	<div class="ez-asset-info-container">
-		<div data-slot="extension" class="ez-asset-extension"></div>
-		<div data-slot="info" class="ez-asset-info"></div>
-		<div data-slot="filesize" class="ez-asset-filesize"></div>
-	</div>
-	<div data-slot="tool" class="ez-asset-tool"></div>
-	<div data-slot="multiple_indicator" class="ez-asset-multiple-indicator"></div>
-</div>
-<div class="cui-tmpl cui-tmpl-ng-asset ez-asset">
-	<div data-slot="element" class="ez-asset-element"></div>
-	<div class="ez-asset-info-container">
-		<div data-slot="extension" class="ez-asset-extension"></div>
-		<div data-slot="info" class="ez-asset-info"></div>
-		<div data-slot="filesize" class="ez-asset-filesize"></div>
-	</div>
-	<div data-slot="multiple_indicator" class="ez-asset-multiple-indicator"></div>
-</div>
-<div data-template="asset-browser-info-control" class="ez5-asset-browser-info-control">
-	<div class="ez5-asset-browser-info-control-bar">
-		<div data-slot="label" class="ez5-asset-browser-info-control-label"></div>
-		<div data-slot="position_label" class="ez5-asset-browser-info-control-position-label"></div>
-		<div data-slot="button" class="ez5-asset-browser-info-control-info-button"></div>
-		<div data-slot="navigation" class="ez5-asset-browser-info-control-navigation"></div>
-	</div>
-	<div data-slot="tabs" class="ez5-asset-browser-info-control-content"></div>
-</div>
-<div class="cui-tmpl cui-tmpl-autocompletion-popup"></div>
-<div class="cui-tmpl cui-tmpl-autocompletion-popup-container cui-autocompletion-popup-container"></div>
-<div class="cui-tmpl cui-tmpl-autocompletion-popup-item cui-autocompletion-popup-item" tabindex="0"></div>
-<div class="cui-tmpl cui-tmpl-user-card ez5-user-card">
-	<div class="ez5-user-card-avatar"></div>
-	<div class="ez5-user-card-data">
-		<div class="ez5-user-card-name"></div>
-		<div class="ez5-user-card-email"></div>
-	</div>
-</div><div class="cui-tmpl cui-tmpl-linked-object-edit">
-	<div class="ez-linked-object-edit-object"></div>
-	<div class="ez-linked-object-edit-search"></div>
-</div><!-- Path -->
-<div class="cui-tmpl cui-tmpl-result-object-path ez5-path"></div>
-<!-- Short -->
-<div class="cui-tmpl cui-tmpl-result-object-short ez5-result-object ez5-card ez5-card--short">
-	<div data-slot="standard_1" class="ez5-standard-1 ez5-lassoable"></div>
-</div>
-<!-- CARD1 -->
-<div class="cui-tmpl cui-tmpl-result-object-card1 ez5-result-object ez5-card ez5-card1">
-	<div data-slot="asset" class="ez5-asset"></div>
-	<div class="ez5-info">
-		<div data-slot="info" class="ez5-info-text">
-			<!-- path is injected here -->
-			<div data-slot="standard_1" class="ez5-standard-1 ez5-lassoable"></div>
-		</div>
-		<div data-slot="tags" class="ez5-tags ez5-lassoable"></div>
-	</div>
-</div>
-<!-- CARD2 -->
-<div class="cui-tmpl cui-tmpl-result-object-card2 ez5-result-object ez5-card ez5-card2">
-	<div data-slot="asset" class="ez5-asset"></div>
-	<div class="ez5-info">
-		<div data-slot="info" class="ez5-info-text">
-			<!-- path is injected here -->
-			<div data-slot="standard_1" class="ez5-standard-1 ez5-lassoable"></div>
-			<div data-slot="standard_2" class="ez5-standard-2 ez5-lassoable"></div>
-		</div>
-		<div data-slot="tags" class="ez5-tags ez5-lassoable"></div>
-	</div>
-</div>
-<!-- CARD3 -->
-<div class="cui-tmpl cui-tmpl-result-object-card3 ez5-result-object ez5-card ez5-card3">
-	<div data-slot="asset" class="ez5-asset"></div>
-	<div class="ez5-info">
-		<div data-slot="info" class="ez5-info-text">
-			<!-- path is injected here -->
-			<div data-slot="standard_1" class="ez5-standard-1 ez5-lassoable"></div>
-			<div data-slot="standard_2" class="ez5-standard-2 ez5-lassoable"></div>
-			<div data-slot="standard_3" class="ez5-standard-3 ez5-lassoable"></div>
-		</div>
-		<div data-slot="tags" class="ez5-tags ez5-lassoable"></div>
-	</div>
-</div>
-<!-- STANDARD ResultStandard -->
-<div class="cui-tmpl cui-tmpl-result-object-standard ez5-result-object ez5-standard ez5-lassoable">
-	<div data-slot="asset" class="ez5-browser"></div>
-	<div class="ez5-info">
-		<div data-slot="info" class="ez5-info-text">
-			<div data-slot="standard_1" class="ez5-standard-1"></div>
-			<div data-slot="standard_2" class="ez5-standard-2"></div>
-			<div data-slot="standard_3" class="ez5-standard-3"></div>
-			<div class="ez5-subtext">
-				<div data-slot="objecttype" class="ez5-objecttype"></div>
-				<div data-slot="pool_path" class="ez5-pool-path"></div>
-			</div>
-		</div>
-		<div data-slot="tags" class="ez5-tags"></div>
-	</div>
-</div>
-<!-- STANDARD ResultStandard Measurement DIV-->
-<div class="cui-tmpl cui-tmpl-result-object-standard-dummy ez5-result-object ez5-standard ez5-result-standard-appearance-info-dummy">
-	<div data-slot="asset" class="ez5-browser"></div>
-	<div class="ez5-info">
-		<div class="ez5-info-text">
-			<div class="ez5-standard-1">
-				<span class="ez-output-1">Standard 1 Dummy Text Standard 1 Dummy Text</span>
-			</div>
-			<div class="ez5-standard-2">Standard 2 Dummy Text</div>
-			<div class="ez5-standard-3">Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text Standard 3 Dummy Text</div>
-			<div class="ez5-subtext">
-				<div class="ez5-objecttype">Dummy Object Type</div>
-				<div class="ez5-pool-path">Dummy-Pool</div>
-			</div>
-		</div>
-		<div class="ez5-tags">
-			<i class="fa fa-cloud ez5-tag-icon"></i>
-		</div>
-	</div>
-</div>
-<!-- STANDARD ResultStandard Placeholder DIV-->
-<div class="cui-tmpl cui-tmpl-result-object-standard-placeholder ez5-result-object ez5-standard ez5-result-standard-appearance-info-placeholder">
-	<div class="ez5-browser"></div>
-</div>
-<!-- STANDARD for Hires (fullscreen) -->
-<div class="cui-tmpl cui-tmpl-result-object-hires ez5-result-object ez5-standard ez5-hires">
-	<div data-slot="asset" class="ez5-browser"></div>
-	<div class="ez5-info">
-		<div data-slot="info" class="ez5-info-text">
-			<div data-slot="standard_1" class="ez5-standard-1"></div>
-			<div data-slot="standard_2" class="ez5-standard-2"></div>
-			<div data-slot="standard_3" class="ez5-standard-3"></div>
-			<div class="ez5-subtext">
-				<div data-slot="objecttype" class="ez5-objecttype"></div>
-				<div data-slot="pool_path" class="ez5-pool-path"></div>
-			</div>
-		</div>
-		<div data-slot="tags" class="ez5-tags"></div>
-	</div>
-</div>
-<!-- PRINT -->
-<div data-template="result-object-print" class="ez5-print-object">
-	<div data-slot="card" class="ez5-print-object-card"></div>
-	<div data-slot="objecttype" class="ez5-print-object-type"></div>
-	<div data-slot="id" class="ez5-print-object-id"></div>
-	<div data-slot="detail" class="ez5-print-object-detail"></div>
-</div><div class="cui-tmpl ez5-presentation-slide cui-tmpl-presentation-slide-one">
-	<div class="ez5-presentation-slide-dia cui-presentation-slide-one-center"></div>
-</div>
-<div class="cui-tmpl ez5-presentation-slide cui-tmpl-presentation-slide-duo">
-	<div class="ez5-presentation-slide-dia cui-presentation-slide-duo-left"></div>
-	<div class="ez5-presentation-slide-dia cui-presentation-slide-duo-right"></div>
-</div>
-<div class="cui-tmpl ez5-presentation-slide cui-tmpl-presentation-slide-info">
-	<div class="ez5-presentation-slide-dia cui-presentation-slide-info-title"></div>
-	<div class="ez5-presentation-slide-dia cui-presentation-slide-info-content"></div>
-</div>
-<div class="cui-tmpl ez5-presentation-player cui-tmpl-presentation-player cui-layer-prevent-click-thru">
-	<div class="cui-presentation-player-content"></div>
-	<div class="cui-presentation-player-controls"></div>
-</div>
-<div class="cui-tmpl cui-tmpl-splash-layer">
-	<!-- <div><i class="fa fa-spin fa-circle-o-notch"></i></div> -->
-
-    <div class="ez5-loading-ani-group">
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-        <div class="ez5-loading-ani-snippet"></div>
-
-
-    </div>
-
-
-
-    <!-- <div class="welcome"><span l10n="splash.layer.welcome_text"></span></div> -->
-</div><div class="cui-tmpl cui-tmpl-asset-crop-tool asset-crop-tool">
-	<div class="asset-crop-tool-position"><span><span></span></span></div>
-	<div class="asset-crop-tool-dimensions"><span><span></span></span></div>
-	<div class="asset-crop-tool-inner">
-	</div>
-</div>
-<div data-template="asset-versions" class="ez5-asset-versions">
-	<div class="ez5-asset-versions-list">
-		<div class="ez5-asset-versions-list-holder">
-			<div data-slot="list" class="ez5-asset-versions-list-body"></div>
-			<div data-slot="drag_hint" class="ez5-asset-versions-drag-hint cui-hint"></div>
-		</div>
-		<div data-slot="list_buttons" class="cui-toolbar cui-pane-footer"></div>
-	</div>
-	<div data-cui-flex-handle="pane: .ez5-asset-versions-list; name: list; direction: row;" data-cui-absolute-set="top"></div>
-	<div class="ez5-asset-versions-sidebar">
-		<div data-slot="form" class="ez5-asset-versions-sidebar-form"></div>
-		<div data-slot="info" class="ez5-asset-versions-sidebar-info"></div>
-	</div>
-	<div data-cui-flex-handle="pane: .ez5-asset-versions-sidebar; name: sidebar; direction: row;" data-cui-absolute-set="top"></div>
-	<div class="ez5-asset-versions-editor">
-		<div data-slot="tools" class="ez5-asset-versions-editor-tools cui-toolbar"></div>
-		<div data-slot="preview" class="ez5-asset-versions-editor-preview"></div>
-	</div>
-</div>
-<div class="cui-tmpl cui-tmpl-asset-version asset-version">
-	<div class="ez-asset-version-thumbnail"></div>
-	<div class="ez-asset-version-form"></div>
-</div>
-<div class="cui-tmpl cui-tmpl-mask-editor-preview-editor ez5-editor">
-	<div data-slot="editor" class="ez5-mask-editor-preview-editor-editor"></div>
-</div>
-
-<div class="cui-tmpl cui-tmpl-mask-editor-preview-search ez5-mask-editor-preview">
-	<div class="ez5-mask-editor-preview-block ez5-mask-editor-preview-block--short">
-		<div class="cui-label">Short</div>
-		<div class="ez5-linked-object-container">
-			<div data-slot="short"></div>
-		</div>
-	</div>
-	<div class="ez5-mask-editor-preview-block ez5-mask-editor-preview-block--card1">
-		<div class="cui-label">Card 1</div>
-		<div class="ez5-linked-object-container">
-			<div data-slot="card1"></div>
-		</div>
-	</div>
-	<div class="ez5-mask-editor-preview-block ez5-mask-editor-preview-block--card2">
-		<div class="cui-label">Card 2</div>
-		<div class="ez5-linked-object-container">
-			<div data-slot="card2"></div>
-		</div>
-	</div>
-	<div class="ez5-mask-editor-preview-block ez5-mask-editor-preview-block--card3">
-		<div class="cui-label">Card 3</div>
-		<div class="ez5-linked-object-container">
-			<div data-slot="card3"></div>
-		</div>
-	</div>
-
-	<div class="ez5-mask-editor-preview-block ez5-mask-editor-preview-block--standard">
-		<div class="cui-label">Standard</div>
-		<div data-slot="css_switcher" class="ez5-mask-editor-preview-switcher cui-toolbar"></div>
-		<div data-slot="standard" class="ez5-mask-editor-preview-standard">
-			<div data-slot="standard_div" class="ez5-result-standard-appearance-info-dummy result-standard"></div>
-		</div>
-	</div>
-
-	<div class="ez5-mask-editor-preview-block ez5-mask-editor-preview-block--text">
-		<div class="cui-label">Text</div>
-		<div data-slot="text" class="result-text"></div>
-	</div>
-</div>
-
-<div class="cui-tmpl cui-tmpl-mask-editor-preview-detail ez5-detail-container">
-	<div data-slot="detail" class="ez5-mask-editor-preview-detail-detail"></div>
-</div>
-<div class="cui-tmpl cui-layer-prevent-click-thru cui-tmpl-detail-fullscreen detail ez-asset-browser-mark-tool-active detail-fullscreen">
-	<div class="ez-detail-fullscreen-object asset-browser-hide-navigation"></div>
-	<div class="ez-detail-fullscreen-bottom ez5-slide-in">
-		<div class="ez-detail-fullscreen-result asset-browser-disable-scroll"></div>
-		<div class="ez-detail-fullscreen-bottom-left-scroll"></div>
-		<div class="ez-detail-fullscreen-bottom-right-scroll"></div>
-	</div>
-	<div class="ez-detail-fullscreen-header ez5-slide-in">
-		<div class="ez-detail-fullscreen-header-left"></div>
-		<div class="ez-detail-fullscreen-header-center"></div>
-		<div class="ez-detail-fullscreen-header-right"></div>
-	</div>
-	<div class="ez-detail-fullscreen-next ez5-slide-in"></div>
-	<div class="ez-detail-fullscreen-prev ez5-slide-in"></div>
-	<div class="ez-detail-fullscreen-info"></div>
-</div>
-<div class="cui-tmpl cui-layer-prevent-click-thru cui-tmpl-ng-detail-fullscreen detail ez-asset-browser-mark-tool-active ez5-detail-fullscreen">
-	<div data-slot="object" class="ez5-detail-fullscreen-object asset-browser-hide-navigation"></div>
-	<div data-slot="bottom" class="ez5-detail-fullscreen-bottom">
-		<div data-slot="result" class="ez5-detail-fullscreen-result result-standard-mini asset-browser-disable-scroll"></div>
-		<div data-slot="bottom_left_scroll" class="ez5-detail-fullscreen-bottom-left-scroll"></div>
-		<div data-slot="bottom_right_scroll" class="ez5-detail-fullscreen-bottom-right-scroll"></div>
-	</div>
-	<div class="ez5-detail-fullscreen-header">
-		<div data-slot="header_left" class="ez5-detail-fullscreen-header-left"></div>
-		<div data-slot="header_center" class="ez5-detail-fullscreen-header-center"></div>
-		<div data-slot="header_right" class="ez5-detail-fullscreen-header-right"></div>
-	</div>
-	<div data-slot="next" class="ez5-detail-fullscreen-next"></div>
-	<div data-slot="prev" class="ez5-detail-fullscreen-prev"></div>
-	<div data-slot="info" class="ez5-detail-fullscreen-info"></div>
-</div><div data-template="print-manager-header" class="ez5-print-header">
-	<div data-slot="logo" class="ez5-print-header-logo"></div>
-	<div data-slot="easydb" class="ez5-print-header-easydb"></div>
-	<div data-slot="date_time" class="ez5-print-header-time"></div>
-</div>
-<!-- below is already "final" for ez5 use, TODO cui-absolute is used to tell the layout-padding to use margins, find a better way!. -->
-<div class="cui-tmpl cui-tmpl-editor-modal-new-drop-zone-div">
-	<div class="ez-editor-modal-new-drop-zone-div-backpane"></div>
-	<div class="ez-editor-modal-new-drop-zone-div-drop-zone"></div>
-	<!--<div class="ez-editor-modal-new-drop-zone-div-upload-buttons"></div>-->
-	<!--<div class="ez-editor-modal-new-drop-zone-div-check-for-duplicates"></div>-->
-</div>
-<div data-template="editor-modal-new-ng" class="ez5-editor-modal-new-container">
-	<div class="ez5-editor-modal-new-content">
-		<div class="ez5-editor-modal-new-content-drop-zone">
-			<div data-slot="backpane" class="ez5-editor-modal-new-content-backpane"></div>
-			<div data-slot="drop_zone" class="ez5-editor-modal-new-content-drop-zone-inner"></div>
-		</div>
-		<div data-slot="upload_buttons" class="ez5-editor-modal-new-content-upload-buttons"></div>
-	</div>
-	<div data-slot="left" class="ez5-editor-modal-new-sidebar"></div>
-	<!--<div class="ez-editor-modal-new-drop-zone-div-upload-buttons"></div>-->
-	<!--<div class="ez-editor-modal-new-drop-zone-div-check-for-duplicates"></div>-->
-</div>
-<div class="cui-tmpl cui-tmpl-file-upload ez5-file-upload-thumbnail">
-	<div class="thumbnail">
-		<div class="ez-file-upload-thumb"></div>
-	</div>
-	<div class="file-text-info">
-		<div class="ez-file-upload-info"></div>
-		<div class="ez-file-upload-remove"></div>
-	</div>
-</div>
-</div>
-
-<!--}}}-->
  
     <script src="js/moment-with-locales.js" type="text/javascript"></script>
-    <script src="js/cui.js" type="text/javascript"></script>
-    <script src="js/easydb5.js" type="text/javascript"></script>
+    <script src="js/easydbui.js" type="text/javascript"></script>
+
+	<!-- TODO: Positioner seems to be removed in new version of CUI? -->
+    <script src="js/Positioner.js" type="text/javascript"></script>
 
     <script src="js/marked.js" type="text/javascript"></script>
     <script src="mock.easyDB.coffee.js" type="text/javascript"></script>
-
-    <script>
-      // Button.getElementForLayer() would otherwise return this.__box.map.visual
-      // which wasn't defined
-      Button.prototype.getElementForLayer = function() { return this.DOM }
-
-      // Makes easydb output debug info (or try to)
-      if  (!ez5.session) ez5.session = {}
-      Object.assign(ez5.session, { isDebug() { return true} })
-    </script>
-
     <script type="text/javascript">
-var gndDataType;
-var gndData = {};
+    var gndDataType;
+	var gndData = {};
 
-CUI.ready(function(){
+    CUI.ready(function(){
 
-  // enable theme
-  CUI.CSS.registerTheme({name:'light',url:CUI.pathToScript+"/../cui_demo_light.css"});
-  CUI.CSS.loadTheme('light');
+      // enable theme
+      CUI.CSS.registerTheme({name:'light', url:CUI.getPathToScript() +"/../cui_demo_light.css"});
+      CUI.CSS.loadTheme('light');
 
-  // register required event types
-  CUI.Events.registerEvent({
-    type: "editor-changed",
-    bubble: true
-  });
+      // register required event types
+      CUI.Events.registerEvent({
+        type: "editor-changed",
+        bubble: true
+      });
 
-  // get l10n data from CSV, only parse first and second column with known format
-  var xhr = new CUI.XHR({ url: "../l10n/custom-data-type-gnd.csv", responseType: "text" });
-  xhr.start().done(function(data) {
-    var pattern = /^"([^\"]+)\"\s*,\s*"([^\"]+)\"/;
-    data.split("\n").forEach(function(line) {
-      if (match = pattern.exec(line)) {
-        I10N[match[1]] = match[2];
-      }
+      // get l10n data from CSV, only parse first and second column with known format
+      var xhr = new CUI.XHR({ url: "../l10n/custom-data-type-gnd.csv", responseType: "text" });
+      xhr.start().done(function(data) {
+		var pattern = /^"([^\"]+)\"\s*,\s*"([^\"]+)\"/;
+		data.split("\n").forEach(function(line) {
+			if (match = pattern.exec(line)) {
+				I10N[match[1]] = match[2];
+			}
+		});
+      });
+
+      // create some content to attach plugin to
+	  var layer = new CUI.Layer();
+      CUI.dom.prepend(document.body, layer.DOM);
+
+      var label = new CUI.Label({ text: 'Hello, World!' });
+      CUI.dom.prepend(layer.DOM, label.DOM);
+
+      // include plugin afterwards
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "../build/webfrontend/custom-data-type-gnd.js";
+      
+      // run after initialization
+      script.onload = function() {
+
+        gndDataType = new CustomDataTypeGND();
+
+        // custom settings
+        CONFIG[ gndDataType.name() ] = { 
+            mask: {
+                show_infopopup: { value: true }
+            },
+            schema: {
+                add_differentiatedpersons: { value: true },
+                add_coorporates: { value: true },
+                add_geographicplaces: { value: true },
+                add_subjects: { value: true },
+            }
+        };
+
+		// initialize with sample data
+        gndData[ gndDataType.name() ] = {
+			conceptName: "Kinder, Marcus",
+			conceptURI: "http://d-nb.info/gnd/10427607X",
+		};
+
+        var layout = gndDataType.renderEditorInput(gndData);
+        CUI.dom.prepend(layer.DOM, layout.DOM);
+      };
+      document.body.appendChild(script);
     });
-  });
-
-  // create some content to attach plugin to
-  var layer = new CUI.Layer();
-  CUI.DOM.prepend(document.body, layer.DOM);
-
-  // var label = new Label({ text: 'Hello, World!' });
-  // CUI.DOM.prepend(layer.DOM, label.DOM);
-
-  // include plugin afterwards
-  var script = document.createElement("script");
-  script.type = "text/javascript";
-  script.src = "../build/webfrontend/custom-data-type-gnd-ubhd.js";
-
-  // run after initialization
-  script.onload = function() {
-
-    gndDataType = new CustomDataTypeGNDUBHD();
-
-    // custom settings
-    CONFIG[ gndDataType.name() ] = { 
-      mask: {
-        show_infopopup: { value: true }
-      },
-      schema: {
-        add_differentiatedpersons: { value: true },
-        add_coorporates: { value: true },
-        add_geographicplaces: { value: true },
-        add_subjects: { value: true },
-      }
-    };
-
-    // initialize with sample data
-    // gndData[ gndDataType.name() ] = {
-    //   conceptName: "Kinder, Marcus",
-    //   conceptURI: "http://d-nb.info/gnd/10427607X",
-    // };
-
-    var layout = gndDataType.renderEditorInput(gndData);
-    CUI.DOM.prepend(layer.DOM, layout.DOM);
-  };
-  document.body.appendChild(script);
-});
     </script> 
-
   </body>      
 </html>
