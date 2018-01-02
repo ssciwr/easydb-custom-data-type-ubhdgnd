@@ -1,4 +1,11 @@
+.cui-layer-root.cui-layer-root-menu.cui-layer-backdrop-policy-click-thru {
+  .cui-layer {
+    max-width: 300px !important;
+  }
+}
+
 [cui-data-field-name="conceptSeeAlso"] {
+
   .cui-button-visual {
     height: 100%;
 

@@ -54,7 +54,7 @@ webpack: $(WEB)/$(PLUGIN_NAME).js
 	-rm src/webfrontend/$(PLUGIN_NAME_CAMELCASE).coffee.js
 
 watch:
-	./node_modules/.bin/nodemon -e 'coffee scss' -x make webpack scss
+	./node_modules/.bin/nodemon -e 'coffee scss' -x make scss webpack
 
 scss:
 	mkdir -p build/webfrontend/scss/
