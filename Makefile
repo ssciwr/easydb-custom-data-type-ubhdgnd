@@ -26,7 +26,7 @@ JS = $(WEB)/${PLUGIN_NAME}.raw.js
 
 export
 
-all: webpack
+all: webpack scss
 
 include easydb-library/tools/base-plugins.make
 
@@ -55,6 +55,10 @@ webpack: $(WEB)/$(PLUGIN_NAME).js
 
 watch:
 	./node_modules/.bin/nodemon -e coffee -x make webpack
+
+scss:
+	mkdir -p build/webfrontend/scss/
+	cp -r src/webfrontend/*.scss build/webfrontend/scss/
 
 help:
 	@echo "l10n       Rebuild l10n JSON"

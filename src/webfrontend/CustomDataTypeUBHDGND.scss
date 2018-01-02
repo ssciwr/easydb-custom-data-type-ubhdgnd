@@ -1,0 +1,20 @@
+[cui-data-field-name="conceptSeeAlso"] {
+  .cui-button-center {
+    max-width: 300px;
+  }
+}
+.ez5-admin-datamodel-check-popover {
+    [class="cui-form-tr cui-form-field-name--value"] {
+        .cui-options.cui-data-field {
+            columns: 3;
+
+            .cui-checkbox {
+                display: block;
+            }
+
+            .cui-checkbox--multiline .cui-button-checkbox .cui-button-center span {
+                white-space: pre;
+            }
+        }
+    }
+}

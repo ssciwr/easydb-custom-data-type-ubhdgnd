@@ -4,6 +4,9 @@ plugin:
   server:
     api-version:
       require: 1
+  scss:
+    body:
+      - build/webfrontend/scss/CustomDataTypeUBHDGND.scss
   webfrontend:
     url: custom-data-type-ubhdgnd.js
     l10n: l10n/
