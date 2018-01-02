@@ -6,7 +6,7 @@ plugin:
       require: 1
   scss:
     body:
-      - build/webfrontend/scss/CustomDataTypeUBHDGND.scss
+      - build/webfrontend/scss/body.scss
   webfrontend:
     url: custom-data-type-ubhdgnd.js
     l10n: l10n/

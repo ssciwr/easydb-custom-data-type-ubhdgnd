@@ -1,8 +1,20 @@
 [cui-data-field-name="conceptSeeAlso"] {
-  .cui-button-center {
-    max-width: 300px;
+  .cui-button-visual {
+    height: 100%;
+
+    .cui-button-center {
+      max-width: 300px;
+      height: 100%;
+      max-height: 200px;
+
+      & > span {
+        white-space: normal;
+        overflow-y: scroll;
+      }
+    }
   }
 }
+
 .ez5-admin-datamodel-check-popover {
     [class="cui-form-tr cui-form-field-name--value"] {
         .cui-options.cui-data-field {

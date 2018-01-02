@@ -54,11 +54,11 @@ webpack: $(WEB)/$(PLUGIN_NAME).js
 	-rm src/webfrontend/$(PLUGIN_NAME_CAMELCASE).coffee.js
 
 watch:
-	./node_modules/.bin/nodemon -e coffee -x make webpack
+	./node_modules/.bin/nodemon -e 'coffee scss' -x make webpack scss
 
 scss:
 	mkdir -p build/webfrontend/scss/
-	cp -r src/webfrontend/*.scss build/webfrontend/scss/
+	cp -r src/webfrontend/CustomDataTypeUBHDGND.scss build/webfrontend/scss/body.scss
 
 help:
 	@echo "l10n       Rebuild l10n JSON"
