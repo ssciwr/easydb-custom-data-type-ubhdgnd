@@ -1,8 +1,6 @@
 AuthoritiesClient = require('@ubhd/authorities-client')
 
-module.exports =\
-class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
-
+class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
   getFieldNames: ->
       return [
           @fullName()+".conceptURI"
@@ -10,7 +8,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
           @fullName()+".conceptSeeAlso"
       ]
 
-  #######################################################################
+  #----------------------------------------------------------------------
   # handle editorinput
   renderEditorInput: (data, top_level_data, opts) ->
     if not data[@name()]
@@ -68,7 +66,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     layout
 
 
-  #######################################################################
+  #----------------------------------------------------------------------
   # is called, when record is being saved by user
   getSaveData: (data, save_data, opts) ->
     if opts.demo_data
@@ -97,7 +95,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
             text: field_value.conceptName + " " + field_value.conceptSeeAlso
             string: field_value.conceptURI
 
-  #######################################################################
+  #----------------------------------------------------------------------
   # checks the form and returns status
   getDataStatus: (cdata) ->
     if (cdata)
@@ -129,19 +127,32 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
         }
       return "empty"
 
+  #----------------------------------------------------------------------
+  # @param {string} name setting name
+  # @param {*} fallback Fallback value if no value or value is falsey
+  # @return {string} the value of a field config setting or null if not defined
+  getCustomSchemaSetting: (name, fallback) -> @getCustomSchemaSettings()[name]?.value or fallback
+
+
+########################################################################
+#
+#
+#
+#
+#
+#
+########################################################################
+
+module.exports =\
+class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
+
   getCustomDataTypeName: ->
     "custom:base.custom-data-type-ubhdgnd.ubhdgnd"
 
   getCustomDataTypeNameLocalized: ->
     $$("custom.data.type.ubhdgnd.name")
 
-  #######################################################################
-  # @param {string} name setting name
-  # @param {*} fallback Fallback value if no value or value is falsey
-  # @return {string} the value of a field config setting or null if not defined
-  getCustomSchemaSetting: (name, fallback) -> @getCustomSchemaSettings()[name]?.value or fallback
-
-  #######################################################################
+  #----------------------------------------------------------------------
   # make sure enabled overridable options are actually enabled
   showEditPopover: (args...) ->
     super(args...)
@@ -152,7 +163,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
       @popover.getPane()._content.getFieldsByName("enabledGndTypes")[0].setValue(valuesToEnable)
 
 
-  #######################################################################
+  #----------------------------------------------------------------------
   # Instantiate authoritiesClient with the configured authorities_backend
   __getAuthoritiesClient: () ->
     if @__authoritiesClient
@@ -161,7 +172,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
       pluginName = @getCustomSchemaSetting('authorities_backend')
       @__authoritiesClient = AuthoritiesClient.plugin(pluginName)
 
-  #######################################################################
+  #----------------------------------------------------------------------
   # handle suggestions-menu
   __updateSuggestionsMenu: (cdata, cdata_form, suggest_Menu) ->
 
@@ -175,7 +186,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
     withSubTypes = false # TODO configurable
 
-    @__getAuthoritiesClient().suggest(gnd_searchterm, {type, format, withSubTypes})
+    @__getAuthoritiesClient().search(gnd_searchterm, {type, format, withSubTypes})
       .then (data) =>
         # create new menu with suggestions
         menu_items = []
@@ -251,7 +262,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
         console.warn(new Error(err))
 
 
-  #######################################################################
+  #----------------------------------------------------------------------
   # create form
   __getEditorFields: (cdata) ->
     fields = [
@@ -333,7 +344,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
     return fields
 
 
-  #######################################################################
+  #----------------------------------------------------------------------
   # renders the "result" in original form (outside popover)
   __renderButtonByData: (cdata) ->
 
@@ -374,7 +385,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommons
 
 
 
-  #######################################################################
+  #----------------------------------------------------------------------
   # zeige die gewählten Optionen im Datenmodell unter dem Button an
   getCustomDataOptionsInDatamodelInfo: (custom_settings) ->
     tags = []
