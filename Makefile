@@ -60,6 +60,8 @@ scss:
 	mkdir -p build/webfrontend/scss/
 	cp -r src/webfrontend/CustomDataTypeUBHDGND.scss build/webfrontend/scss/body.scss
 
+l10n: build-stamp-l10n
+
 help:
 	@echo "l10n       Rebuild l10n JSON"
 	@echo "code       Compile coffeescript and concatenate"
