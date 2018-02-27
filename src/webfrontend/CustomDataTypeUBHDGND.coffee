@@ -170,7 +170,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
       return @__authoritiesClient
     else
       pluginName = @getCustomSchemaSetting('authorities_backend')
-      @__authoritiesClient = AuthoritiesClient.plugin(pluginName)
+      @__authoritiesClient = AuthoritiesClient.plugin(pluginName, {width: 300})
 
   #----------------------------------------------------------------------
   # handle suggestions-menu
@@ -267,6 +267,15 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
   __getEditorFields: (cdata) ->
     fields = [
       {
+        type: CUI.Input
+        undo_and_changed_support: false
+        form:
+            label: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar")
+        placeholder: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar.placeholder")
+        name: "searchbarInput"
+        # class: 'commonPlugin_Input'
+      }
+      {
         type: CUI.Options
         undo_and_changed_support: false
         # class: 'commonPlugin_Select'
@@ -297,15 +306,6 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
             label: $$('custom.data.type.ubhdgnd.modal.form.text.count')
         options: [10, 20, 50, 100].map (n) -> value: n, text: "#{n} Vorschläge"
         name: 'countOfSuggestions'
-      }
-      {
-        type: CUI.Input
-        undo_and_changed_support: false
-        form:
-            label: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar")
-        placeholder: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar.placeholder")
-        name: "searchbarInput"
-        # class: 'commonPlugin_Input'
       }
       {
         form:
