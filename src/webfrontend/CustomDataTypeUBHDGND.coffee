@@ -185,7 +185,8 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
     type = cdata_form.getFieldsByName("enabledGndTypes")[0].getValue()
     gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
     withSubTypes = false # TODO configurable
-
+    if not gnd_searchterm
+      return    
     @__getAuthoritiesClient().search(gnd_searchterm, {type, format, withSubTypes})
       .then (data) =>
         # create new menu with suggestions
