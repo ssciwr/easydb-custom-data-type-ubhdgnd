@@ -26,6 +26,7 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
 
   __renderEditorInputPopover: (data, cdata) ->
     layout = new CUI.HorizontalLayout
+      maximize_horizontal: false
       left:
         content:
             new CUI.Buttonbar(
@@ -60,7 +61,6 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
                           type: "editor-changed"
               ]
             )
-      center: {}
       right: {}
     @__updateResult(cdata, layout)
     layout
@@ -131,7 +131,7 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
   # @param {string} name setting name
   # @param {*} fallback Fallback value if no value or value is falsey
   # @return {string} the value of a field config setting or null if not defined
-  getCustomSchemaSetting: (name, fallback) -> @getCustomSchemaSettings()[name]?.value or fallback
+  getCustomSchemaSetting: (name, fallback) -> @getCustomSchemaSettings()[name]?.value ? fallback
 
 
 ########################################################################
@@ -158,7 +158,8 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
     super(args...)
     # XXX This will check all the checkboxes for types that can be overridden
     # (i.e. show in the edit popover) and are also enabled by default
-    valuesToEnable = @getCustomSchemaSetting("gnd_types_enabled_default", [])
+    valuesToEnable = @getCustomSchemaSetting("gnd_types_enabled_default", []).map (gndType) ->
+      gndType.trim()
     if valuesToEnable.length
       @popover.getPane()._content.getFieldsByName("enabledGndTypes")[0].setValue(valuesToEnable)
 
@@ -184,10 +185,11 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
 
     type = cdata_form.getFieldsByName("enabledGndTypes")[0].getValue()
     gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
-    withSubTypes = false # TODO configurable
+    count = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
+    withSubTypes = cdata_form.getFieldsByName("includeSubTypes")[0].getValue()
     if not gnd_searchterm
-      return    
-    @__getAuthoritiesClient().search(gnd_searchterm, {type, format, withSubTypes})
+      return
+    @__getAuthoritiesClient().search(gnd_searchterm, {type, format, withSubTypes, count})
       .then (data) =>
         # create new menu with suggestions
         menu_items = []
@@ -211,14 +213,14 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
               value: "http://d-nb.info/gnd/#{gndId}"
               tooltip:
                 markdown: false
-                placement: "n"
+                placement: "e"
                 content: (tooltip) =>
                   # if enabled in mask-config
                   return unless @getCustomMaskSettings().show_infopopup?.value
                   # download infos
                   @__getAuthoritiesClient().infoBox(gndId)
                     .then (html) ->
-                      tooltip.DOM.innerHTML = html
+                      tooltip.__pane.replace(CUI.dom.htmlToNodes(html), "center")
                       tooltip.DOM.style.maxWidth = '100%'
                     .catch (err) -> console.warn(new Error(err))
                   return new CUI.Label(icon: "spinner", text: "lade Informationen")
@@ -233,7 +235,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                 # lock in save data
                 cdata.conceptURI = "http://d-nb.info/gnd/#{jsonld['@id'].substr(4)}"
                 cdata.conceptName = preferredName(jsonld)
-                cdata.conceptSeeAlso = arrayify(variantName(jsonld)).join(', ')
+                cdata.conceptSeeAlso = arrayify(variantName(jsonld)).join('\n')
                 # lock in form
                 cdata_form.getFieldsByName("conceptName")[0].storeValue(cdata.conceptName).displayValue()
                 # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
@@ -266,6 +268,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
   #----------------------------------------------------------------------
   # create form
   __getEditorFields: (cdata) ->
+    console.log("%o", @getCustomSchemaSettings())
     fields = [
       {
         type: CUI.Input
@@ -284,21 +287,20 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
           label: $$('custom.data.type.ubhdgnd.modal.form.text.type')
         name: 'enabledGndTypes'
         options: @getCustomSchemaSetting('gnd_types_overridable', []).map (gndClass) ->
-          value: gndClass
-          text: $$("custom.data.type.ubhdgnd.config.option.schema.gnd_types_overridable.value.#{gndClass}")
+          value: gndClass.trim()
+          text: $$("custom.data.type.ubhdgnd.config.option.schema.gnd_types_overridable.value.#{gndClass.trim()}")
       }
-    ]
-    # if the subtype search has been marked as overrideable
-    if @getCustomSchemaSetting('override_subtype_search', false)
-      fields.push
+      {
         type: CUI.Checkbox
         undo_and_changed_support: false
         class: 'commonPlugin_Select'
         form:
             label: $$('custom.data.type.ubhdgnd.modal.form.enable_subtype_search.label')
-        value: @getCustomSchemaSetting('enable_subtype_search_default', false)
+        active: @getCustomSchemaSetting('enable_subtype_search_default', false)
+        # if the subtype search can be overwritten, enable the checkbox
+        disabled: !@getCustomSchemaSetting('override_subtype_search', false)    
         name: 'includeSubTypes'
-    fields.push(
+      }
       {
         type: CUI.Select
         undo_and_changed_support: false
@@ -369,14 +371,14 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
       target: "_blank"
       tooltip:
         markdown: true
-        # placement: "n"
+        placement: "s"
         content: (tooltip) =>
           unless @getCustomMaskSettings().show_infopopup?.value
             return $$("custom.data.type.ubhdgnd.url.tooltip", name: cdata.conceptName)
           # download infos
           @__getAuthoritiesClient().infoBox(cdata.conceptURI)
             .then (html) ->
-              tooltip.DOM.innerHTML = html
+              tooltip.__pane.replace(CUI.dom.htmlToNodes(html), "center")
               tooltip.DOM.style.maxWidth = '40%'
               tooltip.DOM.style.height = '500px'
             .catch (err) -> console.warn(new Error(err))

@@ -38,7 +38,7 @@ custom.data.type.ubhdgnd.config.parameter.schema.override_subtype_search.value.c
 custom.data.type.ubhdgnd.config.parameter.schema.enable_subtype_search_default.value.label,Suche nach Untertypen,Search for subtypees,,
 custom.data.type.ubhdgnd.config.parameter.schema.enable_subtype_search_default.value.checkbox,Standardmäßig an,Enabled by default
 
-custom.data.type.ubhdgnd.config.parameter.schema.authorities_backend.value.label,Normdaten-Backend,Authorities server,,
+custom.data.type.ubhdgnd.config.parameter.schema.authorities_backend.value.label,Normdatendienst,Authorities server,,
 custom.data.type.ubhdgnd.config.option.schema.authorities_backend.value.ubhd/gnd,UB Heidelberg,UB Heidelberg,,
 custom.data.type.ubhdgnd.config.option.schema.authorities_backend.value.gbv/gnd,GBV,GBV,,
 
