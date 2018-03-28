@@ -225,7 +225,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                   @__getAuthoritiesClient().infoBox(gndId)
                     .then (html) ->
                       tooltip.__pane.replace(CUI.dom.htmlToNodes(html), "center")
-                      tooltip.DOM.style.maxWidth = '100%'
+                      tooltip.autosize()
                     .catch (err) -> console.warn(new Error(err))
                   return new CUI.Label(icon: "spinner", text: "lade Informationen")
           # console.log(menu_items)
