@@ -171,12 +171,14 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
       return @__authoritiesClient
     else
       pluginName = @getCustomSchemaSetting('authorities_backend')
+      # TODO Add endpoint URL?
       @__authoritiesClient = AuthoritiesClient.plugin(pluginName, {width: 300})
 
   #----------------------------------------------------------------------
   # handle suggestions-menu
   __updateSuggestionsMenu: (cdata, cdata_form, suggest_Menu) ->
-
+    if @__suggestMenu?
+      @__suggestMenu = suggest_Menu
     # console.log({cdata_form, type, gnd_searchterm})
 
     # TODO debounce
@@ -184,6 +186,8 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
     format = 'opensearch'
 
     type = cdata_form.getFieldsByName("enabledGndTypes")[0].getValue()
+    console.log("%o", type)
+    console.log("typeof enabledGndTypes == %s", typeof type)
     gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
     count = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
     withSubTypes = cdata_form.getFieldsByName("includeSubTypes")[0].getValue()
@@ -269,6 +273,10 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
   # create form
   __getEditorFields: (cdata) ->
     console.log("%o", @getCustomSchemaSettings())
+    typesToEnable = @getCustomSchemaSetting("gnd_types_enabled_default", []).map (gndType) ->
+      gndType.trim()
+    typesOverridable = @getCustomSchemaSetting("gnd_types_overridable", []).map (gndType) ->
+      gndType.trim()
     fields = [
       {
         type: CUI.Input
@@ -277,6 +285,9 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
             label: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar")
         placeholder: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar.placeholder")
         name: "searchbarInput"
+        onFocus: (input, evt) =>
+          if input.getValue()?
+            suggest_Menu.show()
         # class: 'commonPlugin_Input'
       }
       {
@@ -286,9 +297,10 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
         form:
           label: $$('custom.data.type.ubhdgnd.modal.form.text.type')
         name: 'enabledGndTypes'
-        options: @getCustomSchemaSetting('gnd_types_overridable', []).map (gndClass) ->
-          value: gndClass.trim()
-          text: $$("custom.data.type.ubhdgnd.config.option.schema.gnd_types_overridable.value.#{gndClass.trim()}")
+        options: typesToEnable.map (type) ->
+          value: type 
+          text: $$("custom.data.type.ubhdgnd.config.option.schema.gnd_types_overridable.value.#{type}")
+          disabled: type not in typesOverridable
       }
       {
         type: CUI.Checkbox
@@ -343,7 +355,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
           if cdata.conceptURI == ''
             _this.hide()
       }
-    )
+    ]    
     return fields
 
 
