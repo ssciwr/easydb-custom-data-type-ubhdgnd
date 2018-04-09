@@ -23,6 +23,8 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
 
     @__renderEditorInputPopover(data, cdata)
 
+  renderFieldAsGroup: ->
+    return false
 
   __renderEditorInputPopover: (data, cdata) ->
     layout = new CUI.HorizontalLayout
@@ -172,28 +174,24 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
     else
       pluginName = @getCustomSchemaSetting('authorities_backend')
       # TODO Add endpoint URL?
-      @__authoritiesClient = AuthoritiesClient.plugin(pluginName, {width: 300})
+      @__authoritiesClient = AuthoritiesClient.plugin(pluginName, {width: 400})
 
   #----------------------------------------------------------------------
   # handle suggestions-menu
   __updateSuggestionsMenu: (cdata, cdata_form, suggest_Menu) ->
-    if @__suggestMenu?
+    if not @__suggestMenu?      
       @__suggestMenu = suggest_Menu
-    # console.log({cdata_form, type, gnd_searchterm})
-
+    if not cdata.searchbarInput
+      # No search term has been entered. Do not start query for suggestions and hide the suggestions list.
+      suggest_Menu.hide()
+      return
     # TODO debounce
     {preferredName, variantName, arrayify} = AuthoritiesClient.utils.handlebars.helpers
-    format = 'opensearch'
-
-    type = cdata_form.getFieldsByName("enabledGndTypes")[0].getValue()
-    console.log("%o", type)
-    console.log("typeof enabledGndTypes == %s", typeof type)
-    gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
-    count = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
-    withSubTypes = cdata_form.getFieldsByName("includeSubTypes")[0].getValue()
-    if not gnd_searchterm
-      return
-    @__getAuthoritiesClient().search(gnd_searchterm, {type, format, withSubTypes, count})
+    format = 'opensearch'    
+    type = cdata.enabledGndTypes
+    count = cdata.countOfSuggestions
+    withSubTypes = cdata.includeSubTypes
+    @__getAuthoritiesClient().search(cdata.searchbarInput, {type, format, withSubTypes, count})
       .then (data) =>
         # create new menu with suggestions
         menu_items = []
@@ -225,7 +223,8 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                   @__getAuthoritiesClient().infoBox(gndId)
                     .then (html) ->
                       tooltip.__pane.replace(CUI.dom.htmlToNodes(html), "center")
-                      tooltip.autosize()
+                      tooltip.autoSize()
+                      tooltip.DOM.style.maxWidth = '40%'
                     .catch (err) -> console.warn(new Error(err))
                   return new CUI.Label(icon: "spinner", text: "lade Informationen")
           # console.log(menu_items)
@@ -252,7 +251,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                 cdata_form.getFieldsByName("searchbarInput")[0].setValue('')
                 # hide suggest-menu
               .catch (err) -> console.error(err)
-              suggest_Menu.hide()
+              #suggest_Menu.hide()
             return @
 
         # if no hits set "empty" message to menu
@@ -286,8 +285,8 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
         placeholder: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar.placeholder")
         name: "searchbarInput"
         onFocus: (input, evt) =>
-          if input.getValue()?
-            suggest_Menu.show()
+          if input.getValue()
+            @__suggestMenu.show()
         # class: 'commonPlugin_Input'
       }
       {
@@ -297,6 +296,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
         form:
           label: $$('custom.data.type.ubhdgnd.modal.form.text.type')
         name: 'enabledGndTypes'
+        min_checked: 1
         options: typesToEnable.map (type) ->
           value: type 
           text: $$("custom.data.type.ubhdgnd.config.option.schema.gnd_types_overridable.value.#{type}")
@@ -346,9 +346,24 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
         form:
           label: "Verknüpfte URI"
         type: CUI.FormButton
+        appearance: "link"
         name: "conceptURI"
         icon: new CUI.Icon(class: "fa-lightbulb-o")
         text: cdata.conceptURI
+        tooltip:
+          markdown: false
+          placement: "e"
+          content: (tooltip) =>
+            # if enabled in mask-config
+            return unless @getCustomMaskSettings().show_infopopup?.value
+            # download infos
+            @__getAuthoritiesClient().infoBox(cdata.conceptURI)
+              .then (html) ->
+                tooltip.__pane.replace(CUI.dom.htmlToNodes(html), "center")
+                tooltip.autoSize()
+                tooltip.DOM.style.maxWidth = '40%'
+              .catch (err) -> console.warn(new Error(err))
+            return new CUI.Label(icon: "spinner", text: "lade Informationen")
         onClick: (evt,button) =>
           window.open cdata.conceptURI, "_blank"
         onRender : (_this) =>

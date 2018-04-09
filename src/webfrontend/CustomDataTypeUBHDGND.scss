@@ -4,6 +4,12 @@
   }
 }
 
+.cui-form-field-name--searchbarInput, .cui-form-field-name--countOfSuggestions {
+  border-bottom: solid 1px $border;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
 [cui-data-field-name="conceptSeeAlso"] {
 
   .cui-button-visual {
