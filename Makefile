@@ -3,7 +3,7 @@ PATH := ./node_modules/.bin:$(PATH)
 PLUGIN_NAME = custom-data-type-ubhdgnd
 PLUGIN_NAME_CAMELCASE = CustomDataTypeUBHDGND
 
-WEBPACK = webpack --config webpack.config.js 
+WEBPACK = webpack --config webpack.config.js
 
 L10N_FILES = l10n/$(PLUGIN_NAME).csv
 L10N_GOOGLE_KEY = 1Z3UPJ6XqLBp-P8SUf-ewq4osNJ3iZWKJB83tc6Wrfn0
@@ -20,19 +20,21 @@ INSTALL_FILES = \
 	$(PLUGIN_NAME_CAMELCASE).config.yml
 
 COFFEE_FILES = easydb-library/src/commons.coffee \
+	src/webfrontend/OptionsTreeConfigPlugin.coffee \
 	src/webfrontend/$(PLUGIN_NAME_CAMELCASE).coffee
+
 
 JS = $(WEB)/${PLUGIN_NAME}.raw.js
 
 export
 
-all: webpack scss
+all: webpack scss build-stamp-l10n
 
 include easydb-library/tools/base-plugins.make
 
 build: code $(L10N)
 
-code: $(JS)
+code: webpack
 
 clean: clean-base
 
@@ -47,7 +49,7 @@ $(WEB)/$(PLUGIN_NAME).raw.coffee: $(COFFEE_FILES)
 $(WEB)/$(PLUGIN_NAME).raw.js: $(WEB)/$(PLUGIN_NAME).raw.coffee
 	coffee -cb $<
 
-$(WEB)/$(PLUGIN_NAME).js: $(WEB)/$(PLUGIN_NAME).raw.js
+$(WEB)/$(PLUGIN_NAME).js: $(JS)
 	$(WEBPACK) $^ $@
 
 webpack: $(WEB)/$(PLUGIN_NAME).js

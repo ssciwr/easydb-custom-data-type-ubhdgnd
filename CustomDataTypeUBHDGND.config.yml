@@ -147,19 +147,20 @@ custom_types:
 
     config:
       schema:
-
-        - name: 'authorities_backend'
+        - name: 'search'
           parameters:
-            value:
+            authorities_backend:
               type: 'select'
               options:
                 - 'ubhd/gnd'
                 - 'gbv/gnd'
-
-        - name: 'gnd_types_enabled_default'
-          parameters:
-            value:
-              type: 'string-list' # XXX BaseConfig.getFieldDefFromParm
+              position: 1
+            gnd_types:
+              position: 2
+              # We have to use type: text (or int), because the current logic does not take 'plugin_type' in to account for 'string-list'
+              # See BaseConfig.getFieldDefFromParm
+              type: text
+              plugin_type: options-tree
               choices:
                 - 'PlaceOrGeographicName'
                 - '    AdministrativeUnit'
@@ -185,9 +186,13 @@ custom_types:
                 - 'ConferenceOrEvent'
                 - '    SeriesOfConferenceOrEvent'
                 - 'CorporateBody'
+                - '    Company'
+                - '    MusicalCorporateBody'
                 - '    FictiveCorporateBody'
                 - '    OrganOfCorporateBody'
                 - '    ProjectOrProgram'
+                - '    ReligiousAdministrativeUnit'
+                - '    ReligiousCorporateBody'
                 - 'Subject'
                 - '    CharactersOrMorphemes'
                 - '    EthnographicName'
@@ -203,74 +208,11 @@ custom_types:
                 - 'Work'
                 - '    Collection'
                 - '    CollectiveManuscript'
+                - '    Expression'
                 - '    Manuscript'
                 - '    MusicalWork'
                 - '    ProvenanceCharacteristic'
                 - '    VersionOfAMusicalWork'
-
-
-        - name: 'gnd_types_overridable'
-          parameters:
-            value:
-              type: 'string-list' # XXX BaseConfig.getFieldDefFromParm
-              choices:
-                - 'PlaceOrGeographicName'
-                - '    AdministrativeUnit'
-                - '    BuildingOrMemorial'
-                - '    Country'
-                - '    ExtraterrestrialTerritory'
-                - '    FictivePlace'
-                - '    MemberState'
-                - '    NameOfSmallGeographicUnitLyingWithinAnotherGeographicUnit'
-                - '    NaturalGeographicUnit'
-                - '    ReligiousTerritory'
-                - '    TerritorialCorporateBodyOrAdministrativeUnit'
-                - '    WayBorderOrLine'
-                - 'Person'
-                - '    DifferentiatedPerson'
-                - '        CollectivePseudonym'
-                - '        Gods'
-                - '        LiteraryOrLegendaryCharacter'
-                - '        Pseudonym'
-                - '        RoyalOrMemberOfARoyalHouse'
-                - '        Spirits'
-                - '    UndifferentiatedPerson'
-                - 'ConferenceOrEvent'
-                - '    SeriesOfConferenceOrEvent'
-                - 'CorporateBody'
-                - '    FictiveCorporateBody'
-                - '    OrganOfCorporateBody'
-                - '    ProjectOrProgram'
-                - 'Subject'
-                - '    CharactersOrMorphemes'
-                - '    EthnographicName'
-                - '    FictiveTerm'
-                - '    GroupOfPersons'
-                - '    HistoricSingleEventOrEra'
-                - '    Language'
-                - '    MeansOfTransportWithIndividualName'
-                - '    NomenclatureInBiologyOrChemistry'
-                - '    ProductNameOrBrandName'
-                - '    SoftwareProduct'
-                - '    SubjectHeadingSensoStricto'
-                - 'Work'
-                - '    Collection'
-                - '    CollectiveManuscript'
-                - '    Manuscript'
-                - '    MusicalWork'
-                - '    ProvenanceCharacteristic'
-                - '    VersionOfAMusicalWork'
-
-        - name: override_subtype_search
-          parameters:
-            value:
-              type: bool
-
-        - name: enable_subtype_search_default
-          parameters:
-            value:
-              type: bool
-
       mask:
         - name: show_infopopup
           parameters:
