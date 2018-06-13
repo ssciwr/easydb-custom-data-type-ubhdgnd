@@ -10,7 +10,12 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
       @fullName()+".conceptType"
       @fullName()+".conceptDetails"
       ]
-
+  # Version 5.34 added support for "_standard" Field in CustomDataTypePlugin.
+  # https://docs.easydb.de/en/releases/releases.html#version-534
+  # and
+  # https://docs.easydb.de/en/technical/plugins/customdatatype/customdatatype.html#general-keys
+  supportsStandard: ->
+    true
   #----------------------------------------------------------------------
   # handle editorinput
   renderEditorInput: (data, top_level_data, opts) ->
@@ -101,6 +106,8 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
           _fulltext:
             text: field_value.conceptName + " " + conceptSeeAlsoText
             string: field_value.conceptURI
+          _standard:
+            text: field_value.conceptName
 
   buildEmptyData: () ->
     {
