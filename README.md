@@ -63,6 +63,25 @@ As defined in `CustomDataTypeUBHDGND.config.yml` this datatype can be configured
 
 * whether additional informationen is loaded if the mouse hovers a suggestion in the search result
 
+### Search mapping
+
+The mapping allows fields to be searchable with facets ("Filter"):
+```yaml
+custom_types:
+  ubhdgnd:
+    mapping:
+      conceptName:
+        type: text
+      conceptURI:
+        type: text
+      conceptSeeAlso:
+        type: text       
+```
+
+See https://github.com/programmfabrik/easydb-documentation/issues/3
+
+Fulltext search is implemented as the concatenation of "conceptName" and "conceptSeeAlso".
+
 ## Sources
 
 The source code of this plugin is managed in a git repository at
