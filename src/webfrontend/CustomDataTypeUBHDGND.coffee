@@ -311,7 +311,8 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
       horizontal: false
     @__updateSeeAlsoDisplay(cdata)
     typesField = OptionsTreeConfigPlugin.buildOptionsField(typeOpts,
-      types, @__getAuthoritiesClient().gndHierarchy)
+      types, @__getAuthoritiesClient().gndHierarchy,
+      "custom.data.type.ubhdgnd.config.option.schema.search.gnd_types")
     fields = [
       {
         type: CUI.Input
