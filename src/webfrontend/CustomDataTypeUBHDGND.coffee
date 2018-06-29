@@ -177,13 +177,15 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
 
   #----------------------------------------------------------------------
   # Instantiate authoritiesClient with the configured authorities_backend
-  __getAuthoritiesClient: () ->
+  __getAuthoritiesClient: (custom_settings = {}) ->
     if @__authoritiesClient
       return @__authoritiesClient
+    else if not CUI.util.isEmptyObject(custom_settings)
+      pluginName = custom_settings.search?.authorities_backend
     else
       pluginName = @getCustomSchemaSetting("search", "authorities_backend")
-      # TODO Add endpoint URL?
-      @__authoritiesClient = AuthoritiesClient.plugin(pluginName, {width: 400})
+    # TODO Add endpoint URL?
+    @__authoritiesClient = AuthoritiesClient.plugin(pluginName, {width: 400})
 
   #----------------------------------------------------------------------
   # handle suggestions-menu
@@ -247,8 +249,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                     p.preferredName
                 # update form
                 @__updateSeeAlsoDisplay(cdata)
-                if cdata.conceptSeeAlsoDisplay
-                  console.log "seeAlsoDisplay true"
+                if cdata.conceptSeeAlsoDisplay                  
                   cdata_form.getFieldsByName("conceptSeeAlsoDisplay")[0].show(true)
                 else
                   cdata_form.getFieldsByName("conceptSeeAlsoDisplay")[0].hide(true)
@@ -471,10 +472,12 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
   # zeige die gewählten Optionen im Datenmodell unter dem Button an
   getCustomDataOptionsInDatamodelInfo: (custom_settings) ->
     tags = []
-    console.log custom_settings
-    # TODO If all types enabled just display "All Types", "Alle Typen"
-    (custom_settings.search?.gnd_types or []).forEach (gndClass) ->
-      tags.push "✓ " + $$("custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.#{gndClass.trim()}")
+    enabledGndTypes = (custom_settings.search?.gnd_types or [])
+    if enabledGndTypes.length == @__getAuthoritiesClient(custom_settings).gndHierarchy.count()
+      tags.push "✓ " + $$("custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.all")
+    else
+      enabledGndTypes.forEach (type) ->
+        tags.push "✓ " + $$("custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.#{type.trim()}")
     return tags
 
 

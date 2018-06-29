@@ -4,31 +4,37 @@ class OptionsTreeConfigPlugin extends BaseConfigPlugin
   @buildOptionsField: (optionsOpts, choices, hierarchy, localisationPrefix) ->
     addedAncestors = {}
     trimmedChoices = choices.map (choice) -> choice.trim()
-    buildOption = (choice, index) ->
+    optionsOpts.options = []
+    for choice in choices
       trimmedChoice = choice.trim()
+      parentOption = null
       option =
         text: $$("#{localisationPrefix}.#{trimmedChoice}")
         value: choice
       ancestors = hierarchy.ancestors trimmedChoice
       if ancestors.length > 0
         parent = ancestors[0]
-        if parent not in trimmedChoices and index not of addedAncestors
+        if parent not in trimmedChoices and parent not of addedAncestors
           # the ancestor of this option is not in the choice and
           # has not yet been considered. add a disabled option to keep the
           # grouping
           parentMargin = (ancestors.length - 1) * 16
-          addedAncestors[index] =
+          addedAncestors[parent] = true
+          optionsOpts.options.push {
             text: $$("#{localisationPrefix}.#{parent}")
             value: parent
             disabled: true
             attr:
               style: "margin-left: #{parentMargin}px"
-          console.log addedAncestors
+          }
         marginLeft = ancestors.length * 16
         option.attr =
           style: "margin-left: #{marginLeft}px"
-      option
+      optionsOpts.options.push option
 
+    # Function to register all checkbox activation/deactivation handlers
+    # based on the hierarchy
+    # during init of the Options field
     optionsOpts.onInit = (optionsField) ->
       optionsField._options.forEach (option) ->
         descendants = hierarchy.descendants option.value.trim()
@@ -41,10 +47,6 @@ class OptionsTreeConfigPlugin extends BaseConfigPlugin
                   break
           option.onActivate = () -> callOnDescendants('activate')
           option.onDeactivate = () -> callOnDescendants('deactivate')
-    optionsOpts.options = choices.map buildOption
-    # add missing ancestor choices to the options
-    for index, option of addedAncestors
-      optionsOpts.options.splice(index, 0, option)
     optionsOpts
 
   getFieldDefFromParm: (baseConfig, pname, def, parent_def) ->
