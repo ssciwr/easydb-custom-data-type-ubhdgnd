@@ -19,7 +19,8 @@ module.exports = {
     },
     plugins: [
       new UglifyJsPlugin({
-        mangle: false,
-      })
+            compress: {warnings: false, keep_fnames: true},
+            mangle: {keep_classnames: true, keep_fnames: true}
+        })
     ]
 };
