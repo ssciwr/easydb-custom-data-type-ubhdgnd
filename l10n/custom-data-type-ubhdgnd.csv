@@ -47,6 +47,7 @@ custom.data.type.ubhdgnd.config.option.schema.search.authorities_backend.ubhd/gn
 custom.data.type.ubhdgnd.config.option.schema.search.authorities_backend.gbv/gnd,GBV,GBV,,
 
 custom.data.type.ubhdgnd.config.parameter.schema.search.gnd_types.label,Entitätentypen,Entity types,,
+custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.all,"Alle Typen","All Types",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.PlaceOrGeographicName,"Geografikum (giz)","Place or geographic Name (giz)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.AdministrativeUnit,"Verwaltungseinheit (giv)","Administrative unit (giv)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.BuildingOrMemorial,"Bauwerke oder Denkmal (gib)","Building or memorial (gib)",,
@@ -68,6 +69,7 @@ custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.Pseudonym,"Pseudo
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.RoyalOrMemberOfARoyalHouse,"Regierender Fürst oder Mitglied eines regierenden Fürstenhauses (pik)","Royal or member of a royal house (pik)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.Spirits,"Geister (pxs)","Spirits (pxs)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.UndifferentiatedPerson,"Nicht-individualisierte Person","Undifferentiated person",,
+custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.Family,"Familie (pif)","Family (pif)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.ConferenceOrEvent,"Konferenz oder Veranstaltung (vie)","Conference or event (vie)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.SeriesOfConferenceOrEvent,"Konferenzfolge oder Veranstaltungsfolge (vif)","Series of conference or event (vif)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.CorporateBody,"Körperschaft (kiz)","Corporate body (kiz)",,

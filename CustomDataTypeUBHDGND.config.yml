@@ -57,6 +57,7 @@ custom_types:
                 - '        RoyalOrMemberOfARoyalHouse'
                 - '        Spirits'
                 - '    UndifferentiatedPerson'
+                - 'Family'
                 - 'ConferenceOrEvent'
                 - '    SeriesOfConferenceOrEvent'
                 - 'CorporateBody'
