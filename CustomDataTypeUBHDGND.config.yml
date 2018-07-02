@@ -16,7 +16,7 @@ custom_types:
       conceptName:
         type: text
       conceptURI:
-        type: text
+        type: text_oneline
       conceptSeeAlso:
         type: text
     config:

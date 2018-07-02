@@ -3,13 +3,23 @@ debounce = require("lodash.debounce")
 
 class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
   getFieldNames: ->
+    fieldNames = @getFieldNamesForSearch()
+    fieldNames.push [
+      @fullName()+".conceptType"
+      @fullName()+".conceptDetails"
+    ]
+    fieldNames
+
+  getFieldNamesForSearch: ->
     return [
       @fullName()+".conceptURI"
       @fullName()+".conceptName"
       @fullName()+".conceptSeeAlso"
-      @fullName()+".conceptType"
-      @fullName()+".conceptDetails"
       ]
+
+  getFieldNamesForSuggest: ->
+    @getFieldNamesForSearch()
+
   # Version 5.34 added support for "_standard" Field in CustomDataTypePlugin.
   # https://docs.easydb.de/en/releases/releases.html#version-534
   # and
