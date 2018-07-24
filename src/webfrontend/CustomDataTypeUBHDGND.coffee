@@ -294,16 +294,17 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
   getConceptNameDisplay: (cdata) ->
     unless cdata.conceptDetails?
       return cdata.conceptName
-    gYear = AuthoritiesClient.utils.handlebars.helpers.gYear  
-    displayString = cdata.conceptName
+    gYear = AuthoritiesClient.utils.handlebars.helpers.gYear
     additions = []
     if cdata.conceptDetails.dateOfDeath?
       additions.push(gYear(cdata.conceptDetails.dateOfBirth) + " - #{gYear(cdata.conceptDetails.dateOfDeath)}")
-    if cdata.conceptDetails.professionOrOccupation? && cdata.conceptDetails.professionOrOccupation.length > 0
-      additions.push(cdata.conceptDetails.professionOrOccupation.join(", "))
+    # Do not display professionOrOccupation
+    #if cdata.conceptDetails.professionOrOccupation? && cdata.conceptDetails.professionOrOccupation.length > 0
+    #  additions.push(cdata.conceptDetails.professionOrOccupation.join(", "))
     if additions.length > 0
-      displayString += " (#{additions.join('; ')})"
-    return displayString
+      return "#{cdata.conceptName} (#{additions.join('; ')})"
+    else
+      return cdata.conceptName
 
   #----------------------------------------------------------------------
   # create form
