@@ -37,41 +37,68 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
 
     @__renderEditorInputPopover(data, cdata)
 
-  renderFieldAsGroup: ->
-    return false
-
   __renderEditorInputPopover: (data, cdata) ->
+    that = @
+    layout
+    buttons = [
+      new CUI.Button
+        text: ''
+        icon: new CUI.Icon(class: "fa-ellipsis-v")
+        class: 'pluginDirectSelectEditSearch'
+        # show "dots"-menu on click on 3 vertical dots
+        onClick: (e, dotsButton) =>
+          dotsButtonMenu = new CUI.Menu
+            element : dotsButton
+            menu_items = [
+                #search
+                text: $$('custom.data.type.commons.controls.search.label')
+                value: 'search'
+                icon_left: new CUI.Icon(class: "fa-search")
+                onClick: (e2, btn2) ->
+                  that.showEditPopover(dotsButton, cdata, layout)
+            ]
+            detailinfo =
+              #detailinfo
+              text: $$('custom.data.type.commons.controls.detailinfo.label')
+              value: 'detail'
+              icon_left: new CUI.Icon(class: "fa-info-circle")
+              disabled: that.isEmpty(data, 0, 0)
+              tooltip: @buildTooltipOpts(cdata)
+            menu_items.push detailinfo
+            uriCall =
+                # call uri
+                text: $$('custom.data.type.commons.controls.calluri.label')
+                value: 'uri'
+                icon_left: new CUI.Icon(class: "fa-external-link")
+                disabled: that.isEmpty(data, 0, 0) || ! CUI.parseLocation(cdata.conceptURI)
+                onClick: ->
+                  window.open cdata.conceptURI, "_blank"
+            menu_items.push uriCall
+            deleteClear =
+                #delete / clear
+                text: $$('custom.data.type.commons.controls.delete.label')
+                value: 'delete'
+                icon_left: new CUI.Icon(class: "fa-trash")
+                disabled: that.isEmpty(data, 0, 0)
+                onClick: ->
+                  cdata = that.buildEmptyData()
+                  data[that.name()] = cdata
+                  that.__updateResult(cdata, layout)
+            menu_items.push deleteClear
+            itemList =
+              items: menu_items
+          dotsButtonMenu.setItemList(itemList)
+          dotsButtonMenu.show()
+    ]
+    # build layout for editor
     layout = new CUI.HorizontalLayout
-      maximize_horizontal: false
-      left:
+      class: ''
+      center:
+        class: ''
+      right:
         content:
-          new CUI.Buttonbar(
-            buttons: [
-              new CUI.Button
-                text: ""
-                icon: "edit"
-                group: "groupA"
-                onClick: (ev, btn) =>
-                  @showEditPopover(btn, cdata, layout)
-              new CUI.Button
-                text: ""
-                icon: "trash"
-                group: "groupA"
-                onClick: (ev, btn) =>
-                  # delete data
-                  cdata = @buildEmptyData()
-                  data[@name()] = cdata
-                  # trigger form change
-                  @__updateResult(cdata, layout)
-                  CUI.Events.trigger
-                    node: @__layout
-                    type: "editor-changed"
-                  CUI.Events.trigger
-                    node: layout
-                    type: "editor-changed"
-              ]
-            )
-      right: {}
+          new CUI.Buttonbar
+            buttons: buttons
     @__updateResult(cdata, layout)
     layout
 
@@ -180,12 +207,6 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
   getEditPopoverTitle: -> $$("custom.data.type.ubhdgnd.modal.title")
 
   #----------------------------------------------------------------------
-  # make sure enabled overridable options are actually enabled
-  showEditPopover: (args...) ->
-    super(args...)
-    console.log @getCustomSchemaSettings()
-
-  #----------------------------------------------------------------------
   # Instantiate authoritiesClient with the configured authorities_backend
   __getAuthoritiesClient: (custom_settings = {}) ->
     if @__authoritiesClient
@@ -194,26 +215,35 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
       pluginName = custom_settings.search?.authorities_backend
     else
       pluginName = @getCustomSchemaSetting("search", "authorities_backend")
+    if not pluginName?
+      pluginName = "ubhd/gnd"
     # TODO Add endpoint URL?
     @__authoritiesClient = AuthoritiesClient.plugin(pluginName, {width: 400})
 
   #----------------------------------------------------------------------
   # handle suggestions-menu
-  __updateSuggestionsMenu: debounce((cdata, cdata_form, suggest_Menu) ->
+  __updateSuggestionsMenu: debounce((cdata, cdata_form, searchstring, input, suggest_Menu, searchsuggest_xhr, layout) ->
     if not @__suggestMenu?
       @__suggestMenu = suggest_Menu
-    if not cdata.searchbarInput or cdata.searchbarInput.length < 2
+    if not searchstring or searchstring.length < 2
       # No search term has been entered
       suggest_Menu.hide()
       return
     {preferredName, variantName, arrayify, hrefGnd} = AuthoritiesClient.utils.handlebars.helpers
+    # Default options for search, will be used for direct input in editor
     searchOpts =
       format: "opensearch"
-      type: cdata.queryOptions.enabledGndTypes
-      count: cdata.countOfSuggestions
-      queryLevel: cdata.queryLevel
-    @__getAuthoritiesClient().search(cdata.searchbarInput, searchOpts)
-      .then (data) =>
+      count: 50
+      queryLevel: 1
+      type: @getCustomSchemaSetting("search", "gnd_types", [])
+    # Form exists when the edit popover is open
+    if cdata_form
+      searchOpts.type = cdata.queryOptions.enabledGndTypes
+      searchOpts.count = cdata.countOfSuggestions
+      searchOpts.queryLevel = cdata.queryLevel
+
+    @__getAuthoritiesClient().search(searchstring, searchOpts)
+      .then (data) =>        
         # create new menu with suggestions
         menu_items = []
         for i of data[1]
@@ -259,14 +289,17 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                     p.preferredName
                 # update form
                 @__updateSeeAlsoDisplay(cdata)
-                if cdata.conceptSeeAlsoDisplay                  
-                  cdata_form.getFieldsByName("conceptSeeAlsoDisplay")[0].show(true)
+                if cdata_form
+                  if cdata.conceptSeeAlsoDisplay         
+                    cdata_form.getFieldsByName("conceptSeeAlsoDisplay")[0].show(true)
+                  else
+                    cdata_form.getFieldsByName("conceptSeeAlsoDisplay")[0].hide(true)
+                  cdata_form.getFieldsByName("conceptURI")[0].setText(cdata.conceptURI)
+                  cdata_form.getFieldsByName("conceptURI")[0].show(true)
+                  cdata_form.displayValue()
+                  cdata_form.triggerDataChanged()
                 else
-                  cdata_form.getFieldsByName("conceptSeeAlsoDisplay")[0].hide(true)
-                cdata_form.getFieldsByName("conceptURI")[0].setText(cdata.conceptURI)
-                cdata_form.getFieldsByName("conceptURI")[0].show(true)
-                cdata_form.displayValue()
-                cdata_form.triggerDataChanged()
+                  @__updateResult(cdata, layout)
                 console.log("selected", cdata)
               .catch (err) -> console.error(err)
             return @
@@ -309,8 +342,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
   #----------------------------------------------------------------------
   # create form
   __getEditorFields: (cdata) ->
-    @__suggestMenu = null
-    console.log cdata
+    @__suggestMenu = null    
     types = @getCustomSchemaSetting("search", "gnd_types", [])
     # Set defaults
     cdata.countOfSuggestions = 50
@@ -449,17 +481,28 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
     if @getCustomMaskSettings().show_infopopup?.value
       tooltip = @buildTooltipOpts(cdata, "w")
     else
-      tooltip =
-        markdown: true
-        placement: "w"
-        content: $$("custom.data.type.ubhdgnd.url.tooltip", name: cdata.conceptName)
-    # output Button with Name of picked Entry and Url to the Source
-    return new CUI.ButtonHref
-      appearance: "link"
-      href: cdata.conceptURI
-      target: "_blank"
-      tooltip: tooltip
-      text: @getConceptNameDisplay(cdata)
+      tooltip = null
+    tt_text = $$("custom.data.type.ubhdgnd.url.tooltip", name: cdata.conceptName)
+    # label with name of entry and button with link to source
+    new CUI.HorizontalLayout
+      maximize: true
+      left:
+        content:
+          new CUI.Label
+            centered: true
+            tooltip: tooltip
+            text: @getConceptNameDisplay(cdata)
+      center:
+        content:
+          # output Button with Name of picked Entry and Url to the Source
+          new CUI.ButtonHref
+            appearance: "link"
+            href: cdata.conceptURI
+            target: "_blank"
+            tooltip:
+              markdown: true
+              text: tt_text
+      right: null
     .DOM
 
   buildTooltipOpts: (cdata, placement="w") ->
@@ -468,23 +511,27 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
     class: "gnd-tooltip"
     #placements: ["w","e","s"]
     content: (tooltip) =>
-      # download infos
-      @__getAuthoritiesClient().infoBox(cdata.conceptURI)
-        .then (html) ->
-          tooltip.__pane.replace(CUI.dom.htmlToNodes(html), "center")
-          CUI.dom.setStyleOne(tooltip.DOM, "max-width", "50%")
-          tooltip.autoSize()
-          #tooltip.DOM.style.maxWidth = "40%"
-        .catch (err) -> console.warn(new Error(err))
+      @__getAdditionalTooltipInfo(cdata.conceptURI, tooltip)
       return new CUI.Label(icon: "spinner", text: "lade Informationen")
+
+
+  __getAdditionalTooltipInfo: (encodedURI, tooltip, xhr) ->
+    # download infos
+    @__getAuthoritiesClient().infoBox(encodedURI, {showTypes: true, showThumbnail: true})
+      .then (html) ->
+        tooltip.__pane.replace(CUI.dom.htmlToNodes(html), "center")
+        CUI.dom.setStyleOne(tooltip.DOM, "max-width", "50%")
+        tooltip.autoSize()
+      .catch (err) -> console.warn(new Error(err))
 
 
   #----------------------------------------------------------------------
   # zeige die gewählten Optionen im Datenmodell unter dem Button an
   getCustomDataOptionsInDatamodelInfo: (custom_settings) ->
-    tags = []
+    tags = []    
     enabledGndTypes = (custom_settings.search?.gnd_types or [])
-    if enabledGndTypes.length == @__getAuthoritiesClient(custom_settings).gndHierarchy.count()
+    if enabledGndTypes.length == @__getAuthoritiesClient(custom_settings).gndHierarchy.count() or
+       enabledGndTypes.length == 0
       tags.push "✓ " + $$("custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.all")
     else
       enabledGndTypes.forEach (type) ->

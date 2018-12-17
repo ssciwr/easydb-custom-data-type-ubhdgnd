@@ -5,7 +5,7 @@ PLUGIN_NAME_CAMELCASE = CustomDataTypeUBHDGND
 
 WEBPACK = webpack --config webpack.config.js
 
-L10N_FILES = l10n/$(PLUGIN_NAME).csv
+L10N_FILES = easydb-library/src/commons.l10n.csv l10n/$(PLUGIN_NAME).csv
 L10N_GOOGLE_KEY = 1Z3UPJ6XqLBp-P8SUf-ewq4osNJ3iZWKJB83tc6Wrfn0
 L10N_GOOGLE_GID = 1200588352
 L10N2JSON = python easydb-library/tools/l10n2json.py
@@ -17,22 +17,26 @@ INSTALL_FILES = \
 	$(WEB)/l10n/es-ES.json \
 	$(WEB)/l10n/it-IT.json \
 	$(JS) \
+	$(CSS) \
 	$(PLUGIN_NAME_CAMELCASE).config.yml
 
 COFFEE_FILES = easydb-library/src/commons.coffee \
 	src/webfrontend/OptionsTreeConfigPlugin.coffee \
 	src/webfrontend/$(PLUGIN_NAME_CAMELCASE).coffee
 
+SCSS_FILES = src/webfrontend/CustomDataTypeUBHDGND.scss
 
 JS = $(WEB)/${PLUGIN_NAME}.raw.js
 
 export
 
-all: webpack scss build-stamp-l10n
+all: build
 
 include easydb-library/tools/base-plugins.make
 
-build: code $(L10N)
+scss_call = node-sass --scss --no-cache --sourcemap=inline
+
+build: code css $(L10N)
 
 code: webpack
 
@@ -57,10 +61,6 @@ webpack: $(WEB)/$(PLUGIN_NAME).js
 
 watch:
 	./node_modules/.bin/nodemon -e 'coffee scss' -x make scss webpack
-
-scss:
-	mkdir -p build/webfrontend/scss/
-	cp -r src/webfrontend/CustomDataTypeUBHDGND.scss build/webfrontend/scss/body.scss
 
 l10n: build-stamp-l10n
 
