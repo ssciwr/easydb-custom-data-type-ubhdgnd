@@ -128,8 +128,9 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
 
       when "ok"
         field_value = {}
-        ;["conceptName", "conceptURI", "conceptType"].map (n) ->
+        ;["conceptName", "conceptURI"].map (n) ->
           field_value[n] = if cdata[n] then cdata[n].trim() else ""
+        field_value.conceptType = if cdata.conceptType? then cdata.conceptType else ""
         # conceptDetails is an object
         field_value.conceptDetails = cdata.conceptDetails or {}
         # conceptSeeAlso is an array
