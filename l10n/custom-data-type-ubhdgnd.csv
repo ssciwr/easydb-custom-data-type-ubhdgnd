@@ -80,7 +80,7 @@ custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.OrganOfCorporateB
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.ProjectOrProgram,"Projekt oder Programm (kip)","Project or program (kip)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.ReligiousAdministrativeUnit,"Religiöse Verwaltungseinheit (kiv)","Religious administrative unit (kiv)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.ReligiousCorporateBody,"Religiöse Körperschaft (kir)","Religious corporate body (kir)",,
-custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.Subject,"Schlagwort (szz)","Subject (szz)",,
+custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.SubjectHeading,"Schlagwort (szz)","Subject heading (szz)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.CharactersOrMorphemes,"Buchstaben oder Morpheme (slz)","Characters or morphemes (slz)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.EthnographicName,"Ethnografikum (sie)","Ethnographic name (sie)",,
 custom.data.type.ubhdgnd.config.option.schema.search.gnd_types.FictiveTerm,"Fiktiver Sachbegriff (sxz)","Fictive term (sxz)",,

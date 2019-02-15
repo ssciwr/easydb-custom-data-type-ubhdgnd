@@ -231,12 +231,13 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
       suggest_Menu.hide()
       return
     {preferredName, variantName, arrayify, hrefGnd} = AuthoritiesClient.utils.handlebars.helpers
+    types = @getCustomSchemaSetting("search", "gnd_types", [])    
     # Default options for search, will be used for direct input in editor
     searchOpts =
       format: "opensearch"
       count: 50
       queryLevel: 1
-      type: @getCustomSchemaSetting("search", "gnd_types", [])
+      type: types
     # Form exists when the edit popover is open
     if cdata_form
       searchOpts.type = cdata.queryOptions.enabledGndTypes
@@ -344,7 +345,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
   # create form
   __getEditorFields: (cdata) ->
     @__suggestMenu = null    
-    types = @getCustomSchemaSetting("search", "gnd_types", [])
+    types = @getCustomSchemaSetting("search", "gnd_types", [])    
     # Set defaults
     cdata.countOfSuggestions = 50
     cdata.queryOptions = { enabledGndTypes: types }

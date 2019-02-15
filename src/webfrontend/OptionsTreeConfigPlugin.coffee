@@ -1,6 +1,7 @@
 AuthoritiesClient = require("@ubhd/authorities-client")
 
 class OptionsTreeConfigPlugin extends BaseConfigPlugin
+
   @buildOptionsField: (optionsOpts, choices, hierarchy, localisationPrefix) ->
     addedAncestors = {}
     trimmedChoices = choices.map (choice) -> choice.trim()
