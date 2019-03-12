@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/programmfabrik/easydb-custom-data-type-gnd#readme",
   "dependencies": {
-    "@ubhd/authorities-client": "^0.6.3",
+    "@ubhd/authorities-client": "^0.6.4",
     "lodash.debounce": "^4.0.8"
   }
 }
