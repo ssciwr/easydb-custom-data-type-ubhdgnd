@@ -231,7 +231,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
       suggest_Menu.hide()
       return
     {preferredName, variantName, arrayify, hrefGnd} = AuthoritiesClient.utils.handlebars.helpers
-    types = @getCustomSchemaSetting("search", "gnd_types", [])    
+    types = @getCustomSchemaSetting("search", "gnd_types", [])
     # Default options for search, will be used for direct input in editor
     searchOpts =
       format: "opensearch"
@@ -245,7 +245,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
       searchOpts.queryLevel = cdata.queryLevel
 
     @__getAuthoritiesClient().search(searchstring, searchOpts)
-      .then (data) =>        
+      .then (data) =>
         # create new menu with suggestions
         menu_items = []
         for i of data[1]
@@ -292,7 +292,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                 # update form
                 @__updateSeeAlsoDisplay(cdata)
                 if cdata_form
-                  if cdata.conceptSeeAlsoDisplay         
+                  if cdata.conceptSeeAlsoDisplay
                     cdata_form.getFieldsByName("conceptSeeAlsoDisplay")[0].show(true)
                   else
                     cdata_form.getFieldsByName("conceptSeeAlsoDisplay")[0].hide(true)
@@ -332,7 +332,11 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
     gYear = AuthoritiesClient.utils.handlebars.helpers.gYear
     additions = []
     if cdata.conceptDetails.dateOfDeath?
-      additions.push(gYear(cdata.conceptDetails.dateOfBirth) + " - #{gYear(cdata.conceptDetails.dateOfDeath)}")
+      if cdata.conceptDetails.dateOfBirth?
+        dateOfBirthString = gYear(cdata.conceptDetails.dateOfBirth)
+      else
+        dateOfBirthString = "?"
+      additions.push("#{dateOfBirthString} - #{gYear(cdata.conceptDetails.dateOfDeath)}")
     # Do not display professionOrOccupation
     #if cdata.conceptDetails.professionOrOccupation? && cdata.conceptDetails.professionOrOccupation.length > 0
     #  additions.push(cdata.conceptDetails.professionOrOccupation.join(", "))
@@ -344,8 +348,8 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
   #----------------------------------------------------------------------
   # create form
   __getEditorFields: (cdata) ->
-    @__suggestMenu = null    
-    types = @getCustomSchemaSetting("search", "gnd_types", [])    
+    @__suggestMenu = null
+    types = @getCustomSchemaSetting("search", "gnd_types", [])
     # Set defaults
     cdata.countOfSuggestions = 50
     cdata.queryOptions = { enabledGndTypes: types }
@@ -368,7 +372,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
         placeholder: $$("custom.data.type.ubhdgnd.modal.form.text.searchbar.placeholder")
         name: "searchbarInput"
         onFocus: (input, evt) =>
-          if input.getValue()            
+          if input.getValue()
             @__suggestMenu?.show()
         # class: "commonPlugin_Input"
       }
@@ -448,7 +452,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
           label: $$("custom.data.type.ubhdgnd.modal.form.text.conceptSeeAlso.label")
         type: CUI.Input
         undo_and_changed_support: false
-        textarea: true        
+        textarea: true
         readonly: true
         readonly_select_all: false
         hidden: cdata.conceptSeeAlsoDisplay == ""
@@ -530,7 +534,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
   #----------------------------------------------------------------------
   # zeige die gewählten Optionen im Datenmodell unter dem Button an
   getCustomDataOptionsInDatamodelInfo: (custom_settings) ->
-    tags = []    
+    tags = []
     enabledGndTypes = (custom_settings.search?.gnd_types or [])
     if enabledGndTypes.length == @__getAuthoritiesClient(custom_settings).gndHierarchy.count() or
        enabledGndTypes.length == 0
