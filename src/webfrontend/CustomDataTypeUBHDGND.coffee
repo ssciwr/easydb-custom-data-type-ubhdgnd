@@ -35,9 +35,9 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
     else
       cdata = data[@name()]
 
-    @__renderEditorInputPopover(data, cdata)
+    @__renderEditorInputPopover(data, cdata, opts)
 
-  __renderEditorInputPopover: (data, cdata) ->
+  __renderEditorInputPopover: (data, cdata, opts) ->
     that = @
     layout
     buttons = [
@@ -55,7 +55,7 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
                 value: 'search'
                 icon_left: new CUI.Icon(class: "fa-search")
                 onClick: (e2, btn2) ->
-                  that.showEditPopover(dotsButton, cdata, layout)
+                  that.showEditPopover(dotsButton, data, cdata, layout, opts)
             ]
             detailinfo =
               #detailinfo
@@ -63,7 +63,7 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
               value: 'detail'
               icon_left: new CUI.Icon(class: "fa-info-circle")
               disabled: that.isEmpty(data, 0, 0)
-              tooltip: @buildTooltipOpts(cdata)
+              tooltip: @buildTooltipOpts(cdata, "w", true)
             menu_items.push detailinfo
             uriCall =
                 # call uri
@@ -83,7 +83,7 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
                 onClick: ->
                   cdata = that.buildEmptyData()
                   data[that.name()] = cdata
-                  that.__updateResult(cdata, layout)
+                  that.__updateResult(cdata, layout, opts)
             menu_items.push deleteClear
             itemList =
               items: menu_items
@@ -99,7 +99,7 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
         content:
           new CUI.Buttonbar
             buttons: buttons
-    @__updateResult(cdata, layout)
+    @__updateResult(cdata, layout, opts)
     layout
 
 
@@ -223,7 +223,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
 
   #----------------------------------------------------------------------
   # handle suggestions-menu
-  __updateSuggestionsMenu: debounce((cdata, cdata_form, searchstring, input, suggest_Menu, searchsuggest_xhr, layout) ->
+  __updateSuggestionsMenu: debounce((cdata, cdata_form, searchstring, input, suggest_Menu, searchsuggest_xhr, layout, opts) ->
     if not @__suggestMenu?
       @__suggestMenu = suggest_Menu
     if not searchstring or searchstring.length < 2
@@ -280,7 +280,13 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                 # lock in save data
                 cdata.conceptURI = hrefGnd(jsonld["@id"])
                 cdata.conceptName = preferredName(jsonld)
-                cdata.conceptSeeAlso = arrayify(variantName(jsonld))
+                cdata.conceptSeeAlso = []
+                for variantName in arrayify(variantName(jsonld))
+                  if CUI.isPlainObject(variantName) and variantName["@value"]
+                    cdata.conceptSeeAlso.push(variantName["@value"])
+                  else
+                    cdata.conceptSeeAlso.push(variantName)
+
                 cdata.conceptType = jsonld["@type"]
                 cdata.conceptDetails = {}
                 if jsonld.dateOfDeath?
@@ -301,7 +307,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                   cdata_form.displayValue()
                   cdata_form.triggerDataChanged()
                 else
-                  @__updateResult(cdata, layout)
+                  @__updateResult(cdata, layout, opts)
                 console.log("selected", cdata)
               .catch (err) -> console.error(err)
             return @
@@ -485,7 +491,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
     # if conceptURI .... ... patch abwarten
     # show infobox tooltip if enabled in mask settings
     if @getCustomMaskSettings().show_infopopup?.value
-      tooltip = @buildTooltipOpts(cdata, "w")
+      tooltip = @buildTooltipOpts(cdata, "w", true)
     else
       tooltip = null
     tt_text = $$("custom.data.type.ubhdgnd.url.tooltip", name: cdata.conceptName)
@@ -495,7 +501,6 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
       left:
         content:
           new CUI.Label
-            centered: true
             tooltip: tooltip
             text: @getConceptNameDisplay(cdata)
       center:
@@ -512,13 +517,14 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
     .DOM
 
   buildTooltipOpts: (cdata, placement="w") ->
-    markdown: true
-    placement: placement
-    class: "gnd-tooltip"
-    #placements: ["w","e","s"]
-    content: (tooltip) =>
-      @__getAdditionalTooltipInfo(cdata.conceptURI, tooltip)
-      return new CUI.Label(icon: "spinner", text: "lade Informationen")
+    opts =
+      placement: placement
+      class: "gnd-tooltip"
+      #placements: ["w","e","s"]
+      content: (tooltip) =>
+        @__getAdditionalTooltipInfo(cdata.conceptURI, tooltip)
+        return new CUI.Label(icon: "spinner", text: "lade Informationen")
+    opts
 
 
   __getAdditionalTooltipInfo: (encodedURI, tooltip, xhr) ->
