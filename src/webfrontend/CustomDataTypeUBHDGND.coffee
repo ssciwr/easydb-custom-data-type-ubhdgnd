@@ -280,7 +280,13 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                 # lock in save data
                 cdata.conceptURI = hrefGnd(jsonld["@id"])
                 cdata.conceptName = preferredName(jsonld)
-                cdata.conceptSeeAlso = arrayify(variantName(jsonld))
+                cdata.conceptSeeAlso = []
+                for variantName in arrayify(variantName(jsonld))
+                  if CUI.isPlainObject(variantName) and variantName["@value"]
+                    cdata.conceptSeeAlso.push(variantName["@value"])
+                  else
+                    cdata.conceptSeeAlso.push(variantName)
+
                 cdata.conceptType = jsonld["@type"]
                 cdata.conceptDetails = {}
                 if jsonld.dateOfDeath?

@@ -1,6 +1,10 @@
 plugin:
   name: custom-data-type-ubhdgnd
   version: 1.2
+  url: https://gitlab.ub.uni-heidelberg.de/kba/easydb-custom-data-type-ubhdgnd
+  displayname:
+    de-DE: GND Plugin UB Heidelberg
+    en-US: GND Plugin UB Heidelberg
   server:
     api-version:
       require: 1
