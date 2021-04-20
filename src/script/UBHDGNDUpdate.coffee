@@ -72,6 +72,9 @@ class UBHDGNDUpdate
                 console.error data
                 #ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: "Record https://d-nb.info/ubhdgnd/" + ubhdgndID + " not supported in lobid.org yet!?"})
               else
+
+                ## here we need to add our data conversion to the
+                ## I think..
                 resultsUBHDGNDID = data['ubhdgndIdentifier']
 
                 # then build new cdata and aggregate in objectsMap (see below)
