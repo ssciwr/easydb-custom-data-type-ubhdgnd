@@ -42,7 +42,7 @@ class UBHDGNDUpdate
       UBHDGNDIds.push(ubhdgndID)
 
 
-    console.log(test:{"test"},UBHDGNDIds) ## at the moment we get no ids, so it finishis here
+    # console.log({"test",UBHDGNDIds}) ## at the moment we get no ids, so it finishis here
     
     
     if UBHDGNDIds.length == 0
@@ -134,8 +134,11 @@ class UBHDGNDUpdate
     if not data
       ez5.respondError("custom.data.type.ubhdgnd.update.error.payload-missing")
       return
+    
+    
+    console.log({data: data]})
 
-    # console.log(" This gives an error and an output ")
+    #console.log(" This gives an error and an output ")
     # ez5.respondError("this should throw an error somewhere") # this shows the string and stops the program
 
     for key in ["action", "server_config", "plugin_config"]
