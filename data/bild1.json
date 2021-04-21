@@ -1,0 +1,114 @@
+{
+  "import_type": "db",
+  "objecttype": "bilder",
+  "objects": [
+    {
+      "_mask": "_all_fields",
+      "_objecttype": "bilder",
+      "bilder": {
+        "_pool": {
+          "pool": {
+            "lookup:_id": {
+              "reference": "migrated_objects"
+              }
+            }
+          },
+        "_version": 1,
+        "reference": "bild_picasso",
+        "titel": {
+          "de-DE": "Die Armen",
+          "en-US": "The Poor"
+        },
+        "datei": [
+          {
+            "eas:url": "https://heidicon.ub.uni-heidelberg.de/eas/partitions/4/0/185000/185467/c0269eb5ca7d3676b3885c4adc97d7a1b360cf24/image/png/099-small.png",
+            "preferred": true
+          }
+        ],
+        "entstehungsdatum": {
+          "value": "um 1947"
+        },
+        "aufnahmedatum": {
+          "value": "2020-04-04"
+        },
+        "autoren": [
+            {
+                "obj_autor_gnd": {
+                    "_fulltext": {
+                        "string": "http://d-nb.info/gnd/118594206",
+                        "text": "Picasso Pablo Ruiz y Saci Pos Pikaso Pamplo Pikasso Sacipos Ruys Пикассо Ruiz-Picasso Bikasu Bablu Paulos Pabura Ruys-Picasso Pi-chia-so"
+                    },
+                    "conceptURI": "http://d-nb.info/gnd/118594206",
+                    "_standard": {
+                        "text": "Picasso, Pablo"
+                    },
+                    "conceptName": "Picasso, Pablo",
+                    "conceptDetails": {
+                        "professionOrOccupation": [
+                            "Maler",
+                            "Grafiker",
+                            "Bildhauer",
+                            "Bühnenbildner",
+                            "Keramiker",
+                            "Künstler"
+                        ],
+                        "dateOfDeath": "1973-01-01",
+                        "dateOfBirth": "1881-01-01"
+                    },
+                    "conceptType": "DifferentiatedPerson",
+                    "conceptSeeAlso": [
+                        "Ruiz y Picasso, Pablo",
+                        "Saci Pos",
+                        "Pikaso, Pamplo",
+                        "Pikasso, Pamplo",
+                        "Sacipos",
+                        "Picasso, Pablo Ruys",
+                        "Пикассо",
+                        "Ruiz-Picasso, Pablo",
+                        "Bikasu, Bablu",
+                        "Picasso",
+                        "Picasso, Pablo Ruiz y",
+                        "Pikaso, Paulos",
+                        "Pikasso, Pabura",
+                        "Pikasso",
+                        "Pikasso, Pablo",
+                        "Pikaso, Pablo",
+                        "Ruys Picasso, Pablo",
+                        "Ruys-Picasso, Pablo",
+                        "Pikaso",
+                        "Picasso, Pablo Ruiz",
+                        "Pikasso, Paulos",
+                        "Pikaso, Pabura",
+                        "Ruiz, Pablo",
+                        "Ruiz Picasso, Pablo",
+                        "Pi-chia-so",
+                        "Ruys, Pablo"
+                    ]
+                }
+            }
+        ],
+        "_nested:bilder__personen": [
+                  {
+                    "bemerkung": [
+                        "Maler",
+                        "Grafiker",
+                        "Bildhauer",
+                        "Bühnenbildner",
+                        "Keramiker",
+                        "Künstler"
+                    ],
+                    "person": {
+                      "_mask": "_all_fields",
+                      "_objecttype": "personen",
+                      "personen": {
+                        "lookup:_id": {
+                          "name": "Max Mustermann"
+                        }
+                      }
+                    }
+                  }
+                ]
+      }
+    }
+  ]
+}

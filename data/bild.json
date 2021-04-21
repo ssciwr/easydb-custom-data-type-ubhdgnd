@@ -1,0 +1,34 @@
+{
+  "import_type": "db",
+  "objecttype": "bilder",
+  "objects": [
+    {
+      "_mask": "_all_fields",
+      "_objecttype": "bilder",
+      "bilder": {
+        "_pool": {
+          "pool": {
+            "lookup:_id": {
+              "reference": "migrated_objects"
+              }
+            }
+          },
+          "obj_datierung_freitext": {
+            "value": "um 1947"
+          }
+        },
+        "_version": 1,
+        "reference": "bild_picasso",
+        "titel": {
+          "de-DE": "Die Armen",
+          "en-US": "The Poor"
+        },
+        "datei": [
+          {
+            "eas:url": "https://heidicon.ub.uni-heidelberg.de/eas/partitions/4/0/185000/185467/c0269eb5ca7d3676b3885c4adc97d7a1b360cf24/image/png/099-small.png",
+            "preferred": true
+          }
+        ]
+      }
+  ]
+}
