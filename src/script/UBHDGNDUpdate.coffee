@@ -136,7 +136,7 @@ class UBHDGNDUpdate
       return
     
     
-    console.log({data: data})
+    console.log({data: "well this is a test"})
 
     #console.log(" This gives an error and an output ")
     # ez5.respondError("this should throw an error somewhere") # this shows the string and stops the program
