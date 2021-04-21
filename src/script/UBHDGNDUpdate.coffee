@@ -126,7 +126,7 @@ class UBHDGNDUpdate
       ez5.respondError("custom.data.type.ubhdgnd.update.error.payload-missing")
       return
 
-    console.log("this should print to console")
+    console.log(data)
     # ez5.respondError("this should throw an error somewhere") # this shows the string and stops the program
 
     for key in ["action", "server_config", "plugin_config"]
