@@ -16,7 +16,7 @@ class UBHDGNDUpdate
     that = @
     objectsMap = {}
     UBHDGNDIds = []
-
+    # console.log(" Now we are doing an update ")
     ## i think this checks if both of these things exist
     for object in objects
       if not (object.identifier and object.data)
@@ -126,7 +126,7 @@ class UBHDGNDUpdate
       ez5.respondError("custom.data.type.ubhdgnd.update.error.payload-missing")
       return
 
-    console.log(data)
+    # console.log(" This gives an error and an output ")
     # ez5.respondError("this should throw an error somewhere") # this shows the string and stops the program
 
     for key in ["action", "server_config", "plugin_config"]
