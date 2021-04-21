@@ -42,7 +42,7 @@ class UBHDGNDUpdate
       UBHDGNDIds.push(ubhdgndID)
 
 
-    console.log({"test",UBHDGNDIds})
+    console.log(test:{"test"},UBHDGNDIds) ## at the moment we get no ids, so it finishis here
     
     
     if UBHDGNDIds.length == 0
