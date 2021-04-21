@@ -16,7 +16,12 @@ class UBHDGNDUpdate
     that = @
     objectsMap = {}
     UBHDGNDIds = []
-    # console.log(" Now we are doing an update ")
+    
+    
+    console.log(" Now we are doing an update ")
+    
+    
+    
     ## i think this checks if both of these things exist
     for object in objects
       if not (object.identifier and object.data)
