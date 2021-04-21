@@ -3,6 +3,7 @@
   "batch_size": 100,
   "payload_base_uri": "",
   "eas_type": "direct",
-  "payloads": ["bild1.json"
+  "payloads": ["bild2.json",
+                "1212059-1212059@2cb291dc-94d3-482f-9630-a3943ebb1006.json"
               ]
 }

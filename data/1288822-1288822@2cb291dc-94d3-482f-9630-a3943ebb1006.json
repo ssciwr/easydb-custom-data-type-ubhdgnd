@@ -1,0 +1,478 @@
+{
+    "aggregations": {},
+    "format": "long",
+    "type": "objects",
+    "objecttypes": [
+        "objekte"
+    ],
+    "language": "de-DE",
+    "offset": 0,
+    "limit": 1000,
+    "objects": [
+        {
+            "_system_object_id": 1288822,
+            "_tags": [],
+            "_best_mask": true,
+            "_collections": [],
+            "_objecttype": "objekte",
+            "objekte": {
+                "_reverse_nested:ressourcen:lk_objekt_id": [
+                    {
+                        "_pool": {
+                            "pool": {
+                                "name": {
+                                    "de-DE": "Monumente",
+                                    "en-US": "Monuments"
+                                },
+                                "_id": 349,
+                                "_id_parent": 152
+                            },
+                            "_level": 4,
+                            "_path": [
+                                {
+                                    "pool": {
+                                        "name": {
+                                            "de-DE": "Alle Pools",
+                                            "en-US": "All pools"
+                                        },
+                                        "_id": 1
+                                    },
+                                    "_basetype": "pool"
+                                },
+                                {
+                                    "pool": {
+                                        "name": {
+                                            "de-DE": "HCTS"
+                                        },
+                                        "_id": 4,
+                                        "_id_parent": 1
+                                    },
+                                    "_basetype": "pool"
+                                },
+                                {
+                                    "pool": {
+                                        "name": {
+                                            "de-DE": "NHDP"
+                                        },
+                                        "_id": 152,
+                                        "_id_parent": 4
+                                    },
+                                    "_basetype": "pool"
+                                },
+                                {
+                                    "pool": {
+                                        "name": {
+                                            "de-DE": "Monumente",
+                                            "en-US": "Monuments"
+                                        },
+                                        "_id": 349,
+                                        "_id_parent": 152
+                                    },
+                                    "_basetype": "pool"
+                                }
+                            ],
+                            "_basetype": "pool"
+                        },
+                        "_tags": [],
+                        "_system_object_id": 1288825,
+                        "_id": 650789,
+                        "_uuid": "54993a76-8432-4321-81ce-85e792dad65f",
+                        "_version": 1,
+                        "_objecttype": "ressourcen",
+                        "asset": [
+                            {
+                                "status": "done",
+                                "class_extension": "image.nef",
+                                "class_version_extension": [
+                                    "image.small.png",
+                                    "image.preview.png",
+                                    "image.original.nef",
+                                    "image.full.png",
+                                    "image.huge.png"
+                                ],
+                                "technical_metadata": {
+                                    "file_sha224_checksum": "0055ea3475dd6057f34bdf920b414f21a592a31a9600183afb42fe3e",
+                                    "orientation": 1,
+                                    "camera_scanner": "NIKON D810",
+                                    "width": 7380,
+                                    "height": 4928,
+                                    "dpi": 300,
+                                    "max_dimension": 7380,
+                                    "format": "landscape",
+                                    "aspect_ratio": 1.4975649350649352,
+                                    "colordepth": 24,
+                                    "colorspace": "rgb"
+                                },
+                                "original_filename": "SAB_5143.NEF",
+                                "date_inserted": "2021-04-13T12:09:56Z",
+                                "filesize": 42490156,
+                                "eas_parent_id": null,
+                                "date_uploaded": "2021-04-13T12:09:40Z",
+                                "class_version_status": [
+                                    "image.small.done",
+                                    "image.preview.done",
+                                    "image.original.done",
+                                    "image.full.done",
+                                    "image.huge.done"
+                                ],
+                                "original_filename_basename": "SAB_5143",
+                                "extension": "nef",
+                                "original_filepath": "SAB_5143.NEF",
+                                "versions": {
+                                    "small": {
+                                        "filesize": 166623,
+                                        "height": 250,
+                                        "has_more_jobs": false,
+                                        "class": "image",
+                                        "width": 375,
+                                        "url": "https://heidicon.ub.uni-heidelberg.de/eas/partitions-inline/2/0/708000/708152/b30aa98a4b99c866a21e4cf214af49d416aabbb2/image/png",
+                                        "status": "done",
+                                        "extension": "png",
+                                        "aspect_ratio": 1.5,
+                                        "dpi": 299,
+                                        "download_url": "https://heidicon.ub.uni-heidelberg.de/eas/partitions/2/0/708000/708152/b30aa98a4b99c866a21e4cf214af49d416aabbb2/image/png/SAB_5143-small.png",
+                                        "_download_allowed": true
+                                    },
+                                    "preview": {
+                                        "filesize": 1055359,
+                                        "height": 667,
+                                        "status": "done",
+                                        "has_more_jobs": false,
+                                        "download_url": "https://heidicon.ub.uni-heidelberg.de/eas/partitions/2/0/708000/708152/74742c4378553ed835f9253112d26cfe4bd1e401/image/png/SAB_5143-preview.png",
+                                        "aspect_ratio": 1.4989999532699585,
+                                        "class": "image",
+                                        "width": 1000,
+                                        "url": "https://heidicon.ub.uni-heidelberg.de/eas/partitions-inline/2/0/708000/708152/74742c4378553ed835f9253112d26cfe4bd1e401/image/png",
+                                        "_relative_filename": "assets/SAB_5143.png",
+                                        "extension": "png",
+                                        "dpi": 299,
+                                        "zoom_url": "https://heidicon.ub.uni-heidelberg.de/eas/zoomer/708152/054f2d5c00dfa6c57e72abc0476d81fd?instance=easydb-unib-heidelberg",
+                                        "_download_allowed": true
+                                    },
+                                    "original": {
+                                        "_not_allowed": true
+                                    },
+                                    "full": {
+                                        "_not_allowed": true
+                                    },
+                                    "huge": {
+                                        "_not_allowed": true
+                                    }
+                                },
+                                "_id": 708152,
+                                "class": "image",
+                                "preferred": true,
+                                "pages_allowed": false
+                            }
+                        ],
+                        "res_kommentar_intern": "SAB_5143.NEF",
+                        "_global_object_id": "1288825@2cb291dc-94d3-482f-9630-a3943ebb1006"
+                    }
+                ],
+                "_id_parent": null,
+                "obj_aufbewahrort_gnd_privsammlung": false,
+                "_pool": {
+                    "pool": {
+                        "name": {
+                            "de-DE": "Monumente",
+                            "en-US": "Monuments"
+                        },
+                        "_id": 349,
+                        "_id_parent": 152
+                    },
+                    "_level": 4,
+                    "_path": [
+                        {
+                            "pool": {
+                                "name": {
+                                    "de-DE": "Alle Pools",
+                                    "en-US": "All pools"
+                                },
+                                "_id": 1
+                            },
+                            "_basetype": "pool"
+                        },
+                        {
+                            "pool": {
+                                "name": {
+                                    "de-DE": "HCTS"
+                                },
+                                "_id": 4,
+                                "_id_parent": 1
+                            },
+                            "_basetype": "pool"
+                        },
+                        {
+                            "pool": {
+                                "name": {
+                                    "de-DE": "NHDP"
+                                },
+                                "_id": 152,
+                                "_id_parent": 4
+                            },
+                            "_basetype": "pool"
+                        },
+                        {
+                            "pool": {
+                                "name": {
+                                    "de-DE": "Monumente",
+                                    "en-US": "Monuments"
+                                },
+                                "_id": 349,
+                                "_id_parent": 152
+                            },
+                            "_basetype": "pool"
+                        }
+                    ],
+                    "_basetype": "pool"
+                },
+                "_id": 623530,
+                "obj_titel": {
+                    "de-DE": "SAB"
+                },
+                "_version": 1
+            },
+            "_published_count": 0,
+            "_created": "2021-04-13T12:09:56Z",
+            "_path": [
+                {
+                    "_mask": "objekte_standard_maske",
+                    "_objecttype": "objekte",
+                    "_tags": [],
+                    "_system_object_id": 1288822,
+                    "_format": "standard",
+                    "_uuid": "8bdb7851-a374-4b1a-8ed7-8d65400e950c",
+                    "_has_children": false,
+                    "objekte": {
+                        "_id": 623530,
+                        "_id_parent": null,
+                        "_version": 1
+                    },
+                    "_global_object_id": "1288822@2cb291dc-94d3-482f-9630-a3943ebb1006",
+                    "_standard": {
+                        "1": {
+                            "html": {
+                                "zh-Latn": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "ko-Kore": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "ja-Hani": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "de-DE": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "en-US": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "ja-Kana": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "und": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "zh-Hant": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "hi": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "ja-Jpan": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "ja-Latn": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "ko-Hang": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "it-IT": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "ja-Hira": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "ar": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "ko-Hani": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "zh-Hans": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "la": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "grc": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "ko-Latn": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "fr-FR": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                                "ur": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>"
+                            },
+                            "text": {
+                                "zh-Latn": "SAB",
+                                "ko-Kore": "SAB",
+                                "ja-Hani": "SAB",
+                                "de-DE": "SAB",
+                                "en-US": "SAB",
+                                "ja-Kana": "SAB",
+                                "und": "SAB",
+                                "zh-Hant": "SAB",
+                                "hi": "SAB",
+                                "ja-Jpan": "SAB",
+                                "ja-Latn": "SAB",
+                                "ko-Hang": "SAB",
+                                "it-IT": "SAB",
+                                "ja-Hira": "SAB",
+                                "ar": "SAB",
+                                "ko-Hani": "SAB",
+                                "zh-Hans": "SAB",
+                                "la": "SAB",
+                                "grc": "SAB",
+                                "ko-Latn": "SAB",
+                                "fr-FR": "SAB",
+                                "ur": "SAB"
+                            }
+                        },
+                        "eas": {
+                            "1": [
+                                {
+                                    "status": "done",
+                                    "class_extension": "image.nef",
+                                    "technical_metadata": {
+                                        "file_sha224_checksum": "0055ea3475dd6057f34bdf920b414f21a592a31a9600183afb42fe3e",
+                                        "orientation": 1,
+                                        "camera_scanner": "NIKON D810",
+                                        "width": 7380,
+                                        "height": 4928,
+                                        "dpi": 300,
+                                        "max_dimension": 7380,
+                                        "format": "landscape",
+                                        "aspect_ratio": 1.4975649350649352,
+                                        "colordepth": 24,
+                                        "colorspace": "rgb"
+                                    },
+                                    "date_inserted": "2021-04-13T12:09:56Z",
+                                    "filesize": 42490156,
+                                    "eas_parent_id": null,
+                                    "date_uploaded": "2021-04-13T12:09:40Z",
+                                    "class_version_status": [
+                                        "image.small.done",
+                                        "image.preview.done",
+                                        "image.original.done",
+                                        "image.full.done",
+                                        "image.huge.done"
+                                    ],
+                                    "original_filename_basename": "SAB_5143",
+                                    "extension": "nef",
+                                    "original_filepath": "SAB_5143.NEF",
+                                    "class": "image",
+                                    "original_filename": "SAB_5143.NEF",
+                                    "class_version_extension": [
+                                        "image.small.png",
+                                        "image.preview.png",
+                                        "image.original.nef",
+                                        "image.full.png",
+                                        "image.huge.png"
+                                    ],
+                                    "versions": {
+                                        "small": {
+                                            "filesize": 166623,
+                                            "height": 250,
+                                            "has_more_jobs": false,
+                                            "class": "image",
+                                            "width": 375,
+                                            "url": "https://heidicon.ub.uni-heidelberg.de/eas/partitions-inline/2/0/708000/708152/b30aa98a4b99c866a21e4cf214af49d416aabbb2/image/png",
+                                            "status": "done",
+                                            "extension": "png",
+                                            "aspect_ratio": 1.5,
+                                            "dpi": 299,
+                                            "download_url": "https://heidicon.ub.uni-heidelberg.de/eas/partitions/2/0/708000/708152/b30aa98a4b99c866a21e4cf214af49d416aabbb2/image/png/SAB_5143-small.png",
+                                            "_download_allowed": false
+                                        }
+                                    },
+                                    "_id": 708152,
+                                    "preferred": true,
+                                    "pages_allowed": false
+                                }
+                            ]
+                        }
+                    }
+                }
+            ],
+            "_exported_at": "2021-04-21T12:15:30+02:00",
+            "_owner": {
+                "_basetype": "user",
+                "user": {
+                    "frontend_language": "de-DE",
+                    "search_languages": [],
+                    "_primary_email": "Maylein@uni-hd.de",
+                    "_generated_displayname": "Root",
+                    "_id": 1,
+                    "type": "system",
+                    "login": "root",
+                    "database_languages": [],
+                    "_version": 1818,
+                    "custom_data": {}
+                }
+            },
+            "_published": [],
+            "_mask": "objekte_standard_maske",
+            "_uuid": "8bdb7851-a374-4b1a-8ed7-8d65400e950c",
+            "_last_modified": "2021-04-13T12:09:56Z",
+            "_has_children": false,
+            "_global_object_id": "1288822@2cb291dc-94d3-482f-9630-a3943ebb1006",
+            "_standard": {
+                "1": {
+                    "html": {
+                        "de-DE": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>",
+                        "en-US": "<span class=\"ez-output-1\"><span class=\"ez-format-comma\">SAB</span></span>"
+                    },
+                    "text": {
+                        "de-DE": "SAB",
+                        "en-US": "SAB"
+                    }
+                },
+                "eas": {
+                    "1": [
+                        {
+                            "status": "done",
+                            "class_extension": "image.nef",
+                            "technical_metadata": {
+                                "file_sha224_checksum": "0055ea3475dd6057f34bdf920b414f21a592a31a9600183afb42fe3e",
+                                "orientation": 1,
+                                "camera_scanner": "NIKON D810",
+                                "width": 7380,
+                                "height": 4928,
+                                "dpi": 300,
+                                "max_dimension": 7380,
+                                "format": "landscape",
+                                "aspect_ratio": 1.4975649350649352,
+                                "colordepth": 24,
+                                "colorspace": "rgb"
+                            },
+                            "date_inserted": "2021-04-13T12:09:56Z",
+                            "filesize": 42490156,
+                            "eas_parent_id": null,
+                            "date_uploaded": "2021-04-13T12:09:40Z",
+                            "class_version_status": [
+                                "image.small.done",
+                                "image.preview.done",
+                                "image.original.done",
+                                "image.full.done",
+                                "image.huge.done"
+                            ],
+                            "original_filename_basename": "SAB_5143",
+                            "extension": "nef",
+                            "original_filepath": "SAB_5143.NEF",
+                            "class": "image",
+                            "original_filename": "SAB_5143.NEF",
+                            "class_version_extension": [
+                                "image.small.png",
+                                "image.preview.png",
+                                "image.original.nef",
+                                "image.full.png",
+                                "image.huge.png"
+                            ],
+                            "versions": {
+                                "small": {
+                                    "filesize": 166623,
+                                    "height": 250,
+                                    "has_more_jobs": false,
+                                    "class": "image",
+                                    "width": 375,
+                                    "url": "https://heidicon.ub.uni-heidelberg.de/eas/partitions-inline/2/0/708000/708152/b30aa98a4b99c866a21e4cf214af49d416aabbb2/image/png",
+                                    "status": "done",
+                                    "extension": "png",
+                                    "aspect_ratio": 1.5,
+                                    "dpi": 299,
+                                    "download_url": "https://heidicon.ub.uni-heidelberg.de/eas/partitions/2/0/708000/708152/b30aa98a4b99c866a21e4cf214af49d416aabbb2/image/png/SAB_5143-small.png",
+                                    "_download_allowed": false
+                                }
+                            },
+                            "_id": 708152,
+                            "preferred": true,
+                            "pages_allowed": false
+                        }
+                    ]
+                }
+            },
+            "_format": "long",
+            "_level": 1,
+            "_sort": [
+                1288822
+            ]
+        }
+    ],
+    "count": 1,
+    "took": 70,
+    "request_time": {
+        "elasticsearch": 70
+    }
+}
