@@ -18,7 +18,7 @@ class UBHDGNDUpdate
     UBHDGNDIds = []
     
     
-    console.log(" Now we are doing an update ")
+    # console.log(" Now we are doing an update ")
     
     
     
@@ -40,7 +40,7 @@ class UBHDGNDUpdate
       ## objects are added to this new list
       objectsMap[ubhdgndID].push(object)
       UBHDGNDIds.push(ubhdgndID)
-
+    console.log(UBHDGNDIds)
     if UBHDGNDIds.length == 0
       return ez5.respondSuccess({payload: []})
 
