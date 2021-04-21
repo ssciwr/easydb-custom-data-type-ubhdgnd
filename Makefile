@@ -16,6 +16,7 @@ INSTALL_FILES = \
 	$(WEB)/l10n/en-US.json \
 	$(WEB)/l10n/es-ES.json \
 	$(WEB)/l10n/it-IT.json \
+				build/scripts/gnd-update.js \
 	$(JS) \
 	$(CSS) \
 	$(PLUGIN_NAME_CAMELCASE).config.yml
@@ -25,6 +26,20 @@ COFFEE_FILES = easydb-library/src/commons.coffee \
 	src/webfrontend/$(PLUGIN_NAME_CAMELCASE).coffee
 
 SCSS_FILES = src/webfrontend/CustomDataTypeUBHDGND.scss
+
+UPDATE_SCRIPT_COFFEE_FILES = \
+	src/webfrontend/GNDUtil.coffee \
+	src/script/UBHDGNDUpdate.coffee
+
+UPDATE_SCRIPT_BUILD_FILE = build/scripts/ubhdgnd-update.js
+
+${UPDATE_SCRIPT_BUILD_FILE}: $(subst .coffee,.coffee.js,${UPDATE_SCRIPT_COFFEE_FILES})
+	mkdir -p $(dir $@)
+	cat $^ > $@
+
+include easydb-library/tools/base-plugins.make
+
+build: code $(L10N) ${UPDATE_SCRIPT_BUILD_FILE}
 
 JS = $(WEB)/${PLUGIN_NAME}.raw.js
 
