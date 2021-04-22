@@ -15,7 +15,7 @@ class UBHDGNDUpdate
   ## what the heck??
     that = @
     objectsMap = {}
-    UBHDGNDIds = []
+    GNDIds = []
     
     
     # console.log(" Now we are doing an update ")
@@ -28,50 +28,51 @@ class UBHDGNDUpdate
         continue
 
       ## according to readme.me: conceptURI = URI to linked record
-      ubhdgndURI = object.data.conceptURI
-      ubhdgndID = ubhdgndURI.split('d-nb.info/ubhdgnd/')
+      gndURI = object.data.conceptURI
+      gndID = gndURI.split('d-nb.info/gnd/')
       ## takes whates comes after this expression as the ID 
-      ubhdgndID = ubhdgndID[1]
-      if CUI.util.isEmpty(ubhdgndID)
+      gndID = gndID[1]
+
+      if CUI.util.isEmpty(gndID)
         continue
       ## if objectMap is not yet defined it is initialized as an empty list
-      if not objectsMap[ubhdgndID]
-        objectsMap[ubhdgndID] = [] # It is possible to  have more than one object with the same ID in different objects.
+      if not objectsMap[gndID]
+        objectsMap[gndID] = [] # It is possible to  have more than one object with the same ID in different objects.
       ## objects are added to this new list
-      objectsMap[ubhdgndID].push(object)
-      UBHDGNDIds.push(ubhdgndID)
+      objectsMap[gndID].push(object)
+      GNDIds.push(gndID)
 
 
     # console.log({"test",UBHDGNDIds}) ## at the moment we get no ids, so it finishis here
     #console.log(JSON.stringify(UBHDGNDIds.toString()))
 
     ## add one known gnd ID tocheck what happens
-    UBHDGNDIds.push(1069408395)#from me
-    #console.log(JSON.stringify(UBHDGNDIds.toString()))
+    #UBHDGNDIds.push(1069408395)#from me
+    console.error "print the ids", GNDIds
 
-    if UBHDGNDIds.length == 0
+    if GNDIds.length == 0
       return ez5.respondSuccess({payload: []})
 
     timeout = plugin_config.update?.timeout or 0
     timeout *= 1000 # The configuration is in seconds, so it is multiplied by 1000 to get milliseconds.
 
     # unique ubhdgnd-ids
-    UBHDGNDIds = UBHDGNDIds.filter((x, i, a) => a.indexOf(x) == i)
+    GNDIds = GNDIds.filter((x, i, a) => a.indexOf(x) == i)
 
     objectsToUpdate = []
 
     xhrPromises = []
-    for UBHDGNDId, key in UBHDGNDIds
+    for GNDId, key in GNDIds
       deferred = new CUI.Deferred()
       xhrPromises.push deferred
-    console.error "UBHDGNDIds ", UBHDGNDIds
-    for UBHDGNDId, key in UBHDGNDIds
-      do(key, UBHDGNDId) ->
+    console.error "GNDIds ", GNDIds
+    for GNDId, key in GNDIds
+      do(key, GNDId) ->
         # get updates from lobid.org
 
         ## I think this somehow converts json files from the ubhdgnd to maybe a jsonp files, though i don't know why yet 
         ## i also think, that is the point where it gets the data from the norm database
-        xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://lobid.org/gnd/' + UBHDGNDId)
+        xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://lobid.org/gnd/' + GNDId)
 
         console.error "calling " + xurl
         growingTimeout = key * 100
@@ -81,8 +82,8 @@ class UBHDGNDUpdate
             .done((data, status, statusText) ->
               # validation-test on data.preferredName
               if !data.preferredName
-                console.error "Record https://d-nb.info/ubhdgnd/" + ubhdgndID + " not supported in lobid.org somehow"
-                console.error data #from me
+                console.error "Record https://d-nb.info/ubhdgnd/" + GNDId + " not supported in lobid.org somehow"
+                #console.error data #from me
                 #ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: "Record https://d-nb.info/ubhdgnd/" + ubhdgndID + " not supported in lobid.org yet!?"})
               else
 
@@ -100,13 +101,14 @@ class UBHDGNDUpdate
                 updatedUBHDGNDcdata._standard =
                   text: updatedUBHDGNDcdata.conceptName
 
-                console.error "print updated_ubhdgndcdata " + updatedUBHDGNDcdata.conceptName #from me
+                console.error "print updated_ubhdgndcdata.conceptName " + updatedUBHDGNDcdata.conceptName #from me
+                console.error(JSON.stringify(data))
                 updatedUBHDGNDcdata._fulltext =
                   string: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
                   text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
 
                 if !objectsMap[resultsUBHDGNDID]
-                  console.error "UBHDGND nicht in objectsMap: " + resultsUBHDGNDID
+                  console.error "GND nicht in objectsMap: " + resultsUBHDGNDID
                   console.error "da hat sich die ID von " + UBHDGNDId + " zu " + resultsUBHDGNDID + " geändert"
                 for objectsMapEntry in objectsMap[UBHDGNDId]
                   if not that.__hasChanges(objectsMapEntry.data, updatedUBHDGNDcdata)
@@ -140,9 +142,10 @@ class UBHDGNDUpdate
     if not data
       ez5.respondError("custom.data.type.ubhdgnd.update.error.payload-missing")
       return
-    
+
+   ######################################## 
     ## this type of output actually works!!!
-    console.error(JSON.stringify(data)) #this gives the first print
+    ## console.error(JSON.stringify(data)) #this gives the first print of data, the one thats not useful
 
    
 
@@ -152,17 +155,19 @@ class UBHDGNDUpdate
         ez5.respondError("custom.data.type.ubhdgnd.update.error.payload-key-missing", {key: key})
         return
 
-    console.error (data.action) #from me
+    console.error (data.action) #from me temp
     if (data.action == "start_update")
       @__start_update(data)
       
-      console.error "this is start_update" #from me
+      console.error "this is start_update" ##from me temp
       return
 
     else if (data.action == "update")
 
-      console.error "this is update" #from me
-      console.error(JSON.stringify(data)) #this here gives the json file with all objects that are beeing checked
+      console.error "this is update" ##from me temp
+
+    ##################################
+     ## console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are beeing checked
 
 
       if (!data.objects)
