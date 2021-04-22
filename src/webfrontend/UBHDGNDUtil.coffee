@@ -9,7 +9,7 @@
 # "# ++" --> doublechecked
 # "# + checked" --> should theoretically work, but needs more explicit testing
 
-class ez5.GNDUtil
+class ez5.UBHDGNDUtil
   @getFullTextFromEntityFactsJSON: (efJSON) ->
     _fulltext = ''
 

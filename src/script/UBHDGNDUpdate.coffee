@@ -90,30 +90,32 @@ class UBHDGNDUpdate
                 ## here we need to add our data conversion to the
                 ## I think..
                 console.error "get identifier " + data['gndIdentifier'] #from me
-                resultsUBHDGNDID = data['gndIdentifier']
-                console.error "post the identifier" #from me
+                resultsGNDID = data['gndIdentifier']
+                console.error "post the identifier",resultsGNDID  #from me
                 # then build new cdata and aggregate in objectsMap (see below)
-                updatedUBHDGNDcdata = {}
-                updatedUBHDGNDcdata.conceptURI = data['id']
-                #updatedUBHDGNDcdata.conceptName = Date.now() + '_' + data['preferredName']
-                updatedUBHDGNDcdata.conceptName = data['preferredName']
+                updatedGNDcdata = {}
+                updatedGNDcdata.conceptURI = data['id']
+                #updatedGNDcdata.conceptName = Date.now() + '_' + data['preferredName']
+                updatedGNDcdata.conceptName = data['preferredName']
 
-                updatedUBHDGNDcdata._standard =
-                  text: updatedUBHDGNDcdata.conceptName
-
-                console.error "print updated_ubhdgndcdata.conceptName " + updatedUBHDGNDcdata.conceptName #from me
-                console.error(JSON.stringify(data))
-                updatedUBHDGNDcdata._fulltext =
+                updatedGNDcdata._standard =
+                  text: updatedGNDcdata.conceptName
+               
+                ##also from me
+                console.error "print updated_ubhdgndcdata.conceptName " + updatedGNDcdata.conceptName #from me
+                #console.error(JSON.stringify(data))
+               
+                updatedGNDcdata._fulltext =
                   string: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
                   text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
 
-                if !objectsMap[resultsUBHDGNDID]
-                  console.error "GND nicht in objectsMap: " + resultsUBHDGNDID
-                  console.error "da hat sich die ID von " + UBHDGNDId + " zu " + resultsUBHDGNDID + " geändert"
-                for objectsMapEntry in objectsMap[UBHDGNDId]
-                  if not that.__hasChanges(objectsMapEntry.data, updatedUBHDGNDcdata)
+                if !objectsMap[resultsGNDID]
+                  console.error "GND nicht in objectsMap: " + resultsGNDID
+                  console.error "da hat sich die ID von " + GNDId + " zu " + resultsGNDID + " geändert"
+                for objectsMapEntry in objectsMap[GNDId]
+                  if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata)
                     continue
-                  objectsMapEntry.data = updatedUBHDGNDcdata # Update the object that has changes.
+                  objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
                   objectsToUpdate.push(objectsMapEntry)
             )
             .fail ((data, status, statusText) ->
@@ -130,6 +132,7 @@ class UBHDGNDUpdate
 
   __hasChanges: (objectOne, objectTwo) ->
     for key in ["conceptName", "conceptURI", "_standard", "_fulltext"]
+      console.error "show both objects", objectOne[key], objectTwo[key]
       if not CUI.util.isEqual(objectOne[key], objectTwo[key])
         return true
     return false
@@ -167,7 +170,7 @@ class UBHDGNDUpdate
       console.error "this is update" ##from me temp
 
     ##################################
-     ## console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are beeing checked
+      console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are beeing checked
 
 
       if (!data.objects)
