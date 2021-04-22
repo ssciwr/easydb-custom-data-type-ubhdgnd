@@ -43,8 +43,12 @@ class UBHDGNDUpdate
 
 
     # console.log({"test",UBHDGNDIds}) ## at the moment we get no ids, so it finishis here
-    
-    
+    #console.log(JSON.stringify(UBHDGNDIds.toString()))
+
+    ## add one known gnd ID tocheck what happens
+    UBHDGNDIds.push(1069408395)#from me
+    #console.log(JSON.stringify(UBHDGNDIds.toString()))
+
     if UBHDGNDIds.length == 0
       return ez5.respondSuccess({payload: []})
 
@@ -67,7 +71,7 @@ class UBHDGNDUpdate
 
         ## I think this somehow converts json files from the ubhdgnd to maybe a jsonp files, though i don't know why yet 
         ## i also think, that is the point where it gets the data from the norm database
-        xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://lobid.org/ubhdgnd/' + UBHDGNDId)
+        xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://lobid.org/gnd/' + UBHDGNDId)
 
         console.error "calling " + xurl
         growingTimeout = key * 100
@@ -78,14 +82,15 @@ class UBHDGNDUpdate
               # validation-test on data.preferredName
               if !data.preferredName
                 console.error "Record https://d-nb.info/ubhdgnd/" + ubhdgndID + " not supported in lobid.org somehow"
-                console.error data
+                console.error data #from me
                 #ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: "Record https://d-nb.info/ubhdgnd/" + ubhdgndID + " not supported in lobid.org yet!?"})
               else
 
                 ## here we need to add our data conversion to the
                 ## I think..
-                resultsUBHDGNDID = data['ubhdgndIdentifier']
-
+                console.error "get identifier " + data['gndIdentifier'] #from me
+                resultsUBHDGNDID = data['gndIdentifier']
+                console.error "post the identifier" #from me
                 # then build new cdata and aggregate in objectsMap (see below)
                 updatedUBHDGNDcdata = {}
                 updatedUBHDGNDcdata.conceptURI = data['id']
@@ -95,6 +100,7 @@ class UBHDGNDUpdate
                 updatedUBHDGNDcdata._standard =
                   text: updatedUBHDGNDcdata.conceptName
 
+                console.error "print updated_ubhdgndcdata " + updatedUBHDGNDcdata.conceptName #from me
                 updatedUBHDGNDcdata._fulltext =
                   string: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
                   text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
@@ -135,11 +141,10 @@ class UBHDGNDUpdate
       ez5.respondError("custom.data.type.ubhdgnd.update.error.payload-missing")
       return
     
-    
-   # console.log({data: "well this is a test"})
+    ## this type of output actually works!!!
+    console.error(JSON.stringify(data)) #this gives the first print
 
-    #console.log(" This gives an error and an output ")
-    # ez5.respondError("this should throw an error somewhere") # this shows the string and stops the program
+   
 
     for key in ["action", "server_config", "plugin_config"]
       if (!data[key])
@@ -147,11 +152,19 @@ class UBHDGNDUpdate
         ez5.respondError("custom.data.type.ubhdgnd.update.error.payload-key-missing", {key: key})
         return
 
+    console.error (data.action) #from me
     if (data.action == "start_update")
       @__start_update(data)
+      
+      console.error "this is start_update" #from me
       return
 
     else if (data.action == "update")
+
+      console.error "this is update" #from me
+      console.error(JSON.stringify(data)) #this here gives the json file with all objects that are beeing checked
+
+
       if (!data.objects)
         ez5.respondError("custom.data.type.ubhdgnd.update.error.objects-missing")
         return

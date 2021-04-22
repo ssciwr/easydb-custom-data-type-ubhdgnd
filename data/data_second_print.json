@@ -1,0 +1,276 @@
+{
+    "action": "update",
+    "plugin_config": {
+        "update": {
+            "script": "build/scripts/ubhdgnd-update.js",
+            "timeout": 60,
+            "batch_size": 100,
+            "interval_base_config": "update_interval_gnd.days"
+        },
+        "mapping": {
+            "conceptName": {
+                "type": "text"
+            },
+            "conceptURI": {
+                "type": "text_oneline"
+            },
+            "conceptSeeAlso": {
+                "type": "text"
+            }
+        },
+        "config": {
+            "schema": [
+                {
+                    "name": "search",
+                    "parameters": {
+                        "authorities_backend": {
+                            "type": "select",
+                            "options": [
+                                "ubhd/gnd",
+                                "gbv/gnd"
+                            ],
+                            "position": 1
+                        },
+                        "gnd_types": {
+                            "position": 2,
+                            "type": "text",
+                            "plugin_type": "options-tree",
+                            "choices": [
+                                "PlaceOrGeographicName",
+                                "    AdministrativeUnit",
+                                "    BuildingOrMemorial",
+                                "    Country",
+                                "    ExtraterrestrialTerritory",
+                                "    FictivePlace",
+                                "    MemberState",
+                                "    NameOfSmallGeographicUnitLyingWithinAnotherGeographicUnit",
+                                "    NaturalGeographicUnit",
+                                "    ReligiousTerritory",
+                                "    TerritorialCorporateBodyOrAdministrativeUnit",
+                                "    WayBorderOrLine",
+                                "Person",
+                                "    DifferentiatedPerson",
+                                "        CollectivePseudonym",
+                                "        Gods",
+                                "        LiteraryOrLegendaryCharacter",
+                                "        Pseudonym",
+                                "        RoyalOrMemberOfARoyalHouse",
+                                "        Spirits",
+                                "    UndifferentiatedPerson",
+                                "Family",
+                                "ConferenceOrEvent",
+                                "    SeriesOfConferenceOrEvent",
+                                "CorporateBody",
+                                "    Company",
+                                "    MusicalCorporateBody",
+                                "    FictiveCorporateBody",
+                                "    OrganOfCorporateBody",
+                                "    ProjectOrProgram",
+                                "    ReligiousAdministrativeUnit",
+                                "    ReligiousCorporateBody",
+                                "SubjectHeading",
+                                "    CharactersOrMorphemes",
+                                "    EthnographicName",
+                                "    FictiveTerm",
+                                "    GroupOfPersons",
+                                "    HistoricSingleEventOrEra",
+                                "    Language",
+                                "    MeansOfTransportWithIndividualName",
+                                "    NomenclatureInBiologyOrChemistry",
+                                "    ProductNameOrBrandName",
+                                "    SoftwareProduct",
+                                "    SubjectHeadingSensoStricto",
+                                "Work",
+                                "    Collection",
+                                "    CollectiveManuscript",
+                                "    Expression",
+                                "    Manuscript",
+                                "    MusicalWork",
+                                "    ProvenanceCharacteristic",
+                                "    VersionOfAMusicalWork"
+                            ]
+                        }
+                    }
+                }
+            ],
+            "mask": [
+                {
+                    "name": "show_infopopup",
+                    "parameters": {
+                        "value": {
+                            "type": "bool"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "server_config": {},
+    "state": {
+        "start_update": "Thu, 22 Apr 2021 13:30:58 GMT"
+    },
+    "objects": [
+        {
+            "identifier": "2432908383e8c32b80bc0ba37045a372",
+            "data": {
+                "conceptDetails": {
+                    "dateOfBirth": "1881-10-25",
+                    "dateOfDeath": "1973-04-08",
+                    "professionOrOccupation": [
+                        "Grafiker",
+                        "Maler",
+                        "Bühnenbildner",
+                        "Künstler",
+                        "Bildhauer",
+                        "Keramiker"
+                    ]
+                },
+                "conceptName": "Picasso, Pablo",
+                "conceptType": "DifferentiatedPerson",
+                "conceptURI": "http://d-nb.info/gnd/118594206",
+                "_standard": {
+                    "text": "Picasso, Pablo"
+                },
+                "_fulltext": {
+                    "text": "Picasso, Pablo Pikaso, Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, Pablo Pikasso, Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, Pablo Pi-chia-so Пикассо",
+                    "string": "http://d-nb.info/gnd/118594206"
+                },
+                "conceptSeeAlso": [
+                    "Pikaso, Pamplo",
+                    "Pikasso, Pamplo",
+                    "Pikasso, Paulos",
+                    "Pikasso, Pabura",
+                    "Ruys, Pablo",
+                    "Pikasso, Pablo",
+                    "Ruiz y Picasso, Pablo",
+                    "Ruiz-Picasso, Pablo",
+                    "Saci Pos",
+                    "Ruiz, Pablo",
+                    "Picasso, Pablo Ruiz y",
+                    "Pikasso",
+                    "Picasso, Pablo Ruiz",
+                    "Pikaso",
+                    "Ruys Picasso, Pablo",
+                    "Pikaso, Paulos",
+                    "Picasso",
+                    "Bikasu, Bablu",
+                    "Ruiz Picasso, Pablo",
+                    "Sacipos",
+                    "Pikaso, Pabura",
+                    "Pikaso, Pablo",
+                    "Picasso, Pablo Ruys",
+                    "Ruys-Picasso, Pablo",
+                    "Pi-chia-so",
+                    "Пикассо"
+                ]
+            }
+        },
+        {
+            "identifier": "812153a72d8d974d54eec29e19a61fd3",
+            "data": {
+                "conceptDetails": {
+                    "professionOrOccupation": []
+                },
+                "conceptName": "Grafik",
+                "conceptType": "SubjectHeadingSensoStricto",
+                "conceptURI": "http://d-nb.info/gnd/4021845-4",
+                "_standard": {
+                    "text": "Grafik"
+                },
+                "_fulltext": {
+                    "text": "Grafik Graphik",
+                    "string": "http://d-nb.info/gnd/4021845-4"
+                },
+                "conceptSeeAlso": [
+                    "Graphik"
+                ]
+            }
+        },
+        {
+            "identifier": "c2efd33582d7d71e4a569da45025e0d7",
+            "data": {
+                "conceptDetails": {
+                    "professionOrOccupation": []
+                },
+                "conceptName": "München",
+                "conceptType": "TerritorialCorporateBodyOrAdministrativeUnit",
+                "conceptURI": "http://d-nb.info/gnd/4127793-4",
+                "_standard": {
+                    "text": "München"
+                },
+                "_fulltext": {
+                    "text": "München Hauptstadt München Mjunchen Monacho Moncium Monaco di Baviera Monachium Münich Königliche Haupt- und Residenzstadt München Monachum Groß-München Minkhen Munihei Mnichov K. Haupt- und Residenzstadt München Monacum Myunīḫ Monaco (Bayern) Minga Munich Myunken Landeshauptstadt München Hauptstadt der Bewegung Monachon Munichen",
+                    "string": "http://d-nb.info/gnd/4127793-4"
+                },
+                "conceptSeeAlso": [
+                    "Hauptstadt München",
+                    "Mjunchen",
+                    "Monacho",
+                    "Moncium",
+                    "Monaco di Baviera",
+                    "Monachium",
+                    "Münich",
+                    "Königliche Haupt- und Residenzstadt München",
+                    "Monachum",
+                    "Groß-München",
+                    "Minkhen",
+                    "Munihei",
+                    "Mnichov",
+                    "K. Haupt- und Residenzstadt München",
+                    "Monacum",
+                    "Myunīḫ",
+                    "Monaco (Bayern)",
+                    "Minga",
+                    "Munich",
+                    "Myunken",
+                    "Landeshauptstadt München",
+                    "Hauptstadt der Bewegung",
+                    "Monachon",
+                    "Munichen"
+                ]
+            }
+        },
+        {
+            "identifier": "d13730e7e4af0335e67bb7e5b7c30e53",
+            "data": {
+                "conceptDetails": {
+                    "professionOrOccupation": []
+                },
+                "conceptName": "Universitätsbibliothek Heidelberg",
+                "conceptType": "CorporateBody",
+                "conceptURI": "http://d-nb.info/gnd/2002498-8",
+                "_standard": {
+                    "text": "Universitätsbibliothek Heidelberg"
+                },
+                "_fulltext": {
+                    "text": "Universitätsbibliothek Heidelberg Universitätsbibliothek (Heidelberg) Ruprecht-Karls-Universität (Heidelberg). Heidelberger Bibliothek Bibliotheca Universitatis Heidelbergensis Ruprecht-Karls-Universität (Heidelberg). University Library Heidelberger Bibliothek Großherzogliche Universitäts-Bibliothek Heidelberg Heidelberg, Universitätsbibliothek Grossherzogliche Universitäts-Bibliothek zu Heidelberg UB Heidelberg Universitäts-Bibliothek (Heidelberg) Ruprecht-Karls-Universität (Heidelberg). Universitätsbibliothek Universität Heidelberg. Bibliothek Heidelberg University Library Heidelberger Universitätsbibliothek Großh. Universitäts-Bibliothek Heidelberg University Library Heidelberg Universität Heidelberg. Universitätsbibliothek Ruprecht-Karls-Universität (Heidelberg). Heidelberg University Library",
+                    "string": "http://d-nb.info/gnd/2002498-8"
+                },
+                "conceptSeeAlso": [
+                    "Universitätsbibliothek (Heidelberg)",
+                    "Ruprecht-Karls-Universität (Heidelberg). Heidelberger Bibliothek",
+                    "Bibliotheca Universitatis Heidelbergensis",
+                    "Ruprecht-Karls-Universität (Heidelberg). University Library",
+                    "Heidelberger Bibliothek",
+                    "Großherzogliche Universitäts-Bibliothek Heidelberg",
+                    "Heidelberg, Universitätsbibliothek",
+                    "Grossherzogliche Universitäts-Bibliothek zu Heidelberg",
+                    "UB Heidelberg",
+                    "Universitäts-Bibliothek (Heidelberg)",
+                    "Ruprecht-Karls-Universität (Heidelberg). Universitätsbibliothek",
+                    "Universität Heidelberg. Bibliothek",
+                    "Heidelberg University Library",
+                    "Heidelberger Universitätsbibliothek",
+                    "Großh. Universitäts-Bibliothek Heidelberg",
+                    "University Library Heidelberg",
+                    "Universität Heidelberg. Universitätsbibliothek",
+                    "Ruprecht-Karls-Universität (Heidelberg). Heidelberg University Library"
+                ]
+            }
+        }
+    ],
+    "batch_info": {
+        "total": 4,
+        "offset": 0
+    }
+}

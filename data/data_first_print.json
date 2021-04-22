@@ -1,4 +1,5 @@
-"action": "start_update",
+{
+    "action": "start_update",
     "plugin_config": {
         "update": {
             "script": "build/scripts/ubhdgnd-update.js",
