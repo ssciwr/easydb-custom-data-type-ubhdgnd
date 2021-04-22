@@ -28,7 +28,7 @@ COFFEE_FILES = easydb-library/src/commons.coffee \
 SCSS_FILES = src/webfrontend/CustomDataTypeUBHDGND.scss
 
 UPDATE_SCRIPT_COFFEE_FILES = \
-	src/webfrontend/GNDUtil.coffee \
+	src/webfrontend/UBHDGNDUtil.coffee \
 	src/script/UBHDGNDUpdate.coffee
 
 UPDATE_SCRIPT_BUILD_FILE = build/scripts/ubhdgnd-update.js
