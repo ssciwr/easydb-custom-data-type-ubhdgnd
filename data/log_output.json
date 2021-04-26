@@ -3329,12 +3329,12 @@ This should be the second data
 second data ended 
 
 print the ids [
-  '2002498-8',
-  '4127793-4',
-  '4029670-2',
-  '4021845-4',
-  '118594206',
-  '4135144-7'
+  '2002498-8', # Unibibliothek HD
+  '4127793-4', # Muenchen
+  '4029670-2', # Karikatur
+  '4021845-4', # Grafik
+  '118594206', # Pablo Picasso
+  '4135144-7' # Satirische Zeitschrift
 ]
 GNDIds  [
   '2002498-8',
