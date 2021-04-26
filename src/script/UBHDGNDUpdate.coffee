@@ -89,13 +89,21 @@ class UBHDGNDUpdate
                 #ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: "Record https://d-nb.info/ubhdgnd/" + ubhdgndID + " not supported in lobid.org yet!?"})
               else
 
-                ## here we need to add our data conversion to the
+                ## here we need to add our data conversion to the 
+                console.error "This should be the third data"
+                console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
+                console.error "third data ended \n"
+
+
+
                 ## I think..
                 console.error "get identifier " + data['gndIdentifier'] #from me
                 # IU: not sure where data['gndIdentifier'] is set? there is no
                 # gndIdentifier entry in the data JSON files
                 resultsGNDID = data['gndIdentifier']
+
                 console.error "post the identifier",resultsGNDID  #from me
+
                 # then build new cdata and aggregate in objectsMap (see below)
                 updatedGNDcdata = {}
                 # IU: this could be the ID of the specific data object that is
@@ -158,7 +166,9 @@ class UBHDGNDUpdate
 
    ########################################
     ## this type of output actually works!!!
-    ## console.error(JSON.stringify(data)) #this gives the first print of data, the one thats not useful
+    console.error "This should be the first data"
+    console.error(JSON.stringify(data)) #this gives the first print of data, the one thats not useful
+    console.error "first data ended \n"
 
 
 
@@ -179,8 +189,10 @@ class UBHDGNDUpdate
 
       console.error "this is update" ##from me temp
 
-    ##################################
+      ##################################
+      console.error "This should be the second data"
       console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
+      console.error "second data ended \n"
 
 
       if (!data.objects)
