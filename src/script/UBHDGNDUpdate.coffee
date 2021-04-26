@@ -178,7 +178,7 @@ class UBHDGNDUpdate
       console.error "this is update" ##from me temp
 
     ##################################
-      console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are beeing checked
+      console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
 
 
       if (!data.objects)
