@@ -16,21 +16,22 @@ class UBHDGNDUpdate
     that = @
     objectsMap = {}
     GNDIds = []
-    
-    
+
+
     # console.log(" Now we are doing an update ")
-    
-    
-    
+
+
+
     ## i think this checks if both of these things exist
     for object in objects
       if not (object.identifier and object.data)
         continue
 
       ## according to readme.me: conceptURI = URI to linked record
+      # IU: this is the same for the UBHDGND plugin and should work as is
       gndURI = object.data.conceptURI
       gndID = gndURI.split('d-nb.info/gnd/')
-      ## takes whates comes after this expression as the ID 
+      ## takes whates comes after this expression as the ID
       gndID = gndID[1]
 
       if CUI.util.isEmpty(gndID)
@@ -43,7 +44,7 @@ class UBHDGNDUpdate
       GNDIds.push(gndID)
 
 
-    # console.log({"test",UBHDGNDIds}) ## at the moment we get no ids, so it finishis here
+    # console.log({"test",UBHDGNDIds}) ## at the moment we get no ids, so it finishes here
     #console.log(JSON.stringify(UBHDGNDIds.toString()))
 
     ## add one known gnd ID tocheck what happens
@@ -70,8 +71,9 @@ class UBHDGNDUpdate
       do(key, GNDId) ->
         # get updates from lobid.org
 
-        ## I think this somehow converts json files from the ubhdgnd to maybe a jsonp files, though i don't know why yet 
+        ## I think this somehow converts json files from the ubhdgnd to maybe a jsonp files, though i don't know why yet
         ## i also think, that is the point where it gets the data from the norm database
+        # IU: it will return the JSON data inside a JS function to avoid issues with cross-domain requests
         xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://lobid.org/gnd/' + GNDId)
 
         console.error "calling " + xurl
@@ -90,21 +92,27 @@ class UBHDGNDUpdate
                 ## here we need to add our data conversion to the
                 ## I think..
                 console.error "get identifier " + data['gndIdentifier'] #from me
+                # IU: not sure where data['gndIdentifier'] is set? there is no
+                # gndIdentifier entry in the data JSON files
                 resultsGNDID = data['gndIdentifier']
                 console.error "post the identifier",resultsGNDID  #from me
                 # then build new cdata and aggregate in objectsMap (see below)
                 updatedGNDcdata = {}
+                # IU: this could be the ID of the specific data object that is
+                # defined in the top of the JSON data file
                 updatedGNDcdata.conceptURI = data['id']
                 #updatedGNDcdata.conceptName = Date.now() + '_' + data['preferredName']
                 updatedGNDcdata.conceptName = data['preferredName']
-
+                # IU: this is also contained in the JSON data file - the concept name
+                # seems to contain the field entry of the data object for each of the
+                # specified fields (like, 'preferredName')
                 updatedGNDcdata._standard =
                   text: updatedGNDcdata.conceptName
-               
+
                 ##also from me
                 console.error "print updated_ubhdgndcdata.conceptName " + updatedGNDcdata.conceptName #from me
                 #console.error(JSON.stringify(data))
-               
+
                 updatedGNDcdata._fulltext =
                   string: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
                   text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
@@ -142,28 +150,28 @@ class UBHDGNDUpdate
 
 ## start
 ## whatever data is is importer here
-## I think in overall this just checks the "data" for some key arguments and if they check out it statrs the update
+## I think in overall this just checks the "data" for some key arguments and if they check out it starts the update
   main: (data) ->
     if not data
       ez5.respondError("custom.data.type.ubhdgnd.update.error.payload-missing")
       return
 
-   ######################################## 
+   ########################################
     ## this type of output actually works!!!
     ## console.error(JSON.stringify(data)) #this gives the first print of data, the one thats not useful
 
-   
+
 
     for key in ["action", "server_config", "plugin_config"]
       if (!data[key])
-        ##check if data has these keys in it 
+        ##check if data has these keys in it
         ez5.respondError("custom.data.type.ubhdgnd.update.error.payload-key-missing", {key: key})
         return
 
     console.error (data.action) #from me temp
     if (data.action == "start_update")
       @__start_update(data)
-      
+
       console.error "this is start_update" ##from me temp
       return
 
@@ -172,7 +180,7 @@ class UBHDGNDUpdate
       console.error "this is update" ##from me temp
 
     ##################################
-      console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are beeing checked
+      console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
 
 
       if (!data.objects)
