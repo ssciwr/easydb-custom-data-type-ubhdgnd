@@ -132,7 +132,9 @@ class UBHDGNDUpdate
 
   __hasChanges: (objectOne, objectTwo) ->
     for key in ["conceptName", "conceptURI", "_standard", "_fulltext"]
-      console.error "show both objects", objectOne[key], objectTwo[key]
+      console.error "object one:", objectOne[key]
+      console.error "object two:", objectTwo[key]
+
       if not CUI.util.isEqual(objectOne[key], objectTwo[key])
         return true
     return false
