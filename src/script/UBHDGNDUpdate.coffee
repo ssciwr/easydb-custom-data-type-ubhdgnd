@@ -27,6 +27,8 @@ class UBHDGNDUpdate
       if not (object.identifier and object.data)
         continue
 
+      console.error "Print the object", object
+
       ## according to readme.me: conceptURI = URI to linked record
       # IU: this is the same for the UBHDGND plugin and should work as is
       gndURI = object.data.conceptURI
@@ -74,7 +76,7 @@ class UBHDGNDUpdate
         ## I think this somehow converts json files from the ubhdgnd to maybe a jsonp files, though i don't know why yet
         ## i also think, that is the point where it gets the data from the norm database
         # IU: it will return the JSON data inside a JS function to avoid issues with cross-domain requests
-        xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://lobid.org/gnd/' + GNDId)
+        xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://digi.ub.uni-heidelberg.de/normdaten/gnd' + GNDId)
 
         console.error "calling " + xurl
         growingTimeout = key * 100
@@ -90,9 +92,9 @@ class UBHDGNDUpdate
               else
 
                 ## here we need to add our data conversion to the 
-                console.error "This should be the third data"
-                console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
-                console.error "third data ended \n"
+                #console.error "This should be the third data"
+                #console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
+                #console.error "third data ended \n"
 
 
 
@@ -148,8 +150,11 @@ class UBHDGNDUpdate
 
   __hasChanges: (objectOne, objectTwo) ->
     for key in ["conceptName", "conceptURI", "_standard", "_fulltext"]
-      console.error "object one:", objectOne[key]
-      console.error "object two:", objectTwo[key]
+
+      ##comparisson
+      #console.error "compare the two objects"
+      #console.error "object one:", objectOne[key]
+      #console.error "object two:", objectTwo[key]
 
       if not CUI.util.isEqual(objectOne[key], objectTwo[key])
         return true
@@ -166,9 +171,9 @@ class UBHDGNDUpdate
 
    ########################################
     ## this type of output actually works!!!
-    console.error "This should be the first data"
-    console.error(JSON.stringify(data)) #this gives the first print of data, the one thats not useful
-    console.error "first data ended \n"
+    #console.error "This should be the first data"
+    #console.error(JSON.stringify(data)) #this gives the first print of data, the one thats not useful
+    #console.error "first data ended \n"
 
 
 
@@ -190,9 +195,9 @@ class UBHDGNDUpdate
       console.error "this is update" ##from me temp
 
       ##################################
-      console.error "This should be the second data"
-      console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
-      console.error "second data ended \n"
+      #console.error "This should be the second data"
+      #console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
+      #console.error "second data ended \n"
 
 
       if (!data.objects)
