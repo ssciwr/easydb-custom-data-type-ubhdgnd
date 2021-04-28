@@ -3,6 +3,6 @@
   "batch_size": 100,
   "payload_base_uri": "",
   "eas_type": "direct",
-  "payloads": ["objekte.json"
+  "payloads": ["small.json"
               ]
 }
