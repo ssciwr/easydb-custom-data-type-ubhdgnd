@@ -1,0 +1,279 @@
+{
+    "action": "update",
+    "plugin_config": {
+        "update": {
+            "script": "build/scripts/ubhdgnd-update.js",
+            "timeout": 60,
+            "batch_size": 100,
+            "interval_base_config": "update_interval_gnd.days"
+        },
+        "mapping": {
+            "conceptName": {
+                "type": "text"
+            },
+            "conceptURI": {
+                "type": "text_oneline"
+            },
+            "conceptSeeAlso": {
+                "type": "text"
+            }
+        },
+        "config": {
+            "schema": [
+                {
+                    "name": "search",
+                    "parameters": {
+                        "authorities_backend": {
+                            "type": "select",
+                            "options": [
+                                "ubhd/gnd",
+                                "gbv/gnd"
+                            ],
+                            "position": 1
+                        },
+                        "gnd_types": {
+                            "position": 2,
+                            "type": "text",
+                            "plugin_type": "options-tree",
+                            "choices": [
+                                "PlaceOrGeographicName",
+                                "    AdministrativeUnit",
+                                "    BuildingOrMemorial",
+                                "    Country",
+                                "    ExtraterrestrialTerritory",
+                                "    FictivePlace",
+                                "    MemberState",
+                                "    NameOfSmallGeographicUnitLyingWithinAnotherGeographicUnit",
+                                "    NaturalGeographicUnit",
+                                "    ReligiousTerritory",
+                                "    TerritorialCorporateBodyOrAdministrativeUnit",
+                                "    WayBorderOrLine",
+                                "Person",
+                                "    DifferentiatedPerson",
+                                "        CollectivePseudonym",
+                                "        Gods",
+                                "        LiteraryOrLegendaryCharacter",
+                                "        Pseudonym",
+                                "        RoyalOrMemberOfARoyalHouse",
+                                "        Spirits",
+                                "    UndifferentiatedPerson",
+                                "Family",
+                                "ConferenceOrEvent",
+                                "    SeriesOfConferenceOrEvent",
+                                "CorporateBody",
+                                "    Company",
+                                "    MusicalCorporateBody",
+                                "    FictiveCorporateBody",
+                                "    OrganOfCorporateBody",
+                                "    ProjectOrProgram",
+                                "    ReligiousAdministrativeUnit",
+                                "    ReligiousCorporateBody",
+                                "SubjectHeading",
+                                "    CharactersOrMorphemes",
+                                "    EthnographicName",
+                                "    FictiveTerm",
+                                "    GroupOfPersons",
+                                "    HistoricSingleEventOrEra",
+                                "    Language",
+                                "    MeansOfTransportWithIndividualName",
+                                "    NomenclatureInBiologyOrChemistry",
+                                "    ProductNameOrBrandName",
+                                "    SoftwareProduct",
+                                "    SubjectHeadingSensoStricto",
+                                "Work",
+                                "    Collection",
+                                "    CollectiveManuscript",
+                                "    Expression",
+                                "    Manuscript",
+                                "    MusicalWork",
+                                "    ProvenanceCharacteristic",
+                                "    VersionOfAMusicalWork"
+                            ]
+                        }
+                    }
+                }
+            ],
+            "mask": [
+                {
+                    "name": "show_infopopup",
+                    "parameters": {
+                        "value": {
+                            "type": "bool"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "server_config": {},
+    "state": {
+        "start_update": "Thu, 29 Apr 2021 11:10:40 GMT"
+    },
+    "objects": [
+        {
+            "identifier": "0238d4f6cd714929aa8dc2169550b6bc",
+            "data": {
+                "_standard": {
+                    "text": "Picasso, Pablo"
+                },
+                "conceptName": "Picasso, Pablo",
+                "_fulltext": {
+                    "string": "118594206 (DE-588a)126888914 (DE-588a)118594206 (DE-588c)4046021-6 Picasso, Pablo Pikaso, Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, Pablo Pikasso, Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, Pablo Pi-chia-so [object Object] [object Object] [object Object] [object Object] [object Object] ",
+                    "text": "118594206 (DE-588a)126888914 (DE-588a)118594206 (DE-588c)4046021-6 Picasso, Pablo Pikaso, Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, Pablo Pikasso, Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, Pablo Pi-chia-so [object Object] [object Object] [object Object] [object Object] [object Object] "
+                }
+            }
+        },
+        {
+            "identifier": "2432908383e8c32b80bc0ba37045a372",
+            "data": {
+                "conceptDetails": {
+                    "dateOfBirth": "1881-10-25",
+                    "dateOfDeath": "1973-04-08",
+                    "professionOrOccupation": [
+                        "Grafiker",
+                        "Maler",
+                        "Bühnenbildner",
+                        "Künstler",
+                        "Bildhauer",
+                        "Keramiker"
+                    ]
+                },
+                "conceptName": "Picasso, Pablo",
+                "conceptType": "DifferentiatedPerson",
+                "conceptURI": "http://d-nb.info/gnd/118594206",
+                "_standard": {
+                    "text": "Picasso, Pablo"
+                },
+                "_fulltext": {
+                    "text": "Picasso, Pablo Pikaso, Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, Pablo Pikasso, Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, Pablo Pi-chia-so Пикассо",
+                    "string": "http://d-nb.info/gnd/118594206"
+                },
+                "conceptSeeAlso": [
+                    "Pikaso, Pamplo",
+                    "Pikasso, Pamplo",
+                    "Pikasso, Paulos",
+                    "Pikasso, Pabura",
+                    "Ruys, Pablo",
+                    "Pikasso, Pablo",
+                    "Ruiz y Picasso, Pablo",
+                    "Ruiz-Picasso, Pablo",
+                    "Saci Pos",
+                    "Ruiz, Pablo",
+                    "Picasso, Pablo Ruiz y",
+                    "Pikasso",
+                    "Picasso, Pablo Ruiz",
+                    "Pikaso",
+                    "Ruys Picasso, Pablo",
+                    "Pikaso, Paulos",
+                    "Picasso",
+                    "Bikasu, Bablu",
+                    "Ruiz Picasso, Pablo",
+                    "Sacipos",
+                    "Pikaso, Pabura",
+                    "Pikaso, Pablo",
+                    "Picasso, Pablo Ruys",
+                    "Ruys-Picasso, Pablo",
+                    "Pi-chia-so",
+                    "Пикассо"
+                ]
+            }
+        },
+        {
+            "identifier": "faeae793d5056ec0019f72b59fd5b943",
+            "data": {
+                "conceptDetails": {
+                    "dateOfBirth": "1851-10-25",
+                    "dateOfDeath": "1973-04-08",
+                    "professionOrOccupation": [
+                        "Grafiker",
+                        "Maler",
+                        "Bühnenbildner",
+                        "Künstler",
+                        "Bildhauer",
+                        "Keramiker"
+                    ]
+                },
+                "conceptName": "Picasso, Palo",
+                "conceptType": "DifferentiatedPerson",
+                "conceptURI": "http://d-nb.info/gnd/118594206",
+                "_standard": {
+                    "text": "Picasso, Palo"
+                },
+                "_fulltext": {
+                    "text": "Paulos Pikasso, Pabura Ruys, Pablo Pikasso, Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, Pablo Pi-chia-so Пикассо",
+                    "string": "http://d-nb.info/gnd/118594206"
+                },
+                "conceptSeeAlso": [
+                    "Pikasso, Pabura",
+                    "Ruys, Pablo",
+                    "Pikasso, Pablo",
+                    "Ruiz y Picasso, Pablo",
+                    "Ruiz-Picasso, Pablo",
+                    "Saci Pos",
+                    "Ruiz, Pablo",
+                    "Picasso, Pablo Ruiz y",
+                    "Pikasso",
+                    "Picasso, Pablo Ruiz",
+                    "Pikaso",
+                    "Ruys Picasso, Pablo",
+                    "Pikaso, Paulos",
+                    "Picasso",
+                    "Bikasu, Bablu",
+                    "Ruiz Picasso, Pablo",
+                    "Sacipos",
+                    "Pikaso, Pabura",
+                    "Pikaso, Pablo",
+                    "Picasso, Pablo Ruys",
+                    "Ruys-Picasso, Pablo",
+                    "Pi-chia-so",
+                    "Пикассо"
+                ]
+            }
+        }
+    ],
+    "batch_info": {
+        "total": 3,
+        "offset": 0
+    }
+}
+second data ended 
+
+Print the object {
+  identifier: '0238d4f6cd714929aa8dc2169550b6bc',
+  data: {
+    _standard: { text: 'Picasso, Pablo'
+        },
+    conceptName: 'Picasso, Pablo',
+    _fulltext: {
+      string: '118594206 (DE-588a)126888914 (DE-588a)118594206 (DE-588c)4046021-6 Picasso, Pablo Pikaso, Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, Pablo Pikasso, Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, Pablo Pi-chia-so [object Object
+            ] [object Object
+            ] [object Object
+            ] [object Object
+            ] [object Object
+            ] ',
+      text: '118594206 (DE-588a)126888914 (DE-588a)118594206 (DE-588c)4046021-6 Picasso, Pablo Pikaso, Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, Pablo Pikasso, Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, Pablo Pi-chia-so [object Object
+            ] [object Object
+            ] [object Object
+            ] [object Object
+            ] [object Object
+            ] '
+        }
+    }
+}
+
+Print the object concept uri undefined
+
+[f26f1168
+][
+    2021-04-29T13: 34: 34.909622
+][
+    211
+][    WARN
+][..._datatype_updater
+] [...base.custom-data-type-ubhdgnd.ubhdgnd
+] update response was not OK: {
+    "code": "node.runner.process.catch-error",
+    "parameters": {
+        "error": "TypeError: Cannot read property 'split' of undefined"
+    }
+}

@@ -76,7 +76,8 @@ class UBHDGNDUpdate
         ## I think this somehow converts json files from the ubhdgnd to maybe a jsonp files, though i don't know why yet
         ## i also think, that is the point where it gets the data from the norm database
         # IU: it will return the JSON data inside a JS function to avoid issues with cross-domain requests
-        xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://digi.ub.uni-heidelberg.de/normdaten/gnd' + GNDId)
+        #xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://digi.ub.uni-heidelberg.de/normdaten/gnd' + GNDId)
+        xurl = 'https://jsontojsonp.gbv.de/?url=https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId
 
         console.error "calling " + xurl
         growingTimeout = key * 100
@@ -104,7 +105,7 @@ class UBHDGNDUpdate
                 # gndIdentifier entry in the data JSON files
                 resultsGNDID = data['gndIdentifier']
 
-                console.error "post the identifier",resultsGNDID  #from me
+                console.error "post the identifier: ",resultsGNDID  #from me
 
                 # then build new cdata and aggregate in objectsMap (see below)
                 updatedGNDcdata = {}
@@ -120,7 +121,7 @@ class UBHDGNDUpdate
                   text: updatedGNDcdata.conceptName
 
                 ##also from me
-                console.error "print updated_ubhdgndcdata.conceptName " + updatedGNDcdata.conceptName #from me
+                console.error "print updated_ubhdgndcdata.conceptName: " + updatedGNDcdata.conceptName #from me
                 #console.error(JSON.stringify(data))
 
                 updatedGNDcdata._fulltext =
