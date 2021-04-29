@@ -19,66 +19,64 @@
         }
         },
         "_version": 1,
-        "reference": "test",
+        "reference": "test_false",
         "obj_titel": {
-            "de-DE": "Test"
+            "de-DE": "Test with false entry"
         },
-        "name_test": {
-            "conceptURI": "http://d-nb.info/gnd/118594206",
-            "_fulltext": {
-                "string": "http://d-nb.info/gnd/118594206",
-                "text": "Picasso, Pablo Pikaso, Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, Pablo Pikasso, Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, Pablo Pi-chia-so Пикассо"
-            },
-            "_standard": {
-                "text": "Picasso, Pablo"
-            },
-            "conceptName": "Picasso, Pablo",
-            "conceptDetails": {
-                "professionOrOccupation": [
-                    "Grafiker",
-                    "Maler",
-                    "Bühnenbildner",
-                    "Künstler",
-                    "Bildhauer",
-                    "Keramiker"
-                ],
-                "dateOfDeath": "1973-04-08",
-                "dateOfBirth": "1881-10-25"
-            },
-            "conceptType": "DifferentiatedPerson",
-            "conceptSeeAlso": [
-                "Pikaso, Pamplo",
-                "Pikasso, Pamplo",
-                "Pikasso, Paulos",
-                "Pikasso, Pabura",
-                "Ruys, Pablo",
-                "Pikasso, Pablo",
-                "Ruiz y Picasso, Pablo",
-                "Ruiz-Picasso, Pablo",
-                "Saci Pos",
-                "Ruiz, Pablo",
-                "Picasso, Pablo Ruiz y",
-                "Pikasso",
-                "Picasso, Pablo Ruiz",
-                "Pikaso",
-                "Ruys Picasso, Pablo",
-                "Pikaso, Paulos",
-                "Picasso",
-                "Bikasu, Bablu",
-                "Ruiz Picasso, Pablo",
-                "Sacipos",
-                "Pikaso, Pabura",
-                "Pikaso, Pablo",
-                "Picasso, Pablo Ruys",
-                "Ruys-Picasso, Pablo",
-                "Pi-chia-so",
-                "Пикассо"
-            ]
-        }
-    }
-
-
-
+        "_nested:objekte__obj_autoren": [
+            {
+                "obj_autor_gnd": {
+                    "conceptURI": "http://d-nb.info/gnd/118594206",
+                    "_fulltext": {
+                        "string": "http://d-nb.info/gnd/118594206",
+                        "text": "Paulos Pikasso, Pabura Ruys, Pablo Pikasso, Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, Pablo Pi-chia-so Пикассо"
+                    },
+                    "_standard": {
+                        "text": "Picasso, Palo"
+                    },
+                    "conceptName": "Picasso, Palo",
+                    "conceptDetails": {
+                        "professionOrOccupation": [
+                            "Grafiker",
+                            "Maler",
+                            "Bühnenbildner",
+                            "Künstler",
+                            "Bildhauer",
+                            "Keramiker"
+                        ],
+                        "dateOfDeath": "1973-04-08",
+                        "dateOfBirth": "1851-10-25"
+                    },
+                    "conceptType": "DifferentiatedPerson",
+                    "conceptSeeAlso": [
+                        "Pikasso, Pabura",
+                        "Ruys, Pablo",
+                        "Pikasso, Pablo",
+                        "Ruiz y Picasso, Pablo",
+                        "Ruiz-Picasso, Pablo",
+                        "Saci Pos",
+                        "Ruiz, Pablo",
+                        "Picasso, Pablo Ruiz y",
+                        "Pikasso",
+                        "Picasso, Pablo Ruiz",
+                        "Pikaso",
+                        "Ruys Picasso, Pablo",
+                        "Pikaso, Paulos",
+                        "Picasso",
+                        "Bikasu, Bablu",
+                        "Ruiz Picasso, Pablo",
+                        "Sacipos",
+                        "Pikaso, Pabura",
+                        "Pikaso, Pablo",
+                        "Picasso, Pablo Ruys",
+                        "Ruys-Picasso, Pablo",
+                        "Pi-chia-so",
+                        "Пикассо"
+                    ]
+                }
+            }
+        ]
       }
+    }
   ]
 }
