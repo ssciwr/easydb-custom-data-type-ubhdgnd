@@ -78,9 +78,13 @@ class UBHDGNDUpdate
         ## i also think, that is the point where it gets the data from the norm database
         # IU: it will return the JSON data inside a JS function to avoid issues with cross-domain requests
         ## old address
-        xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://lobid.org/gnd/' + GNDId)
+        #xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://lobid.org/gnd/' + GNDId)
+        
+        ##our address with CUI encode
+        #xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId)
+
         ##our address
-        #xurl = 'https://jsontojsonp.gbv.de/?url=https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId
+        xurl = 'https://jsontojsonp.gbv.de/?url=https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId
 
         console.error "calling " + xurl
         growingTimeout = key * 100
@@ -114,9 +118,20 @@ class UBHDGNDUpdate
                 updatedGNDcdata = {}
                 # IU: this could be the ID of the specific data object that is
                 # defined in the top of the JSON data file
-                updatedGNDcdata.conceptURI = data['id']
+                
+                #updatedGNDcdata.conceptURI = data['id']
+                ##test something
+                #updatedGNDcdata.conceptURI = "https://d-nb.info/gnd/" + data['gndIdentifier']
+                updatedGNDcdata.conceptURI = "https://digi.ub.uni-heidelberg.de/normdaten/gnd/
+" + data['gndIdentifier']
+
+
+                console.error "post the new concept ID: ",updatedGNDcdata.conceptURI
+
                 #updatedGNDcdata.conceptName = Date.now() + '_' + data['preferredName']
                 updatedGNDcdata.conceptName = data['preferredName']
+
+
                 # IU: this is also contained in the JSON data file - the concept name
                 # seems to contain the field entry of the data object for each of the
                 # specified fields (like, 'preferredName')
