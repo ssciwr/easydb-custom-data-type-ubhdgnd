@@ -121,12 +121,13 @@ class UBHDGNDUpdate
                 
                 #updatedGNDcdata.conceptURI = data['id']
                 ##test something
-                #updatedGNDcdata.conceptURI = "https://d-nb.info/gnd/" + data['gndIdentifier']
-                updatedGNDcdata.conceptURI = "https://digi.ub.uni-heidelberg.de/normdaten/gnd/
-" + data['gndIdentifier']
+                console.error "post the gnd identifierI: ", data['gndIdentifier']
+
+                updatedGNDcdata.conceptURI = "https://d-nb.info/gnd/" + data['gndIdentifier']
+                #updatedGNDcdata.gndIdentifier = data['gndIdentifier']
 
 
-                console.error "post the new concept ID: ",updatedGNDcdata.conceptURI
+                console.error "post the new concept URI: ", updatedGNDcdata.conceptURI
 
                 #updatedGNDcdata.conceptName = Date.now() + '_' + data['preferredName']
                 updatedGNDcdata.conceptName = data['preferredName']
