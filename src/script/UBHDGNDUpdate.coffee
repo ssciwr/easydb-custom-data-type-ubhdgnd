@@ -130,7 +130,7 @@ class UBHDGNDUpdate
                 console.error "post the new concept URI: ", updatedGNDcdata.conceptURI
 
                 #updatedGNDcdata.conceptName = Date.now() + '_' + data['preferredName']
-                updatedGNDcdata.conceptName = data['preferredName']
+                updatedGNDcdata.conceptName = data['preferredNameForThePerson']
 
 
                 # IU: this is also contained in the JSON data file - the concept name
@@ -191,9 +191,9 @@ class UBHDGNDUpdate
 
    ########################################
     ## this type of output actually works!!!
-    console.error "This should be the first data"
-    console.error(JSON.stringify(data)) #this gives the first print of data, the one thats not useful
-    console.error "first data ended \n"
+   # console.error "This should be the first data"
+   # console.error(JSON.stringify(data)) #this gives the first print of data, the one thats not useful
+   # console.error "first data ended \n"
 
 
 
