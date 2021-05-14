@@ -12,6 +12,7 @@ class UBHDGNDUpdate
       })
 
   __updateData: ({objects, plugin_config}) ->
+  ## what the heck??
     that = @
     objectsMap = {}
     GNDIds = []
@@ -32,7 +33,7 @@ class UBHDGNDUpdate
       # IU: this is the same for the UBHDGND plugin and should work as is
       gndURI = object.data.conceptURI
       console.error "Print the object concept uri", gndURI
-      gndID = gndURI.split('gnd/')
+      gndID = gndURI.split('d-nb.info/gnd/')
       ## takes whates comes after this expression as the ID
       gndID = gndID[1]
 
@@ -96,64 +97,69 @@ class UBHDGNDUpdate
                 #console.error data #from me
                 #ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: "Record https://d-nb.info/ubhdgnd/" + ubhdgndID + " not supported in lobid.org yet!?"})
               else
+
+                ## here we need to add our data conversion to the 
                 console.error "This should be the third data"
                 console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
                 console.error "third data ended \n"
 
+
+
+                ## I think..
+                console.error "get identifier " + data['gndIdentifier'] #from me
+                # IU: not sure where data['gndIdentifier'] is set? there is no
+                # gndIdentifier entry in the data JSON files
                 resultsGNDID = data['gndIdentifier']
 
+                console.error "post the identifier: ",resultsGNDID  #from me
 
-                # fields to update
-                # conceptURI _fulltext _standard conceptName 
-                # conceptDetails conceptType conceptSeeAlso
-
-                #make two list with all identifiers for the gnd server and the data that is to be checked.
-                #the individual entries need to be in the same order
-                key_words_heidelberg_gnd_server = ["gndIdentifier","preferredNameForThePerson","@type","variantName" ]
-                key_words_heidelberg_data_server = ["conceptURI", "conceptName", "conceptType", "conceptSeeAlso"] #_standard not working at the moment
-
-                #conceptDetails does not exist in json from server
+                # then build new cdata and aggregate in objectsMap (see below)
                 updatedGNDcdata = {}
-                #itereate over every keyword combi
-                for i in [0..key_words_heidelberg_gnd_server.length-1]
-                  #special case for concept URI and _standard
-                  console.error(key_words_heidelberg_gnd_server[i]) ##this here gives the json file with all objects that are being checked
-                  console.error(key_words_heidelberg_data_server[i]) ##this here gives the json file with all objects that are being checked
+                # IU: this could be the ID of the specific data object that is
+                # defined in the top of the JSON data file
+                
+                #updatedGNDcdata.conceptURI = data['id'] # old one
+                ##test something
+                console.error "post the gnd identifierI: ", data['gndIdentifier']
 
-                  if (key_words_heidelberg_data_server[i] == "conceptURI")
-                    console.error("this should be i=0", i)
-                    updatedGNDcdata[key_words_heidelberg_data_server[i]] = 
-                      ("https://d-nb.info/gnd/" + data["gndIdentifier"])
-                    console.error(updatedGNDcdata["conceptURI"])
+                updatedGNDcdata.conceptURI = "https://d-nb.info/gnd/" + data['gndIdentifier'] #works for us
+                #updatedGNDcdata.gndIdentifier = data['gndIdentifier'] # only the id
 
-                  else if (key_words_heidelberg_data_server[i] == "_standard")
-                    console.error("this should be i=4", i)
 
-                    updatedGNDcdata._standard =
-                      text: data[key_words_heidelberg_gnd_server[i]]
+                console.error "post the new concept URI: ", updatedGNDcdata.conceptURI
 
-                  else:
-                    updatedGNDcdata[key_words_heidelberg_data_server[i]] = 
-                        data[key_words_heidelberg_gnd_server[i]]
-                  console.error(updatedGNDcdata[key_words_heidelberg_data_server[i]])
-                  ####somehow conceptURI gets overridden!!!
+                #updatedGNDcdata.conceptName = Date.now() + '_' + data['preferredName']
+                updatedGNDcdata.conceptSeeAlso = data['variantNameForThePerson']
+                
+                ##this doesn't seem to work
 
-                console.error(JSON.stringify(updatedGNDcdata)) ##this here gives the json file with all objects that are being checked
+                updatedGNDcdata.conceptName = data['preferredNameForThePerson']
 
-                #lets not do this for the moment
-                #updatedGNDcdata._fulltext =
-                #  string: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
-                #  text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
+
+                # IU: this is also contained in the JSON data file - the concept name
+                # seems to contain the field entry of the data object for each of the
+                # specified fields (like, 'preferredName')
+                updatedGNDcdata._standard =
+                  text: updatedGNDcdata.conceptName
+
+                ##also from me
+                console.error "print updated_ubhdgndcdata.conceptName: " + updatedGNDcdata.conceptName #from me
+                #console.error(JSON.stringify(data))
+
+                updatedGNDcdata._fulltext =
+                  string: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
+                  text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
+
+                console.error "print Fulltext:: " + JSON.stringify(updatedGNDcdata._fulltext) #from me
 
                 if !objectsMap[resultsGNDID]
                   console.error "GND nicht in objectsMap: " + resultsGNDID
                   console.error "da hat sich die ID von " + GNDId + " zu " + resultsGNDID + " geändert"
                 for objectsMapEntry in objectsMap[GNDId]
-                  if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata,key_words_heidelberg_data_server)
+                  if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata)
                     continue
                   objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
                   objectsToUpdate.push(objectsMapEntry)
-
             )
             .fail ((data, status, statusText) ->
               ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {searchQuery: searchQuery, error: e + "Error connecting to entityfacts"})
@@ -167,17 +173,18 @@ class UBHDGNDUpdate
       ez5.respondSuccess({payload: objectsToUpdate})
     )
 
-  __hasChanges: (objectOne, objectTwo, key_words_heidelberg_data_server) ->
-      for key in key_words_heidelberg_data_server
+  __hasChanges: (objectOne, objectTwo) ->
+    for key in ["conceptName", "conceptURI", "_standard", "_fulltext"]
+
+    ##for key in ["conceptName", "conceptURI", "_standard","conceptSeeAlso", "_fulltext"]
       ##comparisson
-        console.error("compare the two objects with key", key)
+      console.error "compare the two objects"
+      console.error "object one:", objectOne[key]
+      console.error "object two:", objectTwo[key]
 
-        console.error "object one:", objectOne[key]
-        console.error "object two:", objectTwo[key]
-
-        if not CUI.util.isEqual(objectOne[key], objectTwo[key])
-          return true
-        return false
+      if not CUI.util.isEqual(objectOne[key], objectTwo[key])
+        return true
+    return false
 
 
 ## start
