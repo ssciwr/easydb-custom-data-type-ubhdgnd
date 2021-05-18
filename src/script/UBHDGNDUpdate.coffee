@@ -1,3 +1,7 @@
+# conceptDetails is ignored for the moment
+
+
+
 class UBHDGNDUpdate
 ##start with main
   __start_update: ({ server_config, plugin_config }) ->
@@ -168,7 +172,7 @@ class UBHDGNDUpdate
                     # i don't know why string and text are the same in the output
                     # both include some [object Object] instead of the actual object for the moment
                     # this needs to be fixed
-                    
+
                     updatedGNDcdata._fulltext =
                       string: "https://d-nb.info/gnd/" + data["gndIdentifier"]
                       text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
