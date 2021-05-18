@@ -165,6 +165,10 @@ class UBHDGNDUpdate
                   else if (key_words_heidelberg_data_server[i] == "_fulltext")
                     console.error("this should be i=5", i)
 
+                    # i don't know why string and text are the same in the output
+                    # both include some [object Object] instead of the actual object for the moment
+                    # this needs to be fixed
+                    
                     updatedGNDcdata._fulltext =
                       string: "https://d-nb.info/gnd/" + data["gndIdentifier"]
                       text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
