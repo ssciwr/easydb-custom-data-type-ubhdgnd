@@ -1,6 +1,6 @@
 class UBHDGNDUpdate
 ##start with main
-  __start_update: ({server_config, plugin_config}) ->
+  __start_update: ({ server_config, plugin_config }) ->
       # TODO: do some checks, maybe check if the library server is reachable
       ez5.respondSuccess({
         # NOTE:
@@ -11,7 +11,7 @@ class UBHDGNDUpdate
         }
       })
 
-  __updateData: ({objects, plugin_config}) ->
+  __updateData: ({ objects, plugin_config }) ->
     that = @
     objectsMap = {}
     GNDIds = []
@@ -40,7 +40,8 @@ class UBHDGNDUpdate
         continue
       ## if objectMap is not yet defined it is initialized as an empty list
       if not objectsMap[gndID]
-        objectsMap[gndID] = [] # It is possible to  have more than one object with the same ID in different objects.
+      # It is possible to  have more than one object with the same ID in different objects.
+        objectsMap[gndID] = []
       ## objects are added to this new list
       objectsMap[gndID].push(object)
       GNDIds.push(gndID)
@@ -53,12 +54,13 @@ class UBHDGNDUpdate
     console.error "print the ids:", GNDIds
 
     if GNDIds.length == 0
-      return ez5.respondSuccess({payload: []})
+      return ez5.respondSuccess({ payload: [] })
 
     timeout = plugin_config.update?.timeout or 0
-    timeout *= 1000 # The configuration is in seconds, so it is multiplied by 1000 to get milliseconds.
-
+    # The configuration is in seconds, so it is multiplied by 1000 to get milliseconds.
+    timeout *= 1000
     # unique ubhdgnd-ids
+
     GNDIds = GNDIds.filter((x, i, a) => a.indexOf(x) == i)
 
     objectsToUpdate = []
@@ -72,9 +74,11 @@ class UBHDGNDUpdate
       do(key, GNDId) ->
         # get updates from lobid.org
 
-        ## I think this somehow converts json files from the ubhdgnd to maybe a jsonp files, though i don't know why yet
+        ## I think this somehow converts json files from the ubhdgnd to maybe a jsonp files,
+        # though i don't know why yet
         ## i also think, that is the point where it gets the data from the norm database
-        # IU: it will return the JSON data inside a JS function to avoid issues with cross-domain requests
+        # IU: it will return the JSON data inside a JS function to avoid issues
+        # with cross-domain requests
         ## old address
         #xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://lobid.org/gnd/' + GNDId)
         
@@ -107,38 +111,68 @@ class UBHDGNDUpdate
                 # conceptURI _fulltext _standard conceptName 
                 # conceptDetails conceptType conceptSeeAlso
 
-                #make two list with all identifiers for the gnd server and the data that is to be checked.
-                #the individual entries need to be in the same order
-                key_words_heidelberg_gnd_server = ["gndIdentifier","preferredNameForThePerson","@type","variantName" ]
-                key_words_heidelberg_data_server = ["conceptURI", "conceptName", "conceptType", "conceptSeeAlso"] #_standard not working at the moment
+                # make two list with all identifiers for the gnd server and the data that is to be checked.
+                # the individual entries need to be in the same order
+                key_words_heidelberg_gnd_server = ["gndIdentifier","preferredNameForThePerson","@type","variantName" ]#, "preferredNameForThePerson"
+                key_words_heidelberg_data_server = ["conceptURI", "conceptName", "conceptType", "conceptSeeAlso"]#, "_standard" #_standard not working at the moment
 
                 #conceptDetails does not exist in json from server
                 updatedGNDcdata = {}
-                #itereate over every keyword combi
+                # itereate over every keyword combi
                 for i in [0..key_words_heidelberg_gnd_server.length-1]
-                  #special case for concept URI and _standard
+                  # special case for concept URI and _standard
                   console.error(key_words_heidelberg_gnd_server[i]) ##this here gives the json file with all objects that are being checked
                   console.error(key_words_heidelberg_data_server[i]) ##this here gives the json file with all objects that are being checked
 
+                  # special case for the concept URI as this is not directly included on the heidelberg GND server
                   if (key_words_heidelberg_data_server[i] == "conceptURI")
                     console.error("this should be i=0", i)
                     updatedGNDcdata[key_words_heidelberg_data_server[i]] = 
                       ("https://d-nb.info/gnd/" + data["gndIdentifier"])
                     console.error(updatedGNDcdata["conceptURI"])
+                    continue #this should prevent double overriding
+                  
+                  
+                  #get only values for all objects in list 
+                  else if (key_words_heidelberg_data_server[i] == "conceptSeeAlso")
+                    console.error("this should be i=3", i)
+                    console.error(data[key_words_heidelberg_gnd_server[i]])
+                    # searches for objects in the list and only takes the @value entry of these objects
+                    for element in data[key_words_heidelberg_gnd_server[i]]
+                        if typeof element == "object"
+                          #get index of entry
+                          index = data[key_words_heidelberg_gnd_server[i]].indexOf(element)
+                          console.error("here comes an object", element)
+                          data[key_words_heidelberg_gnd_server[i]][index] = element["@value"]
+                    
+                    console.error(data[key_words_heidelberg_gnd_server[i]])
 
+                    updatedGNDcdata.conceptSeeAlso = data[key_words_heidelberg_gnd_server[i]]
+                    continue
+
+
+
+
+                  # special case for _standart as this is simply a reformatting of 
+                  # conceptName
                   else if (key_words_heidelberg_data_server[i] == "_standard")
                     console.error("this should be i=4", i)
 
                     updatedGNDcdata._standard =
                       text: data[key_words_heidelberg_gnd_server[i]]
+                    continue
+                  
+                  #console.error("pre else", updatedGNDcdata[key_words_heidelberg_data_server[i]])
 
-                  else:
+                  else
+                    console.error("else",i)
                     updatedGNDcdata[key_words_heidelberg_data_server[i]] = 
                         data[key_words_heidelberg_gnd_server[i]]
-                  console.error(updatedGNDcdata[key_words_heidelberg_data_server[i]])
+                    continue
+                  #console.error("post else", updatedGNDcdata[key_words_heidelberg_data_server[i]])
                   ####somehow conceptURI gets overridden!!!
 
-                console.error(JSON.stringify(updatedGNDcdata)) ##this here gives the json file with all objects that are being checked
+                console.error("post else", JSON.stringify(updatedGNDcdata)) ##this here gives the json file with all objects that are being checked
 
                 #lets not do this for the moment
                 #updatedGNDcdata._fulltext =
