@@ -113,8 +113,8 @@ class UBHDGNDUpdate
 
                 # make two list with all identifiers for the gnd server and the data that is to be checked.
                 # the individual entries need to be in the same order
-                key_words_heidelberg_gnd_server = ["gndIdentifier","preferredNameForThePerson","@type","variantName" ]#, "preferredNameForThePerson"
-                key_words_heidelberg_data_server = ["conceptURI", "conceptName", "conceptType", "conceptSeeAlso"]#, "_standard" #_standard not working at the moment
+                key_words_heidelberg_gnd_server = ["gndIdentifier","preferredNameForThePerson","@type","variantName", "preferredNameForThePerson", "_fulltext"]
+                key_words_heidelberg_data_server = ["conceptURI", "conceptName", "conceptType", "conceptSeeAlso", "_standard", "_fulltext"] #_standard not working at the moment
 
                 #conceptDetails does not exist in json from server
                 updatedGNDcdata = {}
@@ -162,6 +162,15 @@ class UBHDGNDUpdate
                       text: data[key_words_heidelberg_gnd_server[i]]
                     continue
                   
+                  else if (key_words_heidelberg_data_server[i] == "_fulltext")
+                    console.error("this should be i=5", i)
+
+                    updatedGNDcdata._fulltext =
+                      string: "https://d-nb.info/gnd/" + data["gndIdentifier"]
+                      text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
+                    continue
+
+
                   #console.error("pre else", updatedGNDcdata[key_words_heidelberg_data_server[i]])
 
                   else
@@ -169,19 +178,25 @@ class UBHDGNDUpdate
                     updatedGNDcdata[key_words_heidelberg_data_server[i]] = 
                         data[key_words_heidelberg_gnd_server[i]]
                     continue
+
+
+
+
                   #console.error("post else", updatedGNDcdata[key_words_heidelberg_data_server[i]])
                   ####somehow conceptURI gets overridden!!!
 
                 console.error("post else", JSON.stringify(updatedGNDcdata)) ##this here gives the json file with all objects that are being checked
 
                 #lets not do this for the moment
-                #updatedGNDcdata._fulltext =
-                #  string: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
-                #  text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
+                updatedGNDcdata._fulltext =
+                  string: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
+                  text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
 
                 if !objectsMap[resultsGNDID]
                   console.error "GND nicht in objectsMap: " + resultsGNDID
                   console.error "da hat sich die ID von " + GNDId + " zu " + resultsGNDID + " geändert"
+                #here is where the actual comparrison takes place
+                #only one difference replaces the entire object
                 for objectsMapEntry in objectsMap[GNDId]
                   if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata,key_words_heidelberg_data_server)
                     continue
@@ -210,8 +225,10 @@ class UBHDGNDUpdate
         console.error "object two:", objectTwo[key]
 
         if not CUI.util.isEqual(objectOne[key], objectTwo[key])
+          console.error "is not equal"
           return true
-        return false
+        console.error "is equal"
+      return false
 
 
 ## start
