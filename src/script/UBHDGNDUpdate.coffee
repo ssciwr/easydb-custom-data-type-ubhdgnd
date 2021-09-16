@@ -32,10 +32,6 @@ class UBHDGNDUpdate
         continue
 
       console.error "Print the object", object
-      # testing if modules work with the current setting
-      console.error "Testing modules",
-      sayHello = require './object.coffee'
-      sayHello() 
 
       ## according to readme.me: conceptURI = URI to linked record
       gndURI = object.data.conceptURI
@@ -60,6 +56,12 @@ class UBHDGNDUpdate
 
   
     console.error "print the ids:", GNDIds
+    # testing if modules work with the current setting
+    console.error "Testing modules",
+    sayHello = require './object.coffee'
+    sayHello() 
+    console.error "print the ids again:", GNDIds
+
 
     if GNDIds.length == 0
       return ez5.respondSuccess({ payload: [] })
