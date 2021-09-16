@@ -90,7 +90,8 @@ class UBHDGNDUpdate
         #xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId)
 
         ##our address
-        xurl = 'https://jsontojsonp.gbv.de/?url=https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId
+        #xurl = 'https://jsontojsonp.gbv.de/?url=https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId
+        xurl = 'https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId
 
         console.error "calling " + xurl
         growingTimeout = key * 100
