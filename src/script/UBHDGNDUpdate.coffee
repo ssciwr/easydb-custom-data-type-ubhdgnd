@@ -57,9 +57,9 @@ class UBHDGNDUpdate
   
     console.error "print the ids:", GNDIds
     # testing if modules work with the current setting
-    console.error "Testing modules",
-    sayHello = require './object.coffee'
-    sayHello() 
+    console.error "Testing modules"
+    # sayHello = require './object.coffee'
+    # sayHello() 
     console.error "print the ids again:", GNDIds
 
 
