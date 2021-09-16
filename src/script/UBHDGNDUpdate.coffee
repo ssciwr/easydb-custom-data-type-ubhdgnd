@@ -1,5 +1,6 @@
 # conceptDetails is ignored for the moment
-
+# to use modules
+  require('coffee-script/register')
 
 
 class UBHDGNDUpdate
@@ -31,9 +32,12 @@ class UBHDGNDUpdate
         continue
 
       console.error "Print the object", object
+      # testing if modules work with the current setting
+      console.error "Testing modules",
+      sayHello = require './object.coffee'
+      sayHello() 
 
       ## according to readme.me: conceptURI = URI to linked record
-      # IU: this is the same for the UBHDGND plugin and should work as is
       gndURI = object.data.conceptURI
       console.error "Print the object concept uri", gndURI
       gndID = gndURI.split('gnd/')
