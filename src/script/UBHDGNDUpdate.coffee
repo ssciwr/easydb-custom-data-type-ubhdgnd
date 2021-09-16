@@ -139,15 +139,18 @@ class UBHDGNDUpdate
                   
                   #get only values for all objects in list 
                   else if (key_words_heidelberg_data_server[i] == "conceptSeeAlso")
-                    console.error("this should be i=3", i)
-                    console.error(data[key_words_heidelberg_gnd_server[i]])
-                    # searches for objects in the list and only takes the @value entry of these objects
-                    for element in data[key_words_heidelberg_gnd_server[i]]
-                        if typeof element == "object"
-                          #get index of entry
-                          index = data[key_words_heidelberg_gnd_server[i]].indexOf(element)
-                          console.error("here comes an object", element)
-                          data[key_words_heidelberg_gnd_server[i]][index] = element["@value"]
+                  #changes from NW - if there is no variantName
+                    updatedGNDcdata.conceptSeeAlso = []
+                    if data[key_words_heidelberg_gnd_server[i]]
+                      console.error("this should be i=3", i)
+                      console.error(data[key_words_heidelberg_gnd_server[i]])
+                      # searches for objects in the list and only takes the @value entry of these objects
+                      for element in data[key_words_heidelberg_gnd_server[i]]
+                          if typeof element == "object"
+                            #get index of entry
+                            index = data[key_words_heidelberg_gnd_server[i]].indexOf(element)
+                            console.error("here comes an object", element)
+                            data[key_words_heidelberg_gnd_server[i]][index] = element["@value"]
                     
                     console.error(data[key_words_heidelberg_gnd_server[i]])
 
