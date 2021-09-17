@@ -1,6 +1,4 @@
 # conceptDetails is ignored for the moment
-# to use modules
-  require('coffee-script/register')
 
 
 class UBHDGNDUpdate
@@ -59,7 +57,7 @@ class UBHDGNDUpdate
     # testing if modules work with the current setting
     console.error "Testing modules"
     # sayHello = require './object.coffee'
-    # sayHello() 
+    sayHello() 
     console.error "print the ids again:", GNDIds
 
 

@@ -20,7 +20,5 @@
 
 # test external function
 
-sayHello = () -> console.log "Hello there Inga how is your day going?"
+sayHello = () -> console.error "Hello there Inga how is your day going?"
 
-# export { sayHello }
-module.exports = sayHello
