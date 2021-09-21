@@ -1,4 +1,5 @@
 # conceptDetails is ignored for the moment
+# import arrayify from 'arrayify'
 
 
 class UBHDGNDUpdate
@@ -127,6 +128,41 @@ class UBHDGNDUpdate
 
                 #conceptDetails does not exist in json from server
                 updatedGNDcdata = {}
+                console.error(data["@id"],object.data.conceptURI, "tampering with the entries") 
+                console.error(data.preferredName, "tampering with the entries 2") 
+                console.error(data.variantName, "tampering with the entries 3") 
+                # lock in save data
+                updatedGNDcdata.conceptURI = data["@id"]
+                updatedGNDcdata.conceptName = data.preferredName
+                updatedGNDcdata.conceptSeeAlso = []
+                # arrayify not working right now as script is not loaded as module 
+                # for variantName in arrayify(data.variantName)
+                # if CUI.isPlainObject(data.variantName) and variantName["@value"]
+                #   updatedGNDcdata.conceptSeeAlso.push(variantName["@value"])
+                # else
+                #   updatedGNDcdata.conceptSeeAlso.push(variantName)
+                for i in [0..data.variantName.length-1]
+                  if CUI.isPlainObject(data.variantName[i])
+                    updatedGNDcdata.conceptSeeAlso.push(data.variantName[i])
+                    console.error(data.variantName[i],"variantName")
+                  else
+                    updatedGNDcdata.conceptSeeAlso.push(data.variantName[i])
+                    console.error(data.variantName[i],"variantName")
+
+                updatedGNDcdata.conceptType = data["@type"]
+                updatedGNDcdata.conceptDetails = {}
+                if data.dateOfDeath?
+                  updatedGNDcdata.conceptDetails.dateOfDeath = data.dateOfDeath["@value"]
+                  if data.dateOfBirth?
+                    updatedGNDcdata.conceptDetails.dateOfBirth = data.dateOfBirth["@value"]
+               # arrayify not working for script, not sure how to load the module 
+               # updatedGNDcdata.conceptDetails.professionOrOccupation = arrayify(data.professionOrOccupation).map (p) ->
+               #     p.preferredName
+                # update form
+                # I believe this is not required for the updater
+                # @__updateSeeAlsoDisplay(cdata)
+                console.error(updatedGNDcdata, "with the UB implementation")
+
                 # itereate over every keyword combi
                 for i in [0..key_words_heidelberg_gnd_server.length-1]
                   # special case for concept URI and _standard
@@ -203,6 +239,7 @@ class UBHDGNDUpdate
 
                 console.error("post else", JSON.stringify(updatedGNDcdata)) ##this here gives the json file with all objects that are being checked
 
+                console.error(updatedGNDcdata, "with the SSC implementation")
                 #lets not do this for the moment
                 updatedGNDcdata._fulltext =
                   string: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
