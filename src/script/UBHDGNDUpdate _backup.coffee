@@ -12,15 +12,9 @@ class UBHDGNDUpdate
       })
 
   __updateData: ({objects, plugin_config}) ->
-  ## what the heck??
     that = @
     objectsMap = {}
     GNDIds = []
-
-
-    # console.log(" Now we are doing an update ")
-
-
 
     ## i think this checks if both of these things exist
     for object in objects
@@ -30,7 +24,6 @@ class UBHDGNDUpdate
       console.error "Print the object", object
 
       ## according to readme.me: conceptURI = URI to linked record
-      # IU: this is the same for the UBHDGND plugin and should work as is
       gndURI = object.data.conceptURI
       console.error "Print the object concept uri", gndURI
       gndID = gndURI.split('d-nb.info/gnd/')
@@ -47,10 +40,6 @@ class UBHDGNDUpdate
       GNDIds.push(gndID)
 
 
-    # console.log({"test",UBHDGNDIds}) ## at the moment we get no ids, so it finishes here
-    #console.log(JSON.stringify(UBHDGNDIds.toString()))
-
-  
     console.error "print the ids:", GNDIds
 
     if GNDIds.length == 0
