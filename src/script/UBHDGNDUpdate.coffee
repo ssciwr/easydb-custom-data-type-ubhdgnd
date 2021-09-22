@@ -220,14 +220,15 @@ class UBHDGNDUpdate
                 #updatedGNDcdata._fulltext =
                 #  string: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
                 #  text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
-#
+
                 if !objectsMap[resultsGNDID]
                   console.error "GND nicht in objectsMap: " + resultsGNDID
                   console.error "da hat sich die ID von " + GNDId + " zu " + resultsGNDID + " geändert"
                 #here is where the actual comparrison takes place
                 #only one difference replaces the entire object
                 for objectsMapEntry in objectsMap[GNDId]
-                  if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata,key_words_heidelberg_data_server)
+                 #if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata,key_words_heidelberg_data_server)
+                  if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata)
                     continue
                   objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
                   objectsToUpdate.push(objectsMapEntry)
@@ -245,14 +246,9 @@ class UBHDGNDUpdate
       ez5.respondSuccess({payload: objectsToUpdate})
     )
 
-  __hasChanges: (objectOne, objectTwo, key_words_heidelberg_data_server) ->
-      for key in key_words_heidelberg_data_server
-      ##comparisson
-        console.error("compare the two objects with key", key)
-
-        console.error "object one:", objectOne[key]
-        console.error "object two:", objectTwo[key]
-
+  # __hasChanges: (objectOne, objectTwo, key_words_heidelberg_data_server) ->
+  __hasChanges: (objectOne, objectTwo) ->
+    for key in ["conceptName", "conceptURI", "_standard", "_fulltext"]
         if not CUI.util.isEqual(objectOne[key], objectTwo[key])
           console.error "is not equal"
           return true
