@@ -128,6 +128,7 @@ class UBHDGNDUpdate
 
                 #conceptDetails does not exist in json from server
                 updatedGNDcdata = {}
+                # this here section to be moved to object.coffee start++++++++++++++++++
                 console.error(data["@id"],object.data.conceptURI, "tampering with the entries") 
                 console.error(data.preferredName, "tampering with the entries 2") 
                 console.error(data.variantName, "tampering with the entries 3") 
@@ -161,8 +162,34 @@ class UBHDGNDUpdate
                 # update form
                 # I believe this is not required for the updater
                 # @__updateSeeAlsoDisplay(cdata)
+                # this here section to be moved to object.coffee stop+++++++++++++++++++
+                # for standard and fulltext
+                field_value = {}
+                ;["conceptName", "conceptURI"].map (n) ->
+                  field_value[n] = if updatedGNDcdata[n] then updatedGNDcdata[n].trim() else ""
+                  console.error("printing field value 1", field_value,n,updatedGNDcdata[n])
+                field_value.conceptType = if updatedGNDcdata.conceptType? then updatedGNDcdata.conceptType else ""
+                # conceptDetails is an object
+                field_value.conceptDetails = updatedGNDcdata.conceptDetails or {}
+                # conceptSeeAlso is an array
+                if updatedGNDcdata.conceptSeeAlso
+                  field_value.conceptSeeAlso = updatedGNDcdata.conceptSeeAlso
+                if CUI.isArray(field_value.conceptSeeAlso)
+                  conceptSeeAlsoText = field_value.conceptSeeAlso.join(" ")
+                else
+                  conceptSeeAlsoText = field_value.conceptSeeAlso
+                console.error("printing field value 2", field_value)
+#               updatedGNDcdata[@name()] = Object.assign field_value,
+                updatedGNDcdata[@name] = Object.assign field_value,
+                  _fulltext:
+                   text: field_value.conceptName + " " + conceptSeeAlsoText
+                   string: field_value.conceptURI
+                  _standard:
+                    text: field_value.conceptName
+
                 console.error(updatedGNDcdata, "with the UB implementation")
 
+                # this here section can then go start++++++++++++++++++++++++++++++++++
                 # itereate over every keyword combi
                 for i in [0..key_words_heidelberg_gnd_server.length-1]
                   # special case for concept URI and _standard
@@ -194,6 +221,7 @@ class UBHDGNDUpdate
                             data[key_words_heidelberg_gnd_server[i]][index] = element["@value"]
                     
                     console.error(data[key_words_heidelberg_gnd_server[i]])
+                # this here section can then go stop+++++++++++++++++++++++++++++++++++
 
                     updatedGNDcdata.conceptSeeAlso = data[key_words_heidelberg_gnd_server[i]]
                     continue
