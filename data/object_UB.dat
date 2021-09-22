@@ -30,5 +30,36 @@
     { '@language': 'und-cyrl', '@value': 'Пикассо' }
   ],
   conceptType: 'DifferentiatedPerson',
-  conceptDetails: { dateOfDeath: '1973-04-08', dateOfBirth: '1881-10-25' }
+  conceptDetails: { dateOfDeath: '1973-04-08', dateOfBirth: '1881-10-25' },
+  undefined: {
+    conceptName: 'Picasso, Pablo',
+    conceptURI: 'gnd:118594206',
+    conceptType: 'DifferentiatedPerson',
+    conceptDetails: { dateOfDeath: '1973-04-08', dateOfBirth: '1881-10-25' },
+    conceptSeeAlso: [
+      'Pikaso, Pamplo',        'Pikasso, Pamplo',
+      'Pikasso, Paulos',       'Pikasso, Pabura',
+      'Ruys, Pablo',           'Pikasso, Pablo',
+      'Ruiz y Picasso, Pablo', 'Ruiz-Picasso, Pablo',
+      'Saci Pos',              'Ruiz, Pablo',
+      'Picasso, Pablo Ruiz y', 'Pikasso',
+     'Picasso, Pablo Ruiz',   'Pikaso',
+      'Ruys Picasso, Pablo',   'Pikaso, Paulos',
+      'Picasso',               'Bikasu, Bablu',
+      'Ruiz Picasso, Pablo',   'Sacipos',
+      'Pikaso, Pabura',        'Pikaso, Pablo',
+      'Picasso, Pablo Ruys',   'Ruys-Picasso, Pablo',
+      'Pi-chia-so',            [Object]
+    ],
+    _fulltext: {
+      text: 'Picasso, Pablo Pikaso, Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, 
+      Pablo Pikasso, Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, 
+      Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, 
+      Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, 
+      Pablo Pi-chia-so [object Object]',
+      string: 'gnd:118594206'
+    },
+    _standard: { text: 'Picasso, Pablo' }
+  }
 } with the UB implementation
+
