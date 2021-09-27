@@ -38,7 +38,6 @@ class UBHDGNDUpdate
       objectsMap[gndID].push(object)
       GNDIds.push(gndID)
   
-    console.error "print the ids:", GNDIds
     # testing if modules work with the current setting
     console.error "Testing modules"
     # sayHello = require './object.coffee'
@@ -58,7 +57,6 @@ class UBHDGNDUpdate
     for GNDId, key in GNDIds
       deferred = new CUI.Deferred()
       xhrPromises.push deferred
-    console.error "GNDIds: ", GNDIds
     for GNDId, key in GNDIds
       do(key, GNDId) ->
         # get updates from UBHD norm data server
@@ -74,9 +72,7 @@ class UBHDGNDUpdate
               if !data.preferredName
                 console.error "Record https://d-nb.info/ubhdgnd/" + GNDId + " not supported in lobid.org somehow"
               else
-                console.error "This should be the third data"
                 console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
-                console.error "third data ended \n"
 
                 resultsGNDID = data['gndIdentifier']
                 # initialize the new data
@@ -94,10 +90,8 @@ class UBHDGNDUpdate
                 for i in [0..data.variantName.length-1]
                   if CUI.isPlainObject(data.variantName[i])
                     updatedGNDcdata.conceptSeeAlso.push(data.variantName[i])
-                    console.error(data.variantName[i],"variantName")
                   else
                     updatedGNDcdata.conceptSeeAlso.push(data.variantName[i])
-                    console.error(data.variantName[i],"variantName")
 
                 updatedGNDcdata.conceptType = data["@type"]
                 updatedGNDcdata.conceptDetails = {}
@@ -105,9 +99,13 @@ class UBHDGNDUpdate
                   updatedGNDcdata.conceptDetails.dateOfDeath = data.dateOfDeath["@value"]
                   if data.dateOfBirth?
                     updatedGNDcdata.conceptDetails.dateOfBirth = data.dateOfBirth["@value"]
-               # arrayify not working for script, not sure how to load the module 
-               # updatedGNDcdata.conceptDetails.professionOrOccupation = arrayify(data.professionOrOccupation).map (p) ->
-               #     p.preferredName
+                # arrayify not working for script, not sure how to load the module 
+                # updatedGNDcdata.conceptDetails.professionOrOccupation = arrayify(data.professionOrOccupation).map (p) ->
+                #     p.preferredName
+                updatedGNDcdata.conceptDetails.professionOrOccupation = []
+                console.error("ucd:", updatedGNDcdata.professionOrOccupation)
+                for i in [0..data.professionOrOccupation.length-1]
+                  updatedGNDcdata.conceptDetails.professionOrOccupation[i] = data.professionOrOccupation[i]
                 # update form
                 # I believe this is not required for the updater
                 # @__updateSeeAlsoDisplay(cdata)
@@ -115,7 +113,6 @@ class UBHDGNDUpdate
                 field_value = {}
                 ;["conceptName", "conceptURI"].map (n) ->
                   field_value[n] = if updatedGNDcdata[n] then updatedGNDcdata[n].trim() else ""
-                  console.error("printing field value 1", field_value,n,updatedGNDcdata[n])
                 field_value.conceptType = if updatedGNDcdata.conceptType? then updatedGNDcdata.conceptType else ""
                 # conceptDetails is an object
                 field_value.conceptDetails = updatedGNDcdata.conceptDetails or {}
@@ -126,7 +123,6 @@ class UBHDGNDUpdate
                   conceptSeeAlsoText = field_value.conceptSeeAlso.join(" ")
                 else
                   conceptSeeAlsoText = field_value.conceptSeeAlso
-                console.error("printing field value 2", field_value)
                 updatedGNDcdata[@name] = Object.assign field_value,
                   _fulltext:
                    text: field_value.conceptName + " " + conceptSeeAlsoText
@@ -137,97 +133,12 @@ class UBHDGNDUpdate
 
                 console.error(updatedGNDcdata, "with the UB implementation")
 
-                # this here section can then go start++++++++++++++++++++++++++++++++++
-                # itereate over every keyword combi
-                #for i in [0..key_words_heidelberg_gnd_server.length-1]
-                #  # special case for concept URI and _standard
-                #  console.error(key_words_heidelberg_gnd_server[i]) ##this here gives the json file with all objects that are being checked
-                #  console.error(key_words_heidelberg_data_server[i]) ##this here gives the json file with all objects that are being checked
-#
-                #  # special case for the concept URI as this is not directly included on the heidelberg GND server
-                #  if (key_words_heidelberg_data_server[i] == "conceptURI")
-                #    console.error("this should be i=0", i)
-                #    updatedGNDcdata[key_words_heidelberg_data_server[i]] = 
-                #      ("https://d-nb.info/gnd/" + data["gndIdentifier"])
-                #    console.error(updatedGNDcdata["conceptURI"])
-                #    continue #this should prevent double overriding
-                #  
-                #  
-                #  #get only values for all objects in list 
-                #  else if (key_words_heidelberg_data_server[i] == "conceptSeeAlso")
-                #  #changes from NW - if there is no variantName
-                #    updatedGNDcdata.conceptSeeAlso = []
-                #    if data[key_words_heidelberg_gnd_server[i]]
-                #      console.error("this should be i=3", i)
-                #      console.error(data[key_words_heidelberg_gnd_server[i]])
-                #      # searches for objects in the list and only takes the @value entry of these objects
-                #      for element in data[key_words_heidelberg_gnd_server[i]]
-                #          if typeof element == "object"
-                #            #get index of entry
-                #            index = data[key_words_heidelberg_gnd_server[i]].indexOf(element)
-                #            console.error("here comes an object", element)
-                #            data[key_words_heidelberg_gnd_server[i]][index] = element["@value"]
-                #    
-                #    console.error(data[key_words_heidelberg_gnd_server[i]])
-                ## this here section can then go stop+++++++++++++++++++++++++++++++++++
-#
-                #    updatedGNDcdata.conceptSeeAlso = data[key_words_heidelberg_gnd_server[i]]
-                #    continue
-#
-#
-#
-#
-                #  # special case for _standart as this is simply a reformatting of 
-                #  # conceptName
-                #  else if (key_words_heidelberg_data_server[i] == "_standard")
-                #    console.error("this should be i=4", i)
-#
-                #    updatedGNDcdata._standard =
-                #      text: data[key_words_heidelberg_gnd_server[i]]
-                #    continue
-                #  
-                #  else if (key_words_heidelberg_data_server[i] == "_fulltext")
-                #    console.error("this should be i=5", i)
-#
-                #    # i don't know why string and text are the same in the output
-                #    # both include some [object Object] instead of the actual object for the moment
-                #    # this needs to be fixed
-#
-                #    updatedGNDcdata._fulltext =
-                #      string: "https://d-nb.info/gnd/" + data["gndIdentifier"]
-                #      text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
-                #    continue
-#
-#
-                #  #console.error("pre else", updatedGNDcdata[key_words_heidelberg_data_server[i]])
-#
-                #  else
-                #    console.error("else",i)
-                #    updatedGNDcdata[key_words_heidelberg_data_server[i]] = 
-                #        data[key_words_heidelberg_gnd_server[i]]
-                #    continue
-#
-#
-#
-#
-                #  #console.error("post else", updatedGNDcdata[key_words_heidelberg_data_server[i]])
-                #  ####somehow conceptURI gets overridden!!!
-#
-                #console.error("post else", JSON.stringify(updatedGNDcdata)) ##this here gives the json file with all objects that are being checked
-#
-                #console.error(updatedGNDcdata, "with the SSC implementation")
-                ##lets not do this for the moment
-                #updatedGNDcdata._fulltext =
-                #  string: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
-                #  text: ez5.UBHDGNDUtil.getFullTextFromEntityFactsJSON(data)
-
                 if !objectsMap[resultsGNDID]
                   console.error "GND nicht in objectsMap: " + resultsGNDID
                   console.error "da hat sich die ID von " + GNDId + " zu " + resultsGNDID + " geändert"
                 #here is where the actual comparrison takes place
                 #only one difference replaces the entire object
                 for objectsMapEntry in objectsMap[GNDId]
-                 #if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata,key_words_heidelberg_data_server)
                   if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata)
                     continue
                   objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
@@ -246,7 +157,6 @@ class UBHDGNDUpdate
       ez5.respondSuccess({payload: objectsToUpdate})
     )
 
-  # __hasChanges: (objectOne, objectTwo, key_words_heidelberg_data_server) ->
   __hasChanges: (objectOne, objectTwo) ->
     for key in ["conceptName", "conceptURI", "_standard", "_fulltext"]
         if not CUI.util.isEqual(objectOne[key], objectTwo[key])
@@ -269,18 +179,9 @@ class UBHDGNDUpdate
 
     if (data.action == "start_update")
       @__start_update(data)
-
-      console.error "this is start_update"
       return
 
     else if (data.action == "update")
-
-      console.error "this is update"
-
-      console.error "This should be the second data"
-      console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
-      console.error "second data ended \n"
-
       if (!data.objects)
         ez5.respondError("custom.data.type.ubhdgnd.update.error.objects-missing")
         return
