@@ -78,37 +78,27 @@ class UBHDGNDUpdate
                 # initialize the new data
                 updatedGNDcdata = {}
                 # this here section to be moved to object.coffee start++++++++++++++++++
-                updatedGNDcdata.conceptURI = data["@id"]
+                updatedGNDcdata.conceptURI = ("https://d-nb.info/gnd/"+data["@id"].split('gnd:')[1])
                 updatedGNDcdata.conceptName = data.preferredName
                 updatedGNDcdata.conceptSeeAlso = []
-                # arrayify not working right now as script is not loaded as module 
-                # for variantName in arrayify(data.variantName)
-                # if CUI.isPlainObject(data.variantName) and variantName["@value"]
-                #   updatedGNDcdata.conceptSeeAlso.push(variantName["@value"])
-                # else
-                #   updatedGNDcdata.conceptSeeAlso.push(variantName)
+                # get all name variations, check for objects so that array of strings is returned
                 for i in [0..data.variantName.length-1]
-                  if CUI.isPlainObject(data.variantName[i])
-                    updatedGNDcdata.conceptSeeAlso.push(data.variantName[i])
+                  if CUI.isPlainObject(data.variantName[i]) and data.variantName[i]["@value"]
+                    updatedGNDcdata.conceptSeeAlso.push(data.variantName[i]["@value"])
                   else
                     updatedGNDcdata.conceptSeeAlso.push(data.variantName[i])
-
                 updatedGNDcdata.conceptType = data["@type"]
                 updatedGNDcdata.conceptDetails = {}
                 if data.dateOfDeath?
                   updatedGNDcdata.conceptDetails.dateOfDeath = data.dateOfDeath["@value"]
                   if data.dateOfBirth?
                     updatedGNDcdata.conceptDetails.dateOfBirth = data.dateOfBirth["@value"]
-                # arrayify not working for script, not sure how to load the module 
-                # updatedGNDcdata.conceptDetails.professionOrOccupation = arrayify(data.professionOrOccupation).map (p) ->
-                #     p.preferredName
+                # the profession or occupation is given as URL to the GND ID
+                # other possibility would be only leaving the ID
                 updatedGNDcdata.conceptDetails.professionOrOccupation = []
-                console.error("ucd:", updatedGNDcdata.professionOrOccupation)
                 for i in [0..data.professionOrOccupation.length-1]
-                  updatedGNDcdata.conceptDetails.professionOrOccupation[i] = data.professionOrOccupation[i]
-                # update form
-                # I believe this is not required for the updater
-                # @__updateSeeAlsoDisplay(cdata)
+                  updatedGNDcdata.conceptDetails.professionOrOccupation[i] = ("https://d-nb.info/gnd/"+data.professionOrOccupation[i]["@id"].split('gnd:')[1])
+                  console.error("ucdi:", updatedGNDcdata.conceptDetails.professionOrOccupation[i])
                 # for standard and fulltext
                 field_value = {}
                 ;["conceptName", "conceptURI"].map (n) ->
