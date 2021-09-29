@@ -72,7 +72,7 @@ class UBHDGNDUpdate
               if !data.preferredName
                 console.error "Record https://d-nb.info/ubhdgnd/" + GNDId + " not supported in lobid.org somehow"
               else
-                console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
+                # console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
 
                 resultsGNDID = data['gndIdentifier']
                 # initialize the new data
@@ -93,12 +93,12 @@ class UBHDGNDUpdate
                   updatedGNDcdata.conceptDetails.dateOfDeath = data.dateOfDeath["@value"]
                   if data.dateOfBirth?
                     updatedGNDcdata.conceptDetails.dateOfBirth = data.dateOfBirth["@value"]
-                # the profession or occupation is given as URL to the GND ID
-                # other possibility would be only leaving the ID
                 updatedGNDcdata.conceptDetails.professionOrOccupation = []
                 for i in [0..data.professionOrOccupation.length-1]
-                  updatedGNDcdata.conceptDetails.professionOrOccupation[i] = ("https://d-nb.info/gnd/"+data.professionOrOccupation[i]["@id"].split('gnd:')[1])
-                  console.error("ucdi:", updatedGNDcdata.conceptDetails.professionOrOccupation[i])
+                # the profession or occupation is given as URL to the GND ID
+                # updatedGNDcdata.conceptDetails.professionOrOccupation[i] = ("https://d-nb.info/gnd/"+data.professionOrOccupation[i]["@id"].split('gnd:')[1])
+                # other possibility would be only leaving the ID
+                  updatedGNDcdata.conceptDetails.professionOrOccupation[i] = data.professionOrOccupation[i]["@id"]
                 # for standard and fulltext
                 field_value = {}
                 ;["conceptName", "conceptURI"].map (n) ->
@@ -110,15 +110,20 @@ class UBHDGNDUpdate
                 if updatedGNDcdata.conceptSeeAlso
                   field_value.conceptSeeAlso = updatedGNDcdata.conceptSeeAlso
                 if CUI.isArray(field_value.conceptSeeAlso)
-                  conceptSeeAlsoText = field_value.conceptSeeAlso.join(" ")
+                  field_value.conceptSeeAlsoText = field_value.conceptSeeAlso.join(" ")
                 else
                   conceptSeeAlsoText = field_value.conceptSeeAlso
-                updatedGNDcdata[@name] = Object.assign field_value,
-                  _fulltext:
-                   text: field_value.conceptName + " " + conceptSeeAlsoText
-                   string: field_value.conceptURI
-                  _standard:
-                    text: field_value.conceptName
+                updatedGNDcdata._fulltext = { 
+                  text: field_value.conceptName + " " + field_value.conceptSeeAlsoText
+                  string: field_value.conceptURI }
+                updatedGNDcdata._standard = { 
+                  text: field_value.conceptName }
+                # updatedGNDcdata[@name] = Object.assign field_value,
+                 # _fulltext:
+                 #  text: field_value.conceptName + " " + field_value.conceptSeeAlsoText
+                 #  string: field_value.conceptURI
+                 # _standard:
+                 #  text: field_value.conceptName
                 # this here section to be moved to object.coffee stop+++++++++++++++++++
 
                 console.error(updatedGNDcdata, "with the UB implementation")
