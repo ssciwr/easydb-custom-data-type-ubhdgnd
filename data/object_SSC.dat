@@ -1,0 +1,49 @@
+{
+  conceptURI: 'https://d-nb.info/gnd/118594206',
+  conceptName: 'Picasso, Pablo',
+  conceptSeeAlso: [
+    'Pikaso, Pamplo',        'Pikasso, Pamplo',
+    'Pikasso, Paulos',       'Pikasso, Pabura',
+    'Ruys, Pablo',           'Pikasso, Pablo',
+    'Ruiz y Picasso, Pablo', 'Ruiz-Picasso, Pablo',
+    'Saci Pos',              'Ruiz, Pablo',
+    'Picasso, Pablo Ruiz y', 'Pikasso',
+    'Picasso, Pablo Ruiz',   'Pikaso',
+    'Ruys Picasso, Pablo',   'Pikaso, Paulos',
+    'Picasso',               'Bikasu, Bablu',
+    'Ruiz Picasso, Pablo',   'Sacipos',
+    'Pikaso, Pabura',        'Pikaso, Pablo',
+    'Picasso, Pablo Ruys',   'Ruys-Picasso, Pablo',
+    'Pi-chia-so',            'Пикассо'
+  ],
+  conceptType: 'DifferentiatedPerson',
+  conceptDetails: { dateOfDeath: '1973-04-08', dateOfBirth: '1881-10-25' },
+  _standard: { text: 'Picasso, Pablo' },
+  _fulltext: {
+    string: 'https://d-nb.info/gnd/118594206',
+    text: '118594206 (DE-588a)126888914 (DE-588a)118594206 (DE-588c)4046021-6 Picasso, Pablo Pikaso, 
+    Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, Pablo Pikasso, Pablo Ruiz y Picasso, 
+    Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, Pablo Ruiz y Pikasso Picasso, 
+    Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, Bablu Ruiz Picasso, 
+    Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, 
+    Pablo Pi-chia-so Пикассо [object Object] [object Object] [object Object] [object Object] '
+  }
+} with the SSC implementation
+
+_standard should be:
+"_standard":{"text":"Picasso, Pablo"}
+
+_fulltext should be:
+"_fulltext":{"string":"118594206 (DE-588a)126888914 (DE-588a)118594206 (DE-588c)4046021-6 Picasso, Pablo 
+Pikaso, Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, Pablo Pikasso, Pablo Ruiz y Picasso, 
+Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, Pablo Ruiz y Pikasso Picasso, 
+Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, Bablu Ruiz Picasso, 
+Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, 
+Pablo Pi-chia-so Пикассо [object Object] [object Object] [object Object] [object Object] ",
+"text":"118594206 (DE-588a)126888914 (DE-588a)118594206 (DE-588c)4046021-6 Picasso, 
+Pablo Pikaso, Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, Pablo Pikasso, 
+Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, 
+Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, 
+Paulos Picasso Bikasu, Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, 
+Pablo Ruys Ruys-Picasso, Pablo Pi-chia-so Пикассо [object Object] [object Object] [object Object] 
+[object Object] "}}}],"batch_info":{"total":1,"offset":0}}
