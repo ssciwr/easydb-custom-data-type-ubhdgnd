@@ -1,0 +1,83 @@
+{
+  conceptURI: 'gnd:118594206',
+  conceptName: 'Picasso, Pablo',
+  conceptSeeAlso: [
+    'Pikaso, Pamplo',
+    'Pikasso, Pamplo',
+    'Pikasso, Paulos',
+    'Pikasso, Pabura',
+    'Ruys, Pablo',
+    'Pikasso, Pablo',
+    'Ruiz y Picasso, Pablo',
+    'Ruiz-Picasso, Pablo',
+    'Saci Pos',
+    'Ruiz, Pablo',
+    'Picasso, Pablo Ruiz y',
+    'Pikasso',
+    'Picasso, Pablo Ruiz',
+    'Pikaso',
+    'Ruys Picasso, Pablo',
+    'Pikaso, Paulos',
+    'Picasso',
+    'Bikasu, Bablu',
+    'Ruiz Picasso, Pablo',
+    'Sacipos',
+    'Pikaso, Pabura',
+    'Pikaso, Pablo',
+    'Picasso, Pablo Ruys',
+    'Ruys-Picasso, Pablo',
+    'Pi-chia-so',
+    { '@language': 'und-cyrl', '@value': 'Пикассо' }
+  ],
+  conceptType: 'DifferentiatedPerson',
+  conceptDetails: { dateOfDeath: '1973-04-08', dateOfBirth: '1881-10-25' },
+      _fulltext: {
+      text: 'Picasso, Pablo Pikaso, Pamplo Pikasso, Pamplo Pikasso, Paulos Pikasso, Pabura Ruys, 
+      Pablo Pikasso, Pablo Ruiz y Picasso, Pablo Ruiz-Picasso, Pablo Saci Pos Ruiz, Pablo Picasso, 
+      Pablo Ruiz y Pikasso Picasso, Pablo Ruiz Pikaso Ruys Picasso, Pablo Pikaso, Paulos Picasso Bikasu, 
+      Bablu Ruiz Picasso, Pablo Sacipos Pikaso, Pabura Pikaso, Pablo Picasso, Pablo Ruys Ruys-Picasso, 
+      Pablo Pi-chia-so [object Object]',
+      string: 'gnd:118594206'
+    },
+    _standard: { text: 'Picasso, Pablo' }
+  }
+} with the UB implementation
+
+calling https://digi.ub.uni-heidelberg.de/normdaten/gnd/118594206
+{"@type":"DifferentiatedPerson","acquaintanceshipOrFriendship":{"@id":"gnd:1071686623"},
+"biographicalOrHistoricalInformation":[{"@language":"de","@value":"1918-1935 verheiratet mit der russischen Tänzerin Ol'ga 
+Stepanovna Chochlova"},{"@language":"de","@value":"Span. Maler und Graphiker, Plastiker"}],
+"dateOfBirth":{"@type":"http://www.w3.org/2001/XMLSchema#date","@value":"1881-10-25"},
+"dateOfDeath":{"@type":"http://www.w3.org/2001/XMLSchema#date","@value":"1973-04-08"},
+"dnba:hasGrandChild":[{"@id":"gnd:119200325"},{"@id":"gnd:130001090"}],
+"familialRelationship":[{"@id":"gnd:118845187"},{"@id":"gnd:1057154342"},
+{"@id":"gnd:130001090"},{"@id":"gnd:12980049X"},{"@id":"gnd:118539361"},
+{"@id":"gnd:11949762X"},{"@id":"gnd:119200325"}],"gender":{"@id":"gnd-gender:male"},
+"geographicAreaCode":[{"@id":"gnd-ac:XA-FR"},{"@id":"gnd-ac:XA-ES"}],
+"gndIdentifier":"118594206","gndSubjectCategory":[{"@id":"gnd-sc:13.4p"},{"@id":"gnd-sc:13.2p"},
+{"@id":"gnd-sc:13.6p"}],"meta":{"created":{"$date":1505307599000},"modified":{"$date":1618495177000},
+"source":"http://services.dnb.de/oai/repository"},"oldAuthorityNumber":["(DE-588a)126888914","(DE-588a)118594206",
+"(DE-588c)4046021-6"],"owl:sameAs":[{"@id":"http://www.wikidata.org/entity/Q5593"},
+{"@id":"http://dbpedia.org/resource/Pablo_Picasso"},{"@id":"http://www.filmportal.de/person/AD3D6E96B6C74CFA9DF316FD239187DD"}],
+"placeOfActivity":{"@id":"gnd:4044660-8"},"placeOfBirth":{"@id":"gnd:4100040-7"},"placeOfDeath":{"@id":"gnd:4534855-8"},
+"preferredNameEntityForThePerson":{"forename":"Pablo","surname":"Picasso"},"preferredNameForThePerson":"Picasso, Pablo",
+"professionOrOccupation":[{"@id":"gnd:4125173-8"},{"@id":"gnd:4037215-7"},{"@id":"gnd:4122089-4"},{"@id":"gnd:4033423-5"},
+{"@id":"gnd:4139550-5"},{"@id":"gnd:4307126-0"}],"publication":["Picasso. - 1956","Picasso, Pablo: Aus dem graphischen Werk. - 1954"],
+"variantNameEntityForThePerson":[{"personalName":"Saci Pos"},{"forename":"Pabura","surname":"Pikasso"},{"forename":"Bablu","surname":
+"Bikasu"},{"forename":"Paulos","surname":"Pikaso"},{"personalName":"Пикассо"},{"forename":"Pablo Ruiz","surname":"Picasso"},
+{"personalName":"Pikaso"},{"forename":"Pablo","surname":"Ruys"},{"personalName":"Picasso"},{"forename":"Pablo","surname":
+"Ruys-Picasso"},{"forename":"Pabura","surname":"Pikaso"},{"forename":"Pablo","surname":"Pikasso"},{"forename":"Pablo",
+"surname":"Ruys Picasso"},{"forename":"Paulos","surname":"Pikasso"},{"personalName":"Pikasso"},{"forename":"Pablo","surname":"Ruiz"},
+{"forename":"Pablo","surname":"Ruiz Picasso"},{"forename":"Pablo","surname":"Ruiz y Picasso"},{"forename":"Pamplo",
+"surname":"Pikaso"},{"forename":"Pablo Ruys","surname":"Picasso"},{"forename":"Pamplo","surname":"Pikasso"},{"personalName":
+"Sacipos"},{"forename":"Pablo Ruiz","prefix":"y","surname":"Picasso"},{"forename":"Pablo","surname":"Ruiz-Picasso"},{"forename":
+"Pablo","surname":"Pikaso"},{"personalName":"Pi-chia-so"}],"variantNameForThePerson":["Pikaso, Pamplo","Pikasso, Pamplo","Pikasso, 
+Paulos","Pikasso, Pabura","Ruys, Pablo","Pikasso, Pablo","Ruiz y Picasso, Pablo","Ruiz-Picasso, Pablo","Saci Pos","Ruiz, Pablo",
+"Picasso, Pablo Ruiz y","Pikasso","Picasso, Pablo Ruiz","Pikaso","Ruys Picasso, Pablo","Pikaso, Paulos","Picasso","Bikasu, Bablu",
+"Ruiz Picasso, Pablo","Sacipos","Pikaso, Pabura","Pikaso, Pablo","Picasso, Pablo Ruys","Ruys-Picasso, Pablo","Pi-chia-so",
+{"@language":"und-cyrl","@value":"Пикассо"}],"dnba:hasChild":[{"@id":"gnd:11949762X"},{"@id":"gnd:1057154342"}],"wdrs:describedby":
+{"@id":"gnd:118594206/about"},"@id":"gnd:118594206","preferredName":"Picasso, Pablo","variantName":["Pikaso, Pamplo","Pikasso, 
+Pamplo","Pikasso, Paulos","Pikasso, Pabura","Ruys, Pablo","Pikasso, Pablo","Ruiz y Picasso, Pablo","Ruiz-Picasso, Pablo","Saci Pos",
+"Ruiz, Pablo","Picasso, Pablo Ruiz y","Pikasso","Picasso, Pablo Ruiz","Pikaso","Ruys Picasso, Pablo","Pikaso, Paulos","Picasso",
+"Bikasu, Bablu","Ruiz Picasso, Pablo","Sacipos","Pikaso, Pabura","Pikaso, Pablo","Picasso, Pablo Ruys","Ruys-Picasso, Pablo",
+"Pi-chia-so",{"@language":"und-cyrl","@value":"Пикассо"}]}
