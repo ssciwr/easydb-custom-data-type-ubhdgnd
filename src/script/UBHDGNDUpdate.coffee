@@ -1,4 +1,5 @@
 # import arrayify from 'arrayify'
+AuthoritiesClient = require("@ubhd/authorities-client")
 
 class UBHDGNDUpdate
 ##start with main
@@ -37,11 +38,11 @@ class UBHDGNDUpdate
       # objects are added to this new list
       objectsMap[gndID].push(object)
       GNDIds.push(gndID)
-  
+
     # testing if modules work with the current setting
     console.error "Testing modules"
     # sayHello = require './object.coffee'
-    sayHello() 
+    sayHello()
 
     if GNDIds.length == 0
       return ez5.respondSuccess({ payload: [] })
@@ -60,7 +61,7 @@ class UBHDGNDUpdate
     for GNDId, key in GNDIds
       do(key, GNDId) ->
         # get updates from UBHD norm data server
-        xurl = 'https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId
+        xurl = 'https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId + '?resolveLabels=1'
 
         console.error "calling " + xurl
         growingTimeout = key * 100
@@ -69,79 +70,88 @@ class UBHDGNDUpdate
             extendedInfo_xhr.start()
             .done((data, status, statusText) ->
               # validation-test on data.preferredName
-              if !data.preferredName
-                console.error "Record https://d-nb.info/ubhdgnd/" + GNDId + " not supported in lobid.org somehow"
-              else
-                # console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
-
-                resultsGNDID = data['gndIdentifier']
-                # initialize the new data
-                updatedGNDcdata = {}
-                # this here section to be moved to object.coffee start++++++++++++++++++
-                updatedGNDcdata.conceptURI = ("https://d-nb.info/gnd/"+data["@id"].split('gnd:')[1])
-                updatedGNDcdata.conceptName = data.preferredName
-                updatedGNDcdata.conceptSeeAlso = []
-                # get all name variations, check for objects so that array of strings is returned
-                for i in [0..data.variantName.length-1]
-                  if CUI.isPlainObject(data.variantName[i]) and data.variantName[i]["@value"]
-                    updatedGNDcdata.conceptSeeAlso.push(data.variantName[i]["@value"])
-                  else
-                    updatedGNDcdata.conceptSeeAlso.push(data.variantName[i])
-                updatedGNDcdata.conceptType = data["@type"]
-                updatedGNDcdata.conceptDetails = {}
-                if data.dateOfDeath?
-                  updatedGNDcdata.conceptDetails.dateOfDeath = data.dateOfDeath["@value"]
-                  if data.dateOfBirth?
-                    updatedGNDcdata.conceptDetails.dateOfBirth = data.dateOfBirth["@value"]
-                updatedGNDcdata.conceptDetails.professionOrOccupation = []
-                for i in [0..data.professionOrOccupation.length-1]
-                # the profession or occupation is given as URL to the GND ID
-                # updatedGNDcdata.conceptDetails.professionOrOccupation[i] = ("https://d-nb.info/gnd/"+data.professionOrOccupation[i]["@id"].split('gnd:')[1])
-                # other possibility would be only leaving the ID
-                  updatedGNDcdata.conceptDetails.professionOrOccupation[i] = data.professionOrOccupation[i]["@id"]
-                # for standard and fulltext
-                field_value = {}
-                ;["conceptName", "conceptURI"].map (n) ->
-                  field_value[n] = if updatedGNDcdata[n] then updatedGNDcdata[n].trim() else ""
-                field_value.conceptType = if updatedGNDcdata.conceptType? then updatedGNDcdata.conceptType else ""
-                # conceptDetails is an object
-                field_value.conceptDetails = updatedGNDcdata.conceptDetails or {}
-                # conceptSeeAlso is an array
-                if updatedGNDcdata.conceptSeeAlso
-                  field_value.conceptSeeAlso = updatedGNDcdata.conceptSeeAlso
-                if CUI.isArray(field_value.conceptSeeAlso)
-                  field_value.conceptSeeAlsoText = field_value.conceptSeeAlso.join(" ")
+              try
+                if !data.preferredName
+                  console.error "Record https://d-nb.info/ubhdgnd/" + GNDId + " not supported in lobid.org somehow"
                 else
-                  conceptSeeAlsoText = field_value.conceptSeeAlso
-                updatedGNDcdata._fulltext = { 
-                  text: field_value.conceptName + " " + field_value.conceptSeeAlsoText
-                  string: field_value.conceptURI }
-                updatedGNDcdata._standard = { 
-                  text: field_value.conceptName }
-                # updatedGNDcdata[@name] = Object.assign field_value,
-                 # _fulltext:
-                 #  text: field_value.conceptName + " " + field_value.conceptSeeAlsoText
-                 #  string: field_value.conceptURI
-                 # _standard:
-                 #  text: field_value.conceptName
-                # this here section to be moved to object.coffee stop+++++++++++++++++++
+                  # console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
 
-                console.error(updatedGNDcdata, "with the UB implementation")
+                  resultsGNDID = data['gndIdentifier']
+                  console.error key, "retrieved ", resultsGNDID
+                  # initialize the new data
+                  updatedGNDcdata = {}
+                  # this here section to be moved to object.coffee start++++++++++++++++++
+                  updatedGNDcdata.conceptURI = ("https://d-nb.info/gnd/"+data["@id"].split('gnd:')[1])
+                  updatedGNDcdata.conceptName = data.preferredName
+                  updatedGNDcdata.conceptSeeAlso = []
+                  # get all name variations, check for objects so that array of strings is returned
+                  for variantName in data.variantName
+                    if CUI.isPlainObject(variantName) and variantName["@value"]
+                      updatedGNDcdata.conceptSeeAlso.push(variantName["@value"])
+                    else
+                      updatedGNDcdata.conceptSeeAlso.push(variantName)
+                  console.error key, "set conceptSeeAlso ", updatedGNDcdata.conceptSeeAlso
+                  updatedGNDcdata.conceptType = data["@type"]
+                  updatedGNDcdata.conceptDetails = {}
+                  if data.dateOfDeath?
+                    updatedGNDcdata.conceptDetails.dateOfDeath = data.dateOfDeath["@value"]
+                    if data.dateOfBirth?
+                      updatedGNDcdata.conceptDetails.dateOfBirth = data.dateOfBirth["@value"]
+                  updatedGNDcdata.conceptDetails.professionOrOccupation = []
+                  if data.professionOrOccupation?
+                    for i in [0..data.professionOrOccupation.length-1]
+                    # the profession or occupation is given as URL to the GND ID
+                    # updatedGNDcdata.conceptDetails.professionOrOccupation[i] = ("https://d-nb.info/gnd/"+data.professionOrOccupation[i]["@id"].split('gnd:')[1])
+                    # other possibility would be only leaving the ID
+                      updatedGNDcdata.conceptDetails.professionOrOccupation[i] = data.professionOrOccupation[i]["preferredName"]
+                  # for standard and fulltext
+                  field_value = {}
+                  ;["conceptName", "conceptURI"].map (n) ->
+                    field_value[n] = if updatedGNDcdata[n] then updatedGNDcdata[n].trim() else ""
+                  field_value.conceptType = if updatedGNDcdata.conceptType? then updatedGNDcdata.conceptType else ""
+                  # conceptDetails is an object
+                  field_value.conceptDetails = updatedGNDcdata.conceptDetails or {}
+                  # conceptSeeAlso is an array
+                  if updatedGNDcdata.conceptSeeAlso
+                    field_value.conceptSeeAlso = updatedGNDcdata.conceptSeeAlso
+                  if CUI.isArray(field_value.conceptSeeAlso)
+                    field_value.conceptSeeAlsoText = field_value.conceptSeeAlso.join(" ")
+                  else
+                    conceptSeeAlsoText = field_value.conceptSeeAlso
+                  updatedGNDcdata._fulltext = {
+                    text: field_value.conceptName + " " + field_value.conceptSeeAlsoText
+                    string: field_value.conceptURI }
+                  updatedGNDcdata._standard = {
+                    text: field_value.conceptName }
+                  # updatedGNDcdata[@name] = Object.assign field_value,
+                   # _fulltext:
+                   #  text: field_value.conceptName + " " + field_value.conceptSeeAlsoText
+                   #  string: field_value.conceptURI
+                   # _standard:
+                   #  text: field_value.conceptName
+                  # this here section to be moved to object.coffee stop+++++++++++++++++++
 
-                if !objectsMap[resultsGNDID]
-                  console.error "GND nicht in objectsMap: " + resultsGNDID
-                  console.error "da hat sich die ID von " + GNDId + " zu " + resultsGNDID + " geändert"
-                #here is where the actual comparrison takes place
-                #only one difference replaces the entire object
-                for objectsMapEntry in objectsMap[GNDId]
-                  if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata)
-                    continue
-                  objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
-                  objectsToUpdate.push(objectsMapEntry)
+                  console.error(key, updatedGNDcdata, "with the UB implementation")
 
+                  if !objectsMap[resultsGNDID]
+                    console.error "GND nicht in objectsMap: " + resultsGNDID
+                    console.error "da hat sich die ID von " + GNDId + " zu " + resultsGNDID + " geändert"
+                  #here is where the actual comparrison takes place
+                  #only one difference replaces the entire object
+                  for objectsMapEntry in objectsMap[GNDId]
+                    if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata)
+                      console.error key, "skipped", GNDId, "no changes"
+                      continue
+                    objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
+                    objectsToUpdate.push(objectsMapEntry)
+              catch error
+                console.error(error)
+                ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: error.toString()})
             )
             .fail ((data, status, statusText) ->
-              ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {searchQuery: searchQuery, error: e + "Error connecting to entityfacts"})
+              console.error("promise failed", data, status, statusText)
+              ez5.respondError("custom.data.type.ubhdgnd.update.error.generic",
+                {error: "Request failed status: " + status + ",statusText: " + statusText})
             )
             .always =>
               xhrPromises[key].resolve()

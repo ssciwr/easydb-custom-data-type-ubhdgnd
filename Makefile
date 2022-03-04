@@ -62,6 +62,8 @@ wipe: wipe-base
 
 .PHONY: clean wipe
 
+JS = $(WEB)/${PLUGIN_NAME}.raw.js
+
 $(WEB)/$(PLUGIN_NAME).raw.coffee: $(COFFEE_FILES)
 	mkdir -p $(dir $@)
 	cat $^ > $@
@@ -70,9 +72,10 @@ $(WEB)/$(PLUGIN_NAME).raw.js: $(WEB)/$(PLUGIN_NAME).raw.coffee
 	coffee -cb $<
 
 $(WEB)/$(PLUGIN_NAME).js: $(JS)
-	$(WEBPACK) $^ $@
+	$(WEBPACK) $< $@
 
 webpack: $(WEB)/$(PLUGIN_NAME).js
+	@echo $(JS)
 	-rm src/webfrontend/$(PLUGIN_NAME_CAMELCASE).coffee.js
 
 watch:
