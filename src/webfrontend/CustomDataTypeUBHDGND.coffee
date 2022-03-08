@@ -136,16 +136,12 @@ class CustomDataTypeWithCommonsWithSeeAlso extends CustomDataTypeWithCommons
         # conceptSeeAlso is an array
         if cdata.conceptSeeAlso
           field_value.conceptSeeAlso = cdata.conceptSeeAlso
-        if CUI.isArray(field_value.conceptSeeAlso)
-          conceptSeeAlsoText = field_value.conceptSeeAlso.join(" ")
-        else
-          conceptSeeAlsoText = field_value.conceptSeeAlso
+
+
         save_data[@name()] = Object.assign field_value,
-          _fulltext:
-            text: field_value.conceptName + " " + conceptSeeAlsoText
-            string: field_value.conceptURI
-          _standard:
-            text: field_value.conceptName
+          _fulltext: UBHDGNDUtil.getFullText(cdata)
+          _standard: UBHDGNDUtil.getStandard(cdata)
+        console.log("UBHDGND saved data", save_data[@name()])
 
   buildEmptyData: () ->
     {
@@ -230,7 +226,6 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
       # No search term has been entered
       suggest_Menu.hide()
       return
-    {preferredName, variantName, arrayify, hrefGnd} = AuthoritiesClient.utils.handlebars.helpers
     types = @getCustomSchemaSetting("search", "gnd_types", [])
     # Default options for search, will be used for direct input in editor
     searchOpts =
@@ -265,7 +260,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
           do (gndId) =>
             menu_items.push
               text: suggestion
-              value: hrefGnd(gndId)
+              value: UBHDGNDUtil.hrefGnd(gndId)
               tooltip: @buildTooltipOpts( { conceptURI: gndId }, "e")
 
         # set new items to menu
@@ -278,23 +273,7 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                 # reset input
                 cdata.searchbarInput = ""
                 # lock in save data
-                cdata.conceptURI = hrefGnd(jsonld["@id"])
-                cdata.conceptName = preferredName(jsonld)
-                cdata.conceptSeeAlso = []
-                for variantName in arrayify(variantName(jsonld))
-                  if CUI.isPlainObject(variantName) and variantName["@value"]
-                    cdata.conceptSeeAlso.push(variantName["@value"])
-                  else
-                    cdata.conceptSeeAlso.push(variantName)
-
-                cdata.conceptType = jsonld["@type"]
-                cdata.conceptDetails = {}
-                if jsonld.dateOfDeath?
-                  cdata.conceptDetails.dateOfDeath = jsonld.dateOfDeath["@value"]
-                  if jsonld.dateOfBirth?
-                    cdata.conceptDetails.dateOfBirth = jsonld.dateOfBirth["@value"]
-                cdata.conceptDetails.professionOrOccupation = arrayify(jsonld.professionOrOccupation).map (p) ->
-                    p.preferredName
+                Object.assign(cdata, UBHDGNDUtil.buildCustomDataFromJSONLD(jsonld) )
                 # update form
                 @__updateSeeAlsoDisplay(cdata)
                 if cdata_form
@@ -308,7 +287,6 @@ class CustomDataTypeUBHDGND extends CustomDataTypeWithCommonsWithSeeAlso
                   cdata_form.triggerDataChanged()
                 else
                   @__updateResult(cdata, layout, opts)
-                console.log("selected", cdata)
               .catch (err) -> console.error(err)
             return @
 

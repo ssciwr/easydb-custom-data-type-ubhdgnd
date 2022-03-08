@@ -1,6 +1,3 @@
-# import arrayify from 'arrayify'
-AuthoritiesClient = require("@ubhd/authorities-client")
-
 class UBHDGNDUpdate
 ##start with main
   __start_update: ({ server_config, plugin_config }) ->
@@ -39,11 +36,6 @@ class UBHDGNDUpdate
       objectsMap[gndID].push(object)
       GNDIds.push(gndID)
 
-    # testing if modules work with the current setting
-    console.error "Testing modules"
-    # sayHello = require './object.coffee'
-    sayHello()
-
     if GNDIds.length == 0
       return ez5.respondSuccess({ payload: [] })
 
@@ -72,65 +64,18 @@ class UBHDGNDUpdate
               # validation-test on data.preferredName
               try
                 if !data.preferredName
-                  console.error "Record https://d-nb.info/ubhdgnd/" + GNDId + " not supported in lobid.org somehow"
+                  console.error "Record https://d-nb.info/gnd/" + GNDId + " not found in digi.ub.uni-heidelberg.de/normdaten somehow"
                 else
                   # console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
 
                   resultsGNDID = data['gndIdentifier']
                   console.error key, "retrieved ", resultsGNDID
                   # initialize the new data
-                  updatedGNDcdata = {}
-                  # this here section to be moved to object.coffee start++++++++++++++++++
-                  updatedGNDcdata.conceptURI = ("https://d-nb.info/gnd/"+data["@id"].split('gnd:')[1])
-                  updatedGNDcdata.conceptName = data.preferredName
-                  updatedGNDcdata.conceptSeeAlso = []
-                  # get all name variations, check for objects so that array of strings is returned
-                  for variantName in data.variantName
-                    if CUI.isPlainObject(variantName) and variantName["@value"]
-                      updatedGNDcdata.conceptSeeAlso.push(variantName["@value"])
-                    else
-                      updatedGNDcdata.conceptSeeAlso.push(variantName)
-                  console.error key, "set conceptSeeAlso ", updatedGNDcdata.conceptSeeAlso
-                  updatedGNDcdata.conceptType = data["@type"]
-                  updatedGNDcdata.conceptDetails = {}
-                  if data.dateOfDeath?
-                    updatedGNDcdata.conceptDetails.dateOfDeath = data.dateOfDeath["@value"]
-                    if data.dateOfBirth?
-                      updatedGNDcdata.conceptDetails.dateOfBirth = data.dateOfBirth["@value"]
-                  updatedGNDcdata.conceptDetails.professionOrOccupation = []
-                  if data.professionOrOccupation?
-                    for i in [0..data.professionOrOccupation.length-1]
-                    # the profession or occupation is given as URL to the GND ID
-                    # updatedGNDcdata.conceptDetails.professionOrOccupation[i] = ("https://d-nb.info/gnd/"+data.professionOrOccupation[i]["@id"].split('gnd:')[1])
-                    # other possibility would be only leaving the ID
-                      updatedGNDcdata.conceptDetails.professionOrOccupation[i] = data.professionOrOccupation[i]["preferredName"]
-                  # for standard and fulltext
-                  field_value = {}
-                  ;["conceptName", "conceptURI"].map (n) ->
-                    field_value[n] = if updatedGNDcdata[n] then updatedGNDcdata[n].trim() else ""
-                  field_value.conceptType = if updatedGNDcdata.conceptType? then updatedGNDcdata.conceptType else ""
-                  # conceptDetails is an object
-                  field_value.conceptDetails = updatedGNDcdata.conceptDetails or {}
-                  # conceptSeeAlso is an array
-                  if updatedGNDcdata.conceptSeeAlso
-                    field_value.conceptSeeAlso = updatedGNDcdata.conceptSeeAlso
-                  if CUI.isArray(field_value.conceptSeeAlso)
-                    field_value.conceptSeeAlsoText = field_value.conceptSeeAlso.join(" ")
-                  else
-                    conceptSeeAlsoText = field_value.conceptSeeAlso
-                  updatedGNDcdata._fulltext = {
-                    text: field_value.conceptName + " " + field_value.conceptSeeAlsoText
-                    string: field_value.conceptURI }
-                  updatedGNDcdata._standard = {
-                    text: field_value.conceptName }
-                  # updatedGNDcdata[@name] = Object.assign field_value,
-                   # _fulltext:
-                   #  text: field_value.conceptName + " " + field_value.conceptSeeAlsoText
-                   #  string: field_value.conceptURI
-                   # _standard:
-                   #  text: field_value.conceptName
-                  # this here section to be moved to object.coffee stop+++++++++++++++++++
-
+                  updatedGNDcdata = UBHDGNDUtil.buildCustomDataFromJSONLD(data)
+                  # for standard and fulltext pass the updated data
+                  updatedGNDcdata._fulltext = UBHDGNDUtil.getFullText(updatedGNDcdata)
+                  updatedGNDcdata._standard = UBHDGNDUtil.getStandard(updatedGNDcdata)
+                  console.error(key, "last modification date", data.meta.modified.$date)
                   console.error(key, updatedGNDcdata, "with the UB implementation")
 
                   if !objectsMap[resultsGNDID]
@@ -163,11 +108,11 @@ class UBHDGNDUpdate
     )
 
   __hasChanges: (objectOne, objectTwo) ->
-    for key in ["conceptName", "conceptURI", "_standard", "_fulltext"]
+    for key in ["conceptName","conceptSeeAlso", "conceptURI", "_standard", "_fulltext"]
         if not CUI.util.isEqual(objectOne[key], objectTwo[key])
-          console.error "is not equal"
+          console.error key, "is not equal"
           return true
-        console.error "is equal"
+        console.error key, "is equal"
       return false
 
 
