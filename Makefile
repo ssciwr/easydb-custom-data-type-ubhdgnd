@@ -38,8 +38,6 @@ all: build
 
 include easydb-library/tools/base-plugins.make
 
-scss_call = node-sass --scss --no-cache --sourcemap=inline
-
 build: code css $(L10N)
 
 ${UPDATE_SCRIPT_BUILD_FILE}: $(subst .coffee,.coffee.js,${UPDATE_SCRIPT_COFFEE_FILES})
