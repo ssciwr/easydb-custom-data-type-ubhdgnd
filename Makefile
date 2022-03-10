@@ -16,10 +16,10 @@ INSTALL_FILES = \
 	$(WEB)/l10n/en-US.json \
 	$(WEB)/l10n/es-ES.json \
 	$(WEB)/l10n/it-IT.json \
-				build/scripts/gnd-update.js \
+	build/scripts/gnd-update.js \
 	$(JS) \
 	$(CSS) \
-	$(PLUGIN_NAME_CAMELCASE).config.yml
+	manifest.yml
 
 COFFEE_FILES = easydb-library/src/commons.coffee \
     src/UBHDGNDUtil.coffee \
@@ -34,18 +34,6 @@ UPDATE_SCRIPT_COFFEE_FILES = \
 
 UPDATE_SCRIPT_BUILD_FILE = build/scripts/ubhdgnd-update.js
 
-${UPDATE_SCRIPT_BUILD_FILE}: $(subst .coffee,.coffee.js,${UPDATE_SCRIPT_COFFEE_FILES})
-	mkdir -p $(dir $@)
-	cat $^ > $@
-
-include easydb-library/tools/base-plugins.make
-
-build: code $(L10N) ${UPDATE_SCRIPT_BUILD_FILE}
-
-JS = $(WEB)/${PLUGIN_NAME}.raw.js
-
-export
-
 all: build
 
 include easydb-library/tools/base-plugins.make
@@ -54,7 +42,14 @@ scss_call = node-sass --scss --no-cache --sourcemap=inline
 
 build: code css $(L10N)
 
-code: webpack
+${UPDATE_SCRIPT_BUILD_FILE}: $(subst .coffee,.coffee.js,${UPDATE_SCRIPT_COFFEE_FILES})
+	mkdir -p $(dir $@)
+	cat $^ > $@
+
+
+export
+
+code: ${JS} ${UPDATE_SCRIPT_BUILD_FILE}
 
 clean: clean-base
 
@@ -62,24 +57,14 @@ wipe: wipe-base
 
 .PHONY: clean wipe
 
-JS = $(WEB)/${PLUGIN_NAME}.raw.js
-
-$(WEB)/$(PLUGIN_NAME).raw.coffee: $(COFFEE_FILES)
+${JS}: $(subst .coffee,.coffee.js,${COFFEE_FILES})
 	mkdir -p $(dir $@)
-	cat $^ > $@
-
-$(WEB)/$(PLUGIN_NAME).raw.js: $(WEB)/$(PLUGIN_NAME).raw.coffee
-	coffee -cb $<
-
-$(WEB)/$(PLUGIN_NAME).js: $(JS)
-	$(WEBPACK) $< $@
-
-webpack: $(WEB)/$(PLUGIN_NAME).js
-	@echo $(JS)
-	-rm src/webfrontend/$(PLUGIN_NAME_CAMELCASE).coffee.js
+	cat $^ > $(WEB)/$(PLUGIN_NAME).entry.js
+	$(WEBPACK) $(WEB)/$(PLUGIN_NAME).entry.js $@
+	rm $(WEB)/$(PLUGIN_NAME).entry.js
 
 watch:
-	./node_modules/.bin/nodemon -e 'coffee scss' -x make scss webpack
+	./node_modules/.bin/nodemon -e 'coffee scss' -x make css ${JS}
 
 l10n: build-stamp-l10n
 
