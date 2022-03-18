@@ -62,7 +62,7 @@ ${JS}: $(subst .coffee,.coffee.js,${COFFEE_FILES})
 	rm $(WEB)/$(PLUGIN_NAME).entry.js
 
 watch:
-	./node_modules/.bin/nodemon -e 'coffee scss' -x make css ${JS}
+	./node_modules/.bin/nodemon -e 'coffee scss' -x make css code
 
 l10n: build-stamp-l10n
 

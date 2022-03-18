@@ -1,27 +1,49 @@
-class UBHDGNDUpdate
-##start with main
-  __start_update: ({ server_config, plugin_config }) ->
-      # TODO: do some checks, maybe check if the library server is reachable
-      ez5.respondSuccess({
-        # NOTE:
-        # 'state' object can contain any data the update script might need between updates.
-        # the easydb server will save this and send it with any 'update' request
-        state: {
-            "start_update": new Date().toUTCString()
-        }
-      })
+path = require('path')
+fs = require("fs")
 
-  __updateData: ({ objects, plugin_config }) ->
+# Global configuration
+AUTHORITIES_ENDPOINT = 'https://digi.ub.uni-heidelberg.de/normdaten/gnd/'
+
+class UBHDGNDUpdate
+  __start_update: ({ server_config, plugin_config}) ->
+    # TODO: do some checks, maybe check if the library server is reachable
+    # create and open new log file and writestream
+    # write start update and offset size
+    startUpdate = new Date().toISOString()
+    logFilePath = path.join "/easydb-5/var", "ubhdgnd-update-".concat(startUpdate, ".log")
+    fs.writeFile(logFilePath, "Started update " + startUpdate + '\n', (err) =>
+      if err
+        console.error(err)
+        ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: err.toString()})
+      else
+        console.error("Created log file ", logFilePath)
+        ez5.respondSuccess({
+          # NOTE:
+          # 'state' object can contain any data the update script might need between updates.
+          # the easydb server will save this and send it with any 'update' request
+          state: {
+            "start_update": startUpdate
+            "log_file_path": logFilePath
+          }
+        })
+    )
+
+  __updateData: ({ objects, plugin_config , batch_info, state}) ->
     that = @
     objectsMap = {}
     GNDIds = []
-
+    console.error("Writing log to ", state.log_file_path)
+    logFile = fs.createWriteStream(state.log_file_path, {flags:'a'})
+    logFile.on('error', (err) =>
+      console.error "write to log file error: ", err
+      ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: err.toString()})
+    )
+    logger = new console.Console({ stdout: logFile, stderr: logFile });
+    logger.log(new Date().toISOString(), "Started batch", batch_info)
     for object in objects
       if not (object.identifier and object.data)
         continue
-
       gndURI = object.data.conceptURI
-      console.error "Print the object concept uri", gndURI
       gndID = gndURI.split('gnd/')
       # takes whates comes after this expression as the ID
       gndID = gndID[1]
@@ -50,71 +72,68 @@ class UBHDGNDUpdate
     for GNDId, key in GNDIds
       deferred = new CUI.Deferred()
       xhrPromises.push deferred
-    for GNDId, key in GNDIds
       do(key, GNDId) ->
         # get updates from UBHD norm data server
-        xurl = 'https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId + '?resolveLabels=1'
+        extendedInfo_xhr = new (CUI.XHR) {
+          url: AUTHORITIES_ENDPOINT + GNDId + '?resolveLabels=1',
+          timeout: timeout
+        }
+        extendedInfo_xhr.start().done((data, status, statusText) ->
+            # validation-test on data.preferredName
+            try
+              if !data.preferredName
+                msg = "Record https://d-nb.info/gnd/" + GNDId + " not found in digi.ub.uni-heidelberg.de/normdaten somehow"
+                logger.error key, msg
+                ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: msg})
+              else
+                # console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
 
-        console.error "calling " + xurl
-        growingTimeout = key * 100
-        setTimeout ( ->
-            extendedInfo_xhr = new (CUI.XHR)(url: xurl)
-            extendedInfo_xhr.start()
-            .done((data, status, statusText) ->
-              # validation-test on data.preferredName
-              try
-                if !data.preferredName
-                  console.error "Record https://d-nb.info/gnd/" + GNDId + " not found in digi.ub.uni-heidelberg.de/normdaten somehow"
-                else
-                  # console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
+                resultsGNDID = data['gndIdentifier']
+                logger.log key, "retrieved:", resultsGNDID, "last modified:", data.meta.modified.$date
+                # initialize the new data
+                updatedGNDcdata = UBHDGNDUtil.buildCustomDataFromJSONLD(data)
+                # for standard and fulltext pass the updated data
+                updatedGNDcdata._fulltext = UBHDGNDUtil.getFullText(updatedGNDcdata)
+                updatedGNDcdata._standard = UBHDGNDUtil.getStandard(updatedGNDcdata)
 
-                  resultsGNDID = data['gndIdentifier']
-                  console.error key, "retrieved ", resultsGNDID
-                  # initialize the new data
-                  updatedGNDcdata = UBHDGNDUtil.buildCustomDataFromJSONLD(data)
-                  # for standard and fulltext pass the updated data
-                  updatedGNDcdata._fulltext = UBHDGNDUtil.getFullText(updatedGNDcdata)
-                  updatedGNDcdata._standard = UBHDGNDUtil.getStandard(updatedGNDcdata)
-                  console.error(key, "last modification date", data.meta.modified.$date)
-                  console.error(key, updatedGNDcdata, "with the UB implementation")
 
-                  if !objectsMap[resultsGNDID]
-                    console.error "GND nicht in objectsMap: " + resultsGNDID
-                    console.error "da hat sich die ID von " + GNDId + " zu " + resultsGNDID + " geändert"
-                  #here is where the actual comparrison takes place
-                  #only one difference replaces the entire object
-                  for objectsMapEntry in objectsMap[GNDId]
-                    if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata)
-                      console.error key, "skipped", GNDId, "no changes"
-                      continue
-                    objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
-                    objectsToUpdate.push(objectsMapEntry)
-              catch error
-                console.error(error)
-                ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: error.toString()})
-            )
-            .fail ((data, status, statusText) ->
-              console.error("promise failed", data, status, statusText)
-              ez5.respondError("custom.data.type.ubhdgnd.update.error.generic",
-                {error: "Request failed status: " + status + ",statusText: " + statusText})
-            )
-            .always =>
-              xhrPromises[key].resolve()
-              xhrPromises[key].promise()
-        ), growingTimeout
+                if !objectsMap[resultsGNDID]
+                  logger.error key, "redirected GND entry from " + GNDId + " to " + resultsGNDID + " geändert"
+                #here is where the actual comparrison takes place
+                #only one difference replaces the entire object
+                for objectsMapEntry in objectsMap[GNDId]
+                  if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata)
+                    logger.log key, "skipped", GNDId, "no changes"
+                    continue
+                  objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
+                  objectsToUpdate.push(objectsMapEntry)
+            catch error
+              logger.error(key, "updatedGNDcdata", updatedGNDcdata)
+              logger.error(error)
+              ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: error.toString()})
+          )
+          .fail ((data, status, statusText) ->
+            logger.error("request failed", data, status, statusText)
+            ez5.respondError("custom.data.type.ubhdgnd.update.error.generic",
+              {error: "HTTP request failed, status: " + status + ", statusText: " + statusText})
+          )
+          .always =>
+            xhrPromises[key].resolve()
+            xhrPromises[key].promise()
 
     CUI.whenAll(xhrPromises).done( =>
-      ez5.respondSuccess({payload: objectsToUpdate})
+      logger.log new Date().toISOString(), "Processed", batch_info.offset + objects.length, "/", batch_info.total
+      # Wait for the logfile to be written before ending the script
+      logFile.end(() =>
+        ez5.respondSuccess({payload: objectsToUpdate})
+      )
     )
 
   __hasChanges: (objectOne, objectTwo) ->
     for key in ["conceptName","conceptSeeAlso", "conceptURI", "_standard", "_fulltext"]
-        if not CUI.util.isEqual(objectOne[key], objectTwo[key])
-          console.error key, "is not equal"
-          return true
-        console.error key, "is equal"
+      if not CUI.util.isEqual(objectOne[key], objectTwo[key])
+        return true
       return false
-
 
   main: (data) ->
     if not data
