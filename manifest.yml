@@ -12,13 +12,22 @@ plugin:
     url: custom-data-type-ubhdgnd.js
     l10n: l10n/
     css: custom-data-type-ubhdgnd.css
+base_config:
+  - name: update_interval_ubhdgnd
+    group: update_custom_data_type
+    parameters:
+      days:
+        type: int
+        min: 0
+        default: 7
+        position: 0
 custom_types:
   ubhdgnd:
     update:
       script: build/scripts/ubhdgnd-update.js
       timeout: 10
       batch_size: 100
-      interval_base_config: update_interval_gnd.days
+      interval_base_config: update_interval_ubhdgnd.days
     mapping:
       conceptName:
         type: text
