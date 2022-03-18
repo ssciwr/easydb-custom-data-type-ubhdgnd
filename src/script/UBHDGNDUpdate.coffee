@@ -78,31 +78,28 @@ class UBHDGNDUpdate
           url: AUTHORITIES_ENDPOINT + GNDId + '?resolveLabels=1',
           timeout: timeout
         }
-        extendedInfo_xhr.start().done((data, status, statusText) ->
-            # validation-test on data.preferredName
+        extendedInfo_xhr.start().done((jsonld, status, statusText) ->
+            # validation-test on preferredName
             try
-              if !data.preferredName
+              if !jsonld.preferredName
                 msg = "Record https://d-nb.info/gnd/" + GNDId + " not found in digi.ub.uni-heidelberg.de/normdaten somehow"
                 logger.error key, msg
                 ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: msg})
               else
-                # console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
-
-                resultsGNDID = data['gndIdentifier']
-                logger.log key, "retrieved:", resultsGNDID, "last modified:", data.meta.modified.$date
+                resultsGNDID = jsonld['gndIdentifier']
+                logger.log key, "retrieved:", resultsGNDID, "last modified:", jsonld.meta.modified.$date
                 # initialize the new data
-                updatedGNDcdata = UBHDGNDUtil.buildCustomDataFromJSONLD(data)
+                updatedGNDcdata = UBHDGNDUtil.buildCustomDataFromJSONLD(jsonld)
                 # for standard and fulltext pass the updated data
                 updatedGNDcdata._fulltext = UBHDGNDUtil.getFullText(updatedGNDcdata)
                 updatedGNDcdata._standard = UBHDGNDUtil.getStandard(updatedGNDcdata)
-
-
                 if !objectsMap[resultsGNDID]
                   logger.error key, "redirected GND entry from " + GNDId + " to " + resultsGNDID + " geändert"
-                #here is where the actual comparrison takes place
+                #here is where the actual comparison takes place
                 #only one difference replaces the entire object
                 for objectsMapEntry in objectsMap[GNDId]
-                  if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata)
+                  # CUI.util.isEqual checks object equality for every property recursively
+                  if CUI.util.isEqual(objectsMapEntry.data, updatedGNDcdata)
                     logger.log key, "skipped", GNDId, "no changes"
                     continue
                   objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
@@ -123,17 +120,12 @@ class UBHDGNDUpdate
 
     CUI.whenAll(xhrPromises).done( =>
       logger.log new Date().toISOString(), "Processed", batch_info.offset + objects.length, "/", batch_info.total
-      # Wait for the logfile to be written before ending the script
+      # if the script does not wait for the callback and calls ez5.respondSuccess immediately the
+      # previous line won't be written to the logfile
       logFile.end(() =>
         ez5.respondSuccess({payload: objectsToUpdate})
       )
     )
-
-  __hasChanges: (objectOne, objectTwo) ->
-    for key in ["conceptName","conceptSeeAlso", "conceptURI", "_standard", "_fulltext"]
-      if not CUI.util.isEqual(objectOne[key], objectTwo[key])
-        return true
-      return false
 
   main: (data) ->
     if not data
