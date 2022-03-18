@@ -102,6 +102,7 @@ class UBHDGNDUpdate
                   if CUI.util.isEqual(objectsMapEntry.data, updatedGNDcdata)
                     logger.log key, "skipped", GNDId, "no changes"
                     continue
+                  logger.log key, "updating", GNDId
                   objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
                   objectsToUpdate.push(objectsMapEntry)
             catch error
