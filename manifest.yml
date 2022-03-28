@@ -25,7 +25,7 @@ custom_types:
   ubhdgnd:
     update:
       script: build/scripts/ubhdgnd-update.js
-      timeout: 10
+      timeout: 120
       batch_size: 100
       interval_base_config: update_interval_ubhdgnd.days
     mapping:

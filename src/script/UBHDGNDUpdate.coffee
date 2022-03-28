@@ -39,7 +39,7 @@ class UBHDGNDUpdate
       ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: err.toString()})
     )
     logger = new console.Console({ stdout: logFile, stderr: logFile });
-    logger.log(new Date().toISOString(), "Started batch", batch_info)
+    logger.log(new Date().toISOString(), "Started batch", batch_info, "objects in batch:", objects.length)
     for object in objects
       if not (object.identifier and object.data)
         continue
@@ -60,7 +60,7 @@ class UBHDGNDUpdate
 
     if GNDIds.length == 0
       return ez5.respondSuccess({ payload: [] })
-
+    logger.log(new Date().toISOString(), "Num. unique GND IDs found:", GNDIds.length)
     timeout = plugin_config.update?.timeout or 0
     # The configuration is in seconds, so it is multiplied by 1000 to get milliseconds.
     timeout *= 1000
