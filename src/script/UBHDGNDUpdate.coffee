@@ -162,8 +162,8 @@ class UBHDGNDUpdate
         return
 
       # TODO: check validity of config, plugin (timeout), objects...
-      console.error("Writing log to ", state.log_file_path)
-      logFile = fs.createWriteStream(state.log_file_path, {flags:'a'})
+      console.error("Writing log to ", data.state.log_file_path)
+      logFile = fs.createWriteStream(data.state.log_file_path, {flags:'a'})
       logFile.on('error', (err) =>
         console.error "write to log file error: ", err
         ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: err.toString()})
