@@ -110,11 +110,12 @@ class UBHDGNDUpdate
           ez5.respondError("custom.data.type.ubhdgnd.update.error.generic",
             {error: "HTTP request failed, status: " + status + ", statusText: " + statusText})
         )
-
-    return CUI.whenAll(xhrPromises).done( =>
+    deferred = new CUI.Deferred()
+    CUI.whenAll(xhrPromises).done( =>
       logger.log new Date().toISOString(), "Processed", batch_info.offset + objects.length, "/", batch_info.total
-      return objectsToUpdate
+      deferred.resolve(objectsToUpdate)
     )
+    return deferred
 
   main: (data) ->
     if not data
