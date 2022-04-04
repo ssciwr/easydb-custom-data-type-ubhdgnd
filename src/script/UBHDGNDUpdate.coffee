@@ -32,13 +32,6 @@ class UBHDGNDUpdate
     that = @
     objectsMap = {}
     GNDIds = []
-    console.error("Writing log to ", state.log_file_path)
-    logFile = fs.createWriteStream(state.log_file_path, {flags:'a'})
-    logFile.on('error', (err) =>
-      console.error "write to log file error: ", err
-      ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: err.toString()})
-    )
-    logger = new console.Console({ stdout: logFile, stderr: logFile });
     logger.log(new Date().toISOString(), "Started batch", batch_info, "objects in batch:", objects.length)
     for object in objects
       if not (object.identifier and object.data)
@@ -169,8 +162,20 @@ class UBHDGNDUpdate
         return
 
       # TODO: check validity of config, plugin (timeout), objects...
-      @__updateData(data)
-      ## now go to __updateData
+      console.error("Writing log to ", state.log_file_path)
+      logFile = fs.createWriteStream(state.log_file_path, {flags:'a'})
+      logFile.on('error', (err) =>
+        console.error "write to log file error: ", err
+        ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: err.toString()})
+      )
+      @logger = new console.Console({ stdout: logFile, stderr: logFile });
+
+      try
+        @__updateData(data)
+      catch error
+        @logger.error("__updateData failed with exception", error)
+        ez5.respondError("custom.data.type.ubhdgnd.update.error.generic",
+          {error: "__updateData failed, error: " + error.toString()})
       return
     else
       ez5.respondError("custom.data.type.ubhdgnd.update.error.invalid-action", {action: data.action})
