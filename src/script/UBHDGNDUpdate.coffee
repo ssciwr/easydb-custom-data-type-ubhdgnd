@@ -111,10 +111,8 @@ class UBHDGNDUpdate
             {error: "HTTP request failed, status: " + status + ", statusText: " + statusText})
         )
 
-    CUI.whenAll(xhrPromises).done( =>
+    return CUI.whenAll(xhrPromises).done( =>
       logger.log new Date().toISOString(), "Processed", batch_info.offset + objects.length, "/", batch_info.total
-      # if the script does not wait for the callback and calls ez5.respondSuccess immediately the
-      # previous line won't be written to the logfile
       return objectsToUpdate
     )
 
@@ -168,10 +166,14 @@ class UBHDGNDUpdate
       @logger = new console.Console({ stdout: logFile, stderr: logFile });
 
       try
-        objectsToUpdate = @__updateData(data)
-        logFile.end(() =>
-          ez5.respondSuccess({payload: objectsToUpdate})
+        @__updateData(data).done( (objectsToUpdate) =>
+          logFile.end(() =>
+            ez5.respondSuccess({ payload: objectsToUpdate})
+          )
         )
+        # if the script does not wait for the callback and calls ez5.respondSuccess immediately the
+        # previous line won't be written to the logfile
+
       catch error
         @logger.error("__updateData failed with exception", error)
         ez5.respondError("custom.data.type.ubhdgnd.update.error.generic",
