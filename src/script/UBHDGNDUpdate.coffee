@@ -30,6 +30,7 @@ class UBHDGNDUpdate
 
   __updateData: ({ objects, plugin_config , batch_info, state}) ->
     that = @
+    logger = @logger
     objectsMap = {}
     GNDIds = []
     logger.log(new Date().toISOString(), "Started batch", batch_info, "objects in batch:", objects.length)
