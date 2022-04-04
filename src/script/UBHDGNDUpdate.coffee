@@ -40,7 +40,7 @@ class UBHDGNDUpdate
       gndURI = object.data.conceptURI
       gndID = gndURI.split('gnd/')
       # takes whates comes after this expression as the ID
-      gndID = gndID[1]
+      gndID = gndID[1].trim()
 
       if CUI.util.isEmpty(gndID)
         continue
