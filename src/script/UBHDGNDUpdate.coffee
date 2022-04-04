@@ -167,6 +167,7 @@ class UBHDGNDUpdate
 
       try
         @__updateData(data).done( (objectsToUpdate) =>
+          @logger.error("objectsToUpdate", objectsToUpdate)
           logFile.end(() =>
             ez5.respondSuccess({ payload: objectsToUpdate})
           )
