@@ -1,6 +1,6 @@
 {
   "name": "easydb-custom-data-type-gnd",
-  "version": "0.1.0",
+  "version": "1.3.0",
   "description": "easyDB5 custom data type for Integrated Authority File (GND)",
   "keywords": [
     "easydb"
@@ -23,7 +23,7 @@
   ],
   "devDependencies": {
     "coffee-script": "^1.9.0",
-    "nodemon": "^1.18.8",
+    "nodemon": "^2.0.15",
     "webpack": "^3.12.0"
   },
   "scripts": {
@@ -38,7 +38,7 @@
   },
   "homepage": "https://github.com/programmfabrik/easydb-custom-data-type-gnd#readme",
   "dependencies": {
-    "@ubhd/authorities-client": "^0.7.2",
+    "@ubhd/authorities-client": "^0.8.0",
     "lodash.debounce": "^4.0.8",
     "sass": "^1.32.8"
   }

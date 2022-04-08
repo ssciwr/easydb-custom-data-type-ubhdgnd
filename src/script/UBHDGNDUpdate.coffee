@@ -1,32 +1,46 @@
-# import arrayify from 'arrayify'
+path = require('path')
+fs = require("fs")
+
+# Global configuration
+AUTHORITIES_ENDPOINT = 'https://digi.ub.uni-heidelberg.de/normdaten/gnd/'
 
 class UBHDGNDUpdate
-##start with main
-  __start_update: ({ server_config, plugin_config }) ->
-      # TODO: do some checks, maybe check if the library server is reachable
-      ez5.respondSuccess({
-        # NOTE:
-        # 'state' object can contain any data the update script might need between updates.
-        # the easydb server will save this and send it with any 'update' request
-        state: {
-            "start_update": new Date().toUTCString()
-        }
-      })
+  __start_update: ({ server_config, plugin_config}) ->
+    # TODO: do some checks, maybe check if the library server is reachable
+    # create and open new log file and writestream
+    # write start update and offset size
+    startUpdate = new Date().toISOString()
+    logFilePath = path.join "/easydb-5/var", "ubhdgnd-update-".concat(startUpdate, ".log")
+    fs.writeFile(logFilePath, "Started update " + startUpdate + '\n', (err) =>
+      if err
+        console.error(err)
+        ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: err.toString()})
+      else
+        console.error("Created log file ", logFilePath)
+        ez5.respondSuccess({
+          # NOTE:
+          # 'state' object can contain any data the update script might need between updates.
+          # the easydb server will save this and send it with any 'update' request
+          state: {
+            "start_update": startUpdate
+            "log_file_path": logFilePath
+          }
+        })
+    )
 
-  __updateData: ({ objects, plugin_config }) ->
+  __updateData: ({ objects, plugin_config , batch_info, state}) ->
     that = @
+    logger = @logger
     objectsMap = {}
     GNDIds = []
-
+    logger.log(new Date().toISOString(), "Started batch", batch_info, "objects in batch:", objects.length)
     for object in objects
       if not (object.identifier and object.data)
         continue
-
       gndURI = object.data.conceptURI
-      console.error "Print the object concept uri", gndURI
       gndID = gndURI.split('gnd/')
       # takes whates comes after this expression as the ID
-      gndID = gndID[1]
+      gndID = gndID[1].trim()
 
       if CUI.util.isEmpty(gndID)
         continue
@@ -37,15 +51,10 @@ class UBHDGNDUpdate
       # objects are added to this new list
       objectsMap[gndID].push(object)
       GNDIds.push(gndID)
-  
-    # testing if modules work with the current setting
-    console.error "Testing modules"
-    # sayHello = require './object.coffee'
-    sayHello() 
 
     if GNDIds.length == 0
       return ez5.respondSuccess({ payload: [] })
-
+    logger.log(new Date().toISOString(), "Num. unique GND IDs found:", GNDIds.length)
     timeout = plugin_config.update?.timeout or 0
     # The configuration is in seconds, so it is multiplied by 1000 to get milliseconds.
     timeout *= 1000
@@ -55,111 +64,58 @@ class UBHDGNDUpdate
 
     xhrPromises = []
     for GNDId, key in GNDIds
-      deferred = new CUI.Deferred()
-      xhrPromises.push deferred
-    for GNDId, key in GNDIds
+
       do(key, GNDId) ->
         # get updates from UBHD norm data server
-        xurl = 'https://digi.ub.uni-heidelberg.de/normdaten/gnd/' + GNDId
-
-        console.error "calling " + xurl
-        growingTimeout = key * 100
-        setTimeout ( ->
-            extendedInfo_xhr = new (CUI.XHR)(url: xurl)
-            extendedInfo_xhr.start()
-            .done((data, status, statusText) ->
-              # validation-test on data.preferredName
-              if !data.preferredName
-                console.error "Record https://d-nb.info/ubhdgnd/" + GNDId + " not supported in lobid.org somehow"
-              else
-                # console.error(JSON.stringify(data)) ##this here gives the json file with all objects that are being checked
-
-                resultsGNDID = data['gndIdentifier']
-                # initialize the new data
-                updatedGNDcdata = {}
-                # this here section to be moved to object.coffee start++++++++++++++++++
-                updatedGNDcdata.conceptURI = ("https://d-nb.info/gnd/"+data["@id"].split('gnd:')[1])
-                updatedGNDcdata.conceptName = data.preferredName
-                updatedGNDcdata.conceptSeeAlso = []
-                # get all name variations, check for objects so that array of strings is returned
-                for i in [0..data.variantName.length-1]
-                  if CUI.isPlainObject(data.variantName[i]) and data.variantName[i]["@value"]
-                    updatedGNDcdata.conceptSeeAlso.push(data.variantName[i]["@value"])
-                  else
-                    updatedGNDcdata.conceptSeeAlso.push(data.variantName[i])
-                updatedGNDcdata.conceptType = data["@type"]
-                updatedGNDcdata.conceptDetails = {}
-                if data.dateOfDeath?
-                  updatedGNDcdata.conceptDetails.dateOfDeath = data.dateOfDeath["@value"]
-                  if data.dateOfBirth?
-                    updatedGNDcdata.conceptDetails.dateOfBirth = data.dateOfBirth["@value"]
-                updatedGNDcdata.conceptDetails.professionOrOccupation = []
-                for i in [0..data.professionOrOccupation.length-1]
-                # the profession or occupation is given as URL to the GND ID
-                # updatedGNDcdata.conceptDetails.professionOrOccupation[i] = ("https://d-nb.info/gnd/"+data.professionOrOccupation[i]["@id"].split('gnd:')[1])
-                # other possibility would be only leaving the ID
-                  updatedGNDcdata.conceptDetails.professionOrOccupation[i] = data.professionOrOccupation[i]["@id"]
-                # for standard and fulltext
-                field_value = {}
-                ;["conceptName", "conceptURI"].map (n) ->
-                  field_value[n] = if updatedGNDcdata[n] then updatedGNDcdata[n].trim() else ""
-                field_value.conceptType = if updatedGNDcdata.conceptType? then updatedGNDcdata.conceptType else ""
-                # conceptDetails is an object
-                field_value.conceptDetails = updatedGNDcdata.conceptDetails or {}
-                # conceptSeeAlso is an array
-                if updatedGNDcdata.conceptSeeAlso
-                  field_value.conceptSeeAlso = updatedGNDcdata.conceptSeeAlso
-                if CUI.isArray(field_value.conceptSeeAlso)
-                  field_value.conceptSeeAlsoText = field_value.conceptSeeAlso.join(" ")
-                else
-                  conceptSeeAlsoText = field_value.conceptSeeAlso
-                updatedGNDcdata._fulltext = { 
-                  text: field_value.conceptName + " " + field_value.conceptSeeAlsoText
-                  string: field_value.conceptURI }
-                updatedGNDcdata._standard = { 
-                  text: field_value.conceptName }
-                # updatedGNDcdata[@name] = Object.assign field_value,
-                 # _fulltext:
-                 #  text: field_value.conceptName + " " + field_value.conceptSeeAlsoText
-                 #  string: field_value.conceptURI
-                 # _standard:
-                 #  text: field_value.conceptName
-                # this here section to be moved to object.coffee stop+++++++++++++++++++
-
-                console.error(updatedGNDcdata, "with the UB implementation")
-
-                if !objectsMap[resultsGNDID]
-                  console.error "GND nicht in objectsMap: " + resultsGNDID
-                  console.error "da hat sich die ID von " + GNDId + " zu " + resultsGNDID + " geändert"
-                #here is where the actual comparrison takes place
-                #only one difference replaces the entire object
-                for objectsMapEntry in objectsMap[GNDId]
-                  if not that.__hasChanges(objectsMapEntry.data, updatedGNDcdata)
-                    continue
-                  objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
-                  objectsToUpdate.push(objectsMapEntry)
-
-            )
-            .fail ((data, status, statusText) ->
-              ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {searchQuery: searchQuery, error: e + "Error connecting to entityfacts"})
-            )
-            .always =>
-              xhrPromises[key].resolve()
-              xhrPromises[key].promise()
-        ), growingTimeout
-
+        extendedInfo_xhr = new (CUI.XHR) {
+          url: AUTHORITIES_ENDPOINT + GNDId + '?resolveLabels=1',
+          timeout: timeout
+        }
+        promise = extendedInfo_xhr.start()
+        xhrPromises.push promise
+        promise.done((jsonld, status, statusText) ->
+          # validation-test on preferredName
+          try
+            if !jsonld.preferredName
+              msg = "Record https://d-nb.info/gnd/" + GNDId + " not found in digi.ub.uni-heidelberg.de/normdaten somehow"
+              logger.error key, msg
+              ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: msg})
+            else
+              resultsGNDID = jsonld['gndIdentifier']
+              logger.log key, "retrieved:", resultsGNDID, "last modified:", jsonld.meta.modified.$date
+              # initialize the new data
+              updatedGNDcdata = UBHDGNDUtil.buildCustomDataFromJSONLD(jsonld)
+              # for standard and fulltext pass the updated data
+              updatedGNDcdata._fulltext = UBHDGNDUtil.getFullText(updatedGNDcdata)
+              updatedGNDcdata._standard = UBHDGNDUtil.getStandard(updatedGNDcdata)
+              if !objectsMap[resultsGNDID]
+                logger.error key, "redirected GND entry from " + GNDId + " to " + resultsGNDID + " geändert"
+              #here is where the actual comparison takes place
+              #only one difference replaces the entire object
+              for objectsMapEntry in objectsMap[GNDId]
+                # CUI.util.isEqual checks object equality for every property recursively
+                if CUI.util.isEqual(objectsMapEntry.data, updatedGNDcdata)
+                  logger.log key, "skipped", GNDId, "no changes"
+                  continue
+                logger.log key, "updating", GNDId
+                objectsMapEntry.data = updatedGNDcdata # Update the object that has changes.
+                objectsToUpdate.push(objectsMapEntry)
+          catch error
+            logger.error(key, "updatedGNDcdata", updatedGNDcdata)
+            logger.error(error)
+            ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: error.toString()})
+        )
+        .fail ((data, status, statusText) ->
+          logger.error("request failed", data, status, statusText)
+          ez5.respondError("custom.data.type.ubhdgnd.update.error.generic",
+            {error: "HTTP request failed, status: " + status + ", statusText: " + statusText})
+        )
+    deferred = new CUI.Deferred()
     CUI.whenAll(xhrPromises).done( =>
-      ez5.respondSuccess({payload: objectsToUpdate})
+      logger.log new Date().toISOString(), "Processed", batch_info.offset + objects.length, "/", batch_info.total
+      deferred.resolve(objectsToUpdate)
     )
-
-  __hasChanges: (objectOne, objectTwo) ->
-    for key in ["conceptName", "conceptURI", "_standard", "_fulltext"]
-        if not CUI.util.isEqual(objectOne[key], objectTwo[key])
-          console.error "is not equal"
-          return true
-        console.error "is equal"
-      return false
-
+    return deferred
 
   main: (data) ->
     if not data
@@ -202,8 +158,27 @@ class UBHDGNDUpdate
         return
 
       # TODO: check validity of config, plugin (timeout), objects...
-      @__updateData(data)
-      ## now go to __updateData
+      console.error("Writing log to ", data.state.log_file_path)
+      logFile = fs.createWriteStream(data.state.log_file_path, {flags:'a'})
+      logFile.on('error', (err) =>
+        console.error "write to log file error: ", err
+        ez5.respondError("custom.data.type.ubhdgnd.update.error.generic", {error: err.toString()})
+      )
+      @logger = new console.Console({ stdout: logFile, stderr: logFile });
+
+      try
+        @__updateData(data).done( (objectsToUpdate) =>
+          logFile.end(() =>
+            ez5.respondSuccess({ payload: objectsToUpdate})
+          )
+        )
+        # if the script does not wait for the callback and calls ez5.respondSuccess immediately the
+        # previous line won't be written to the logfile
+
+      catch error
+        @logger.error("__updateData failed with exception", error)
+        ez5.respondError("custom.data.type.ubhdgnd.update.error.generic",
+          {error: "__updateData failed, error: " + error.toString()})
       return
     else
       ez5.respondError("custom.data.type.ubhdgnd.update.error.invalid-action", {action: data.action})
